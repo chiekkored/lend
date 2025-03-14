@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Navbar
+  persistent_bottom_nav_bar_v2: ^5.3.1
+
   # Firebase SDKs
   firebase_core: ^3.12.1
   firebase_auth: ^5.5.1
@@ -18,6 +21,10 @@ dependencies:
   # State Management
   get: ^4.7.2
   get_storage: ^2.1.1
+
+  # Utilities
+  logger: ^2.5.0
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_test:
