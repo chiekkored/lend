@@ -21,9 +21,10 @@ class Root extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.green,
-        splashColor: LNDColors.primaryColor,
-      ),
+          scaffoldBackgroundColor: LNDColors.white,
+          primarySwatch: Colors.green,
+          splashColor: LNDColors.primary,
+          fontFamily: 'Inter'),
       initialBinding: RootBinding(),
       home: const NavigationPage(),
     );

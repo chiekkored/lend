@@ -7,7 +7,7 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: LNDColors.primaryColor,
+      backgroundColor: LNDColors.primary,
       body: Center(
         child: Transform.translate(
           offset: const Offset(0.0, -63.0),

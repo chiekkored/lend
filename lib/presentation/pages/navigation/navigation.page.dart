@@ -12,33 +12,30 @@ class NavigationPage extends GetView<NavigationController> {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Theme.of(context).appBarTheme.backgroundColor ?? LNDColors.white,
-      child: PersistentTabView(
-        controller: controller.navigationController,
-        tabs: [
-          PersistentTabConfig(
-            item: ItemConfig(
-              // textStyle: SPZText.mediumStyle.copyWith(fontSize: 10.0),
-              icon: const FaIcon(FontAwesomeIcons.house),
-              // activeForegroundColor: SPZColors.primaryColor,
-              // inactiveBackgroundColor: SPZColors.secondaryText,
-            ),
-            screen: const HomePage(),
+    return PersistentTabView(
+      controller: controller.navigationController,
+      tabs: [
+        PersistentTabConfig(
+          item: ItemConfig(
+            // textStyle: SPZText.mediumStyle.copyWith(fontSize: 10.0),
+            icon: const FaIcon(FontAwesomeIcons.house),
+            activeForegroundColor: LNDColors.primary,
+            inactiveBackgroundColor: LNDColors.unselected,
           ),
-          PersistentTabConfig(
-            item: ItemConfig(
-              // textStyle: SPZText.mediumStyle.copyWith(fontSize: 10.0),
-              icon: const FaIcon(FontAwesomeIcons.solidUser),
-              // activeForegroundColor: SPZColors.primaryColor,
-              // inactiveBackgroundColor: SPZColors.secondaryText,
-            ),
-            screen: const ProfilePage(),
-          ),
-        ],
-        navBarBuilder: (navBarConfig) => Style5BottomNavBar(
-          navBarConfig: navBarConfig,
+          screen: const HomePage(),
         ),
+        PersistentTabConfig(
+          item: ItemConfig(
+            // textStyle: SPZText.mediumStyle.copyWith(fontSize: 10.0),
+            icon: const FaIcon(FontAwesomeIcons.solidUser),
+            activeForegroundColor: LNDColors.primary,
+            inactiveBackgroundColor: LNDColors.unselected,
+          ),
+          screen: const ProfilePage(),
+        ),
+      ],
+      navBarBuilder: (navBarConfig) => Style5BottomNavBar(
+        navBarConfig: navBarConfig,
       ),
     );
   }
