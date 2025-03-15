@@ -1,58 +1,100 @@
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/enums/categories.enum.dart';
+import 'package:lend/utilities/helpers/loggers.helper.dart';
 
 class HomeController extends GetxController {
   static final instance = Get.find<HomeController>();
 
-  final RxInt _selectedCategoryIndex = 0.obs;
+  final assetsCollection =
+      FirebaseFirestore.instance.collection(LNDCollections.assets);
 
-  int get selectedCategoryIndex => _selectedCategoryIndex.value;
+  final Rx<Categories> _selectedCategory = Rx(Categories.all);
+  final RxBool _isLoading = false.obs;
 
-  List<Categories> get categories => [
-        Categories(
-          label: 'All',
-          icon: FontAwesomeIcons.globe,
-        ),
-        Categories(
-          label: 'Electronics & Gadgets',
-          icon: FontAwesomeIcons.computer,
-        ),
-        Categories(
-          label: 'Audio Equipments',
-          icon: FontAwesomeIcons.guitar,
-        ),
-        Categories(
-          label: 'Outdoor Gears',
-          icon: FontAwesomeIcons.personHiking,
-        ),
-        Categories(
-          label: 'Appliances',
-          icon: FontAwesomeIcons.blenderPhone,
-        ),
-        Categories(
-          label: 'Event Supplies',
-          icon: FontAwesomeIcons.headset,
-        ),
-        Categories(
-          label: 'Vehicles',
-          icon: FontAwesomeIcons.car,
-        ),
-      ];
+  final RxList<AssetModel> _assets = <AssetModel>[].obs;
+
+  bool get isLoading => _isLoading.value;
+  Categories get selectedCategory => _selectedCategory.value;
+  List<AssetModel> get assets => _assets;
+
+  @override
+  void onReady() {
+    getAssets();
+
+    super.onReady();
+  }
 
   @override
   void onClose() {
-    _selectedCategoryIndex.close();
+    _selectedCategory.close();
+    _assets.close();
+    _isLoading.close();
 
     super.onClose();
   }
 
-  void setSelectedCategory(int index) => _selectedCategoryIndex.value = index;
-}
+  Future<void> getAssets([Categories category = Categories.all]) async {
+    _isLoading.value = true;
 
-class Categories {
-  final String label;
-  final IconData icon;
+    try {
+      Query query = assetsCollection;
 
-  Categories({required this.label, required this.icon});
+      if (category != Categories.all) {
+        query = query.where('category', isEqualTo: category.label);
+      }
+
+      final result = await query.get();
+
+      _assets.value = result.docs
+          .map((assets) =>
+              AssetModel.fromMap(assets.data() as Map<String, dynamic>))
+          .toList();
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
+    }
+
+    _isLoading.value = false;
+  }
+
+  void setSelectedCategory(Categories category) {
+    _selectedCategory.value = category;
+
+    getAssets(category);
+  }
+
+  void postAssets() async {
+    final batch = FirebaseFirestore.instance.batch();
+    for (var asset in sampleAssets) {
+      batch.set(assetsCollection.doc(), asset.toMap());
+    }
+    await batch.commit();
+    Get.snackbar('Success', 'Add Success');
+    getAssets();
+  }
+
+  List<AssetModel> sampleAssets = [
+    AssetModel(
+      ownerId: 'wvBJK1u8UkJOXABCtiKy',
+      title: 'Canon EOS R5 Camera',
+      description:
+          'High-resolution mirrorless camera perfect for professional photography.',
+      category: 'Electronics',
+      rates: Rates(daily: 1500, custom: 'Weekly: 9000'),
+      availability: [
+        Timestamp.fromDate(DateTime(2025, 3, 20)),
+        Timestamp.fromDate(DateTime(2025, 3, 21)),
+        Timestamp.fromDate(DateTime(2025, 3, 22)),
+      ],
+      location: GeoPoint(10.6840, 122.9563), // Bacolod City coordinates
+      images: [
+        'https://www.the-digital-picture.com/Images/Review/Canon-EOS-R5.jpg',
+        'https://www.dpreview.com/files/p/articles/7757595702/20200709-Canon-EOS-R5-Product-Images-1.jpeg',
+      ],
+      createdAt: Timestamp.now(),
+      status: 'Available',
+    ),
+  ];
 }
