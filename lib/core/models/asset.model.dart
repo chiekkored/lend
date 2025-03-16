@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-class AssetModel {
+class Asset {
   String? ownerId;
   String? title;
   String? description;
@@ -13,9 +13,10 @@ class AssetModel {
   List<Timestamp>? availability;
   GeoPoint? location;
   List<String>? images;
+  List<String>? showcase;
   Timestamp? createdAt;
   String? status;
-  AssetModel({
+  Asset({
     this.ownerId,
     this.title,
     this.description,
@@ -24,11 +25,12 @@ class AssetModel {
     this.availability,
     this.location,
     this.images,
+    this.showcase,
     this.createdAt,
     this.status,
   });
 
-  AssetModel copyWith({
+  Asset copyWith({
     String? ownerId,
     String? title,
     String? description,
@@ -37,10 +39,11 @@ class AssetModel {
     List<Timestamp>? availability,
     GeoPoint? location,
     List<String>? images,
+    List<String>? showcase,
     Timestamp? createdAt,
     String? status,
   }) {
-    return AssetModel(
+    return Asset(
       ownerId: ownerId ?? this.ownerId,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -49,6 +52,7 @@ class AssetModel {
       availability: availability ?? this.availability,
       location: location ?? this.location,
       images: images ?? this.images,
+      showcase: showcase ?? this.showcase,
       createdAt: createdAt ?? this.createdAt,
       status: status ?? this.status,
     );
@@ -67,6 +71,7 @@ class AssetModel {
           ? GeoPoint(location!.latitude, location!.longitude)
           : null,
       'images': images,
+      'showcase': showcase,
       'createdAt': createdAt != null
           ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
           : null,
@@ -74,8 +79,8 @@ class AssetModel {
     };
   }
 
-  factory AssetModel.fromMap(Map<String, dynamic> map) {
-    return AssetModel(
+  factory Asset.fromMap(Map<String, dynamic> map) {
+    return Asset(
       ownerId: map['ownerId'] != null ? map['ownerId'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
       description:
@@ -89,6 +94,8 @@ class AssetModel {
           : null,
       location: map['location'] != null ? map['location'] as GeoPoint : null,
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
+      showcase:
+          map['showcase'] != null ? List<String>.from((map['showcase'])) : null,
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
       status: map['status'] != null ? map['status'] as String : null,
@@ -97,16 +104,16 @@ class AssetModel {
 
   String toJson() => json.encode(toMap());
 
-  factory AssetModel.fromJson(String source) =>
-      AssetModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Asset.fromJson(String source) =>
+      Asset.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'AssetModel(ownerId: $ownerId, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, createdAt: $createdAt, status: $status)';
+    return 'Asset(ownerId: $ownerId, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, showcase: $showcase, createdAt: $createdAt, status: $status)';
   }
 
   @override
-  bool operator ==(covariant AssetModel other) {
+  bool operator ==(covariant Asset other) {
     if (identical(this, other)) return true;
 
     return other.ownerId == ownerId &&
@@ -117,6 +124,7 @@ class AssetModel {
         listEquals(other.availability, availability) &&
         other.location == location &&
         listEquals(other.images, images) &&
+        listEquals(other.showcase, showcase) &&
         other.createdAt == createdAt &&
         other.status == status;
   }
@@ -131,6 +139,7 @@ class AssetModel {
         availability.hashCode ^
         location.hashCode ^
         images.hashCode ^
+        showcase.hashCode ^
         createdAt.hashCode ^
         status.hashCode;
   }

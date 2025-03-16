@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -14,11 +15,11 @@ class HomeController extends GetxController {
   final Rx<Categories> _selectedCategory = Rx(Categories.all);
   final RxBool _isLoading = false.obs;
 
-  final RxList<AssetModel> _assets = <AssetModel>[].obs;
+  final RxList<Asset> _assets = <Asset>[].obs;
 
   bool get isLoading => _isLoading.value;
   Categories get selectedCategory => _selectedCategory.value;
-  List<AssetModel> get assets => _assets;
+  List<Asset> get assets => _assets;
 
   @override
   void onReady() {
@@ -49,8 +50,7 @@ class HomeController extends GetxController {
       final result = await query.get();
 
       _assets.value = result.docs
-          .map((assets) =>
-              AssetModel.fromMap(assets.data() as Map<String, dynamic>))
+          .map((assets) => Asset.fromMap(assets.data() as Map<String, dynamic>))
           .toList();
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
@@ -75,8 +75,12 @@ class HomeController extends GetxController {
     getAssets();
   }
 
-  List<AssetModel> sampleAssets = [
-    AssetModel(
+  void openAssetPage(Asset asset) {
+    Get.toNamed(AssetPage.routeName, arguments: {'asset': asset});
+  }
+
+  List<Asset> sampleAssets = [
+    Asset(
       ownerId: 'wvBJK1u8UkJOXABCtiKy',
       title: 'Canon EOS R5 Camera',
       description:

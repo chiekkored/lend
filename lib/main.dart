@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lend/core/bindings/asset/asset.binding.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
 import 'package:lend/core/bindings/root.binding.dart';
 import 'package:lend/core/services/main.service.dart';
+import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
@@ -33,6 +35,13 @@ class Root extends StatelessWidget {
           name: NavigationPage.routeName,
           page: () => const NavigationPage(),
           binding: NavigationBinding(),
+        ),
+        GetPage(
+          name: AssetPage.routeName,
+          page: () => const AssetPage(),
+          binding: AssetBinding(),
+          maintainState: false,
+          preventDuplicates: false,
         ),
       ],
       initialRoute: NavigationPage.routeName,
