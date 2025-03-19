@@ -7,7 +7,7 @@ class LNDColors {
   static const primary = Color.fromRGBO(233, 196, 29, 1);
 
   static const disabled = Color.fromRGBO(100, 100, 100, 1);
-  static const unselected = Color.fromRGBO(100, 100, 100, 1);
+  static const unselected = Color.fromRGBO(198, 198, 198, 1);
 
   static const outline = Color.fromRGBO(238, 238, 238, 1);
 

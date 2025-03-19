@@ -7,6 +7,7 @@ class LNDText extends StatelessWidget {
   final bool isSelectable;
   final TextAlign? textAlign;
   final bool required;
+  final List<LNDText>? textParts;
 
   const LNDText._(
     this.text,
@@ -14,6 +15,7 @@ class LNDText extends StatelessWidget {
     this.isSelectable,
     this.textAlign,
     this.required,
+    this.textParts,
   );
 
   static TextStyle get regularStyle => const TextStyle(
@@ -61,6 +63,7 @@ class LNDText extends StatelessWidget {
     bool isSelectable = false,
     TextAlign? textAlign,
     bool required = false,
+    List<LNDText>? textParts,
   }) {
     return LNDText._(
       text,
@@ -73,6 +76,7 @@ class LNDText extends StatelessWidget {
       isSelectable,
       textAlign,
       required,
+      textParts,
     );
   }
 
@@ -85,6 +89,7 @@ class LNDText extends StatelessWidget {
     bool isSelectable = false,
     TextAlign? textAlign,
     bool required = false,
+    List<LNDText>? textParts,
   }) {
     return LNDText._(
       text,
@@ -97,6 +102,7 @@ class LNDText extends StatelessWidget {
       isSelectable,
       textAlign,
       required,
+      textParts,
     );
   }
 
@@ -109,6 +115,7 @@ class LNDText extends StatelessWidget {
     bool isSelectable = false,
     TextAlign? textAlign,
     bool required = false,
+    List<LNDText>? textParts,
   }) {
     return LNDText._(
       text,
@@ -121,6 +128,7 @@ class LNDText extends StatelessWidget {
       isSelectable,
       textAlign,
       required,
+      textParts,
     );
   }
 
@@ -133,6 +141,7 @@ class LNDText extends StatelessWidget {
     bool isSelectable = false,
     TextAlign? textAlign,
     bool required = false,
+    List<LNDText>? textParts,
   }) {
     return LNDText._(
       text,
@@ -145,39 +154,32 @@ class LNDText extends StatelessWidget {
       isSelectable,
       textAlign,
       required,
+      textParts,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    List<TextSpan> spans = [
+      TextSpan(text: text, style: style),
+      if (required)
+        TextSpan(
+          text: '*',
+          style: style.copyWith(color: LNDColors.black),
+        ),
+      if (textParts != null)
+        ...textParts!.map((e) => TextSpan(text: e.text, style: e.style)),
+    ];
+
     return isSelectable
         ? SelectableText.rich(
-            TextSpan(
-              text: text,
-              children: [
-                if (required)
-                  TextSpan(
-                    text: '*',
-                    style: style.copyWith(color: LNDColors.black),
-                  ),
-              ],
-            ),
-            style: style,
+            TextSpan(children: spans),
             textAlign: textAlign,
           )
         : Text.rich(
-            TextSpan(
-              text: text,
-              children: [
-                if (required)
-                  TextSpan(
-                    text: '*',
-                    style: style.copyWith(color: LNDColors.black),
-                  ),
-              ],
-            ),
-            style: style,
+            TextSpan(children: spans),
             textAlign: textAlign,
+            softWrap: true,
           );
   }
 }

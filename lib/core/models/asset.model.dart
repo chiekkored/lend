@@ -14,6 +14,7 @@ class Asset {
   GeoPoint? location;
   List<String>? images;
   List<String>? showcase;
+  List<String>? inclusions;
   Timestamp? createdAt;
   String? status;
   Asset({
@@ -26,6 +27,7 @@ class Asset {
     this.location,
     this.images,
     this.showcase,
+    this.inclusions,
     this.createdAt,
     this.status,
   });
@@ -40,6 +42,7 @@ class Asset {
     GeoPoint? location,
     List<String>? images,
     List<String>? showcase,
+    List<String>? inclusions,
     Timestamp? createdAt,
     String? status,
   }) {
@@ -53,6 +56,7 @@ class Asset {
       location: location ?? this.location,
       images: images ?? this.images,
       showcase: showcase ?? this.showcase,
+      inclusions: inclusions ?? this.inclusions,
       createdAt: createdAt ?? this.createdAt,
       status: status ?? this.status,
     );
@@ -72,6 +76,7 @@ class Asset {
           : null,
       'images': images,
       'showcase': showcase,
+      'inclusions': inclusions,
       'createdAt': createdAt != null
           ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
           : null,
@@ -96,6 +101,9 @@ class Asset {
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
       showcase:
           map['showcase'] != null ? List<String>.from((map['showcase'])) : null,
+      inclusions: map['inclusions'] != null
+          ? List<String>.from((map['inclusions']))
+          : null,
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
       status: map['status'] != null ? map['status'] as String : null,
@@ -109,7 +117,7 @@ class Asset {
 
   @override
   String toString() {
-    return 'Asset(ownerId: $ownerId, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, showcase: $showcase, createdAt: $createdAt, status: $status)';
+    return 'Asset(ownerId: $ownerId, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, showcase: $showcase, inclusions: $inclusions, createdAt: $createdAt, status: $status)';
   }
 
   @override
@@ -125,6 +133,7 @@ class Asset {
         other.location == location &&
         listEquals(other.images, images) &&
         listEquals(other.showcase, showcase) &&
+        listEquals(other.inclusions, inclusions) &&
         other.createdAt == createdAt &&
         other.status == status;
   }
@@ -140,6 +149,7 @@ class Asset {
         location.hashCode ^
         images.hashCode ^
         showcase.hashCode ^
+        inclusions.hashCode ^
         createdAt.hashCode ^
         status.hashCode;
   }

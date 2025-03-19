@@ -92,7 +92,7 @@ class HomeController extends GetxController {
         Timestamp.fromDate(DateTime(2025, 3, 21)),
         Timestamp.fromDate(DateTime(2025, 3, 22)),
       ],
-      location: GeoPoint(10.6840, 122.9563), // Bacolod City coordinates
+      location: const GeoPoint(10.6840, 122.9563), // Bacolod City coordinates
       images: [
         'https://www.the-digital-picture.com/Images/Review/Canon-EOS-R5.jpg',
         'https://www.dpreview.com/files/p/articles/7757595702/20200709-Canon-EOS-R5-Product-Images-1.jpeg',

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/navigation/navigation.controller.dart';
@@ -14,58 +13,72 @@ class NavigationPage extends GetView<NavigationController> {
 
   @override
   Widget build(BuildContext context) {
+    const selectedIconSize = 35.0;
+    const unselectedIconSize = 35.0;
     return PersistentTabView(
       controller: controller.navigationController,
       tabs: [
         PersistentTabConfig(
           item: ItemConfig(
-            title: 'Home',
             textStyle: LNDText.mediumStyle.copyWith(fontSize: 10.0),
-            icon: const FaIcon(
-              FontAwesomeIcons.house,
-              size: 23.0,
+            icon: const Icon(
+              Icons.home_rounded,
+              size: selectedIconSize,
+            ),
+            inactiveIcon: const Icon(
+              Icons.home_outlined,
+              size: unselectedIconSize,
             ),
             activeForegroundColor: LNDColors.primary,
-            inactiveBackgroundColor: LNDColors.unselected,
+            inactiveForegroundColor: LNDColors.unselected,
           ),
           screen: const HomePage(),
         ),
         PersistentTabConfig(
           item: ItemConfig(
-            title: 'Rentals',
             textStyle: LNDText.mediumStyle.copyWith(fontSize: 10.0),
-            icon: const FaIcon(
-              FontAwesomeIcons.handshakeAngle,
-              size: 23.0,
+            icon: const Icon(
+              Icons.handshake_rounded,
+              size: selectedIconSize,
+            ),
+            inactiveIcon: const Icon(
+              Icons.handshake_outlined,
+              size: unselectedIconSize,
             ),
             activeForegroundColor: LNDColors.primary,
-            inactiveBackgroundColor: LNDColors.unselected,
+            inactiveForegroundColor: LNDColors.unselected,
           ),
           screen: const ProfilePage(),
         ),
         PersistentTabConfig(
           item: ItemConfig(
-            title: 'Chat',
             textStyle: LNDText.mediumStyle.copyWith(fontSize: 10.0),
-            icon: const FaIcon(
-              FontAwesomeIcons.inbox,
-              size: 23.0,
+            icon: const Icon(
+              Icons.inbox_rounded,
+              size: selectedIconSize,
+            ),
+            inactiveIcon: const Icon(
+              Icons.inbox_outlined,
+              size: unselectedIconSize,
             ),
             activeForegroundColor: LNDColors.primary,
-            inactiveBackgroundColor: LNDColors.unselected,
+            inactiveForegroundColor: LNDColors.unselected,
           ),
           screen: const ProfilePage(),
         ),
         PersistentTabConfig(
           item: ItemConfig(
-            title: 'Profile',
             textStyle: LNDText.mediumStyle.copyWith(fontSize: 10.0),
-            icon: const FaIcon(
-              FontAwesomeIcons.solidIdBadge,
-              size: 23.0,
+            icon: const Icon(
+              Icons.account_circle_rounded,
+              size: selectedIconSize,
+            ),
+            inactiveIcon: const Icon(
+              Icons.account_circle_outlined,
+              size: unselectedIconSize,
             ),
             activeForegroundColor: LNDColors.primary,
-            inactiveBackgroundColor: LNDColors.unselected,
+            inactiveForegroundColor: LNDColors.unselected,
           ),
           screen: const ProfilePage(),
         ),
