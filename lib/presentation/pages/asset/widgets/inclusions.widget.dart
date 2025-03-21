@@ -18,7 +18,7 @@ class AssetInclusions extends GetWidget<AssetController> {
         child: Container(
           margin: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-              color: LNDColors.primary.withOpacity(0.3),
+              color: LNDColors.primary.withOpacity(0.2),
               borderRadius: BorderRadius.circular(16.0)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -28,7 +28,7 @@ class AssetInclusions extends GetWidget<AssetController> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LNDText.medium(
+                    LNDText.semibold(
                       text: 'What\'s Included',
                       fontSize: 18.0,
                     ),
@@ -38,10 +38,13 @@ class AssetInclusions extends GetWidget<AssetController> {
                       (inclusion) => Row(
                         children: [
                           const Icon(
-                            Icons.check_circle_outline_rounded,
-                            color: LNDColors.black,
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
                           ),
-                          LNDText.regular(text: inclusion),
+                          LNDText.regular(
+                            text: inclusion,
+                            isSelectable: true,
+                          ),
                         ],
                       ).withSpacing(8.0),
                     ) ??

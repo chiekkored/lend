@@ -6,10 +6,8 @@ import 'package:lend/presentation/controllers/asset/asset.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 
-class AssetBottomNav extends GetWidget<AssetController> {
-  const AssetBottomNav({
-    super.key,
-  });
+class CalendarBottomNav extends GetWidget<AssetController> {
+  const CalendarBottomNav({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +28,11 @@ class AssetBottomNav extends GetWidget<AssetController> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  LNDText.bold(
-                    text: '₱${controller.asset?.rates?.daily.toMoney() ?? ''}',
-                    fontSize: 18.0,
-                    textParts: [
-                      LNDText.regular(
-                        text: ' daily',
-                        color: LNDColors.hint,
-                        fontSize: 16.0,
-                      )
-                    ],
+                  Obx(
+                    () => LNDText.bold(
+                      text: '₱${controller.totalPrice.toMoney()}',
+                      fontSize: 18.0,
+                    ),
                   ),
                   GestureDetector(
                     onTap: controller.openAllPrices,
@@ -51,10 +44,12 @@ class AssetBottomNav extends GetWidget<AssetController> {
                   )
                 ],
               ),
-              LNDButton.primary(
-                text: 'Reserve now',
-                enabled: true,
-                onPressed: controller.goToReservation,
+              Obx(
+                () => LNDButton.primary(
+                  text: 'Book',
+                  enabled: controller.selectedDates.isNotEmpty,
+                  onPressed: controller.bookAsset,
+                ),
               ),
             ],
           ),

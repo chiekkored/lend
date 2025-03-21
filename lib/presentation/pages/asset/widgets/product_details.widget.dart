@@ -32,6 +32,7 @@ class AssetProductDetails extends GetWidget<AssetController> {
                         text: controller.asset?.title ?? '',
                         fontSize: 24.0,
                         overflow: TextOverflow.visible,
+                        isSelectable: true,
                       ),
                     ),
                     const Icon(

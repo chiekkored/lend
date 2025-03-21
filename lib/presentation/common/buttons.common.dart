@@ -164,7 +164,7 @@ class LNDButton extends StatelessWidget {
   }
 
   factory LNDButton.widget({
-    required Widget icon,
+    required Widget child,
     required VoidCallback? onPressed,
     bool? enabled,
     Color? color,
@@ -182,7 +182,7 @@ class LNDButton extends StatelessWidget {
       isButtonText: true,
       isButtonIcon: true,
       iconSize: size,
-      child: icon,
+      child: child,
     );
   }
 
@@ -191,7 +191,7 @@ class LNDButton extends StatelessWidget {
     Color? color,
     bool isLoading = false,
     bool hasPadding = true,
-    double size = 50,
+    double size = 40,
   }) {
     return LNDButton._(
       text: '',
@@ -212,7 +212,7 @@ class LNDButton extends StatelessWidget {
     Color? color,
     bool isLoading = false,
     bool hasPadding = true,
-    double size = 50,
+    double size = 30,
   }) {
     return LNDButton._(
       text: '',
@@ -245,6 +245,7 @@ class LNDButton extends StatelessWidget {
         onPressed: isFuncEnabled,
         minSize: iconSize,
         padding: EdgeInsets.zero,
+        color: child != null ? color : null,
         child: isLoading
             ? const LNDSpinner()
             : isButtonIcon

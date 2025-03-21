@@ -8,6 +8,7 @@ class LNDText extends StatelessWidget {
   final TextAlign? textAlign;
   final bool required;
   final List<LNDText>? textParts;
+  final TextDecoration? textDecoration;
 
   const LNDText._(
     this.text,
@@ -16,6 +17,7 @@ class LNDText extends StatelessWidget {
     this.textAlign,
     this.required,
     this.textParts,
+    this.textDecoration,
   );
 
   static TextStyle get regularStyle => const TextStyle(
@@ -64,6 +66,7 @@ class LNDText extends StatelessWidget {
     TextAlign? textAlign,
     bool required = false,
     List<LNDText>? textParts,
+    TextDecoration? textDecoration,
   }) {
     return LNDText._(
       text,
@@ -77,6 +80,7 @@ class LNDText extends StatelessWidget {
       textAlign,
       required,
       textParts,
+      textDecoration,
     );
   }
 
@@ -90,6 +94,7 @@ class LNDText extends StatelessWidget {
     TextAlign? textAlign,
     bool required = false,
     List<LNDText>? textParts,
+    TextDecoration? textDecoration,
   }) {
     return LNDText._(
       text,
@@ -103,6 +108,7 @@ class LNDText extends StatelessWidget {
       textAlign,
       required,
       textParts,
+      textDecoration,
     );
   }
 
@@ -116,6 +122,7 @@ class LNDText extends StatelessWidget {
     TextAlign? textAlign,
     bool required = false,
     List<LNDText>? textParts,
+    TextDecoration? textDecoration,
   }) {
     return LNDText._(
       text,
@@ -129,6 +136,7 @@ class LNDText extends StatelessWidget {
       textAlign,
       required,
       textParts,
+      textDecoration,
     );
   }
 
@@ -142,6 +150,7 @@ class LNDText extends StatelessWidget {
     TextAlign? textAlign,
     bool required = false,
     List<LNDText>? textParts,
+    TextDecoration? textDecoration,
   }) {
     return LNDText._(
       text,
@@ -155,20 +164,22 @@ class LNDText extends StatelessWidget {
       textAlign,
       required,
       textParts,
+      textDecoration,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     List<TextSpan> spans = [
-      TextSpan(text: text, style: style),
+      TextSpan(text: text, style: style.copyWith(decoration: textDecoration)),
       if (required)
         TextSpan(
           text: '*',
           style: style.copyWith(color: LNDColors.black),
         ),
       if (textParts != null)
-        ...textParts!.map((e) => TextSpan(text: e.text, style: e.style)),
+        ...textParts!.map((e) => TextSpan(
+            text: e.text, style: e.style.copyWith(decoration: textDecoration))),
     ];
 
     return isSelectable

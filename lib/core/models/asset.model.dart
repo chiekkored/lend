@@ -3,8 +3,10 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:lend/core/models/rates.model.dart';
 
 class Asset {
+  String id;
   String? ownerId;
   String? title;
   String? description;
@@ -18,6 +20,7 @@ class Asset {
   Timestamp? createdAt;
   String? status;
   Asset({
+    required this.id,
     this.ownerId,
     this.title,
     this.description,
@@ -33,6 +36,7 @@ class Asset {
   });
 
   Asset copyWith({
+    required String id,
     String? ownerId,
     String? title,
     String? description,
@@ -47,6 +51,7 @@ class Asset {
     String? status,
   }) {
     return Asset(
+      id: id,
       ownerId: ownerId ?? this.ownerId,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -64,6 +69,7 @@ class Asset {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'ownerId': ownerId,
       'title': title,
       'description': description,
@@ -84,8 +90,9 @@ class Asset {
     };
   }
 
-  factory Asset.fromMap(Map<String, dynamic> map) {
+  factory Asset.fromMap(Map<String, dynamic> map, String id) {
     return Asset(
+      id: id,
       ownerId: map['ownerId'] != null ? map['ownerId'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
       description:
@@ -112,12 +119,12 @@ class Asset {
 
   String toJson() => json.encode(toMap());
 
-  factory Asset.fromJson(String source) =>
-      Asset.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Asset.fromJson(String source, String id) =>
+      Asset.fromMap(json.decode(source) as Map<String, dynamic>, id);
 
   @override
   String toString() {
-    return 'Asset(ownerId: $ownerId, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, showcase: $showcase, inclusions: $inclusions, createdAt: $createdAt, status: $status)';
+    return 'Asset(id: $id, ownerId: $ownerId, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, showcase: $showcase, inclusions: $inclusions, createdAt: $createdAt, status: $status)';
   }
 
   @override
@@ -125,6 +132,7 @@ class Asset {
     if (identical(this, other)) return true;
 
     return other.ownerId == ownerId &&
+        other.id == id &&
         other.title == title &&
         other.description == description &&
         other.category == category &&
@@ -140,7 +148,8 @@ class Asset {
 
   @override
   int get hashCode {
-    return ownerId.hashCode ^
+    return id.hashCode ^
+        ownerId.hashCode ^
         title.hashCode ^
         description.hashCode ^
         category.hashCode ^
@@ -153,55 +162,4 @@ class Asset {
         createdAt.hashCode ^
         status.hashCode;
   }
-}
-
-class Rates {
-  int daily;
-  String custom;
-  Rates({
-    required this.daily,
-    required this.custom,
-  });
-
-  Rates copyWith({
-    int? daily,
-    String? custom,
-  }) {
-    return Rates(
-      daily: daily ?? this.daily,
-      custom: custom ?? this.custom,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'daily': daily,
-      'custom': custom,
-    };
-  }
-
-  factory Rates.fromMap(Map<String, dynamic> map) {
-    return Rates(
-      daily: map['daily'] as int,
-      custom: map['custom'] as String,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Rates.fromJson(String source) =>
-      Rates.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() => 'Rates(daily: $daily, custom: $custom)';
-
-  @override
-  bool operator ==(covariant Rates other) {
-    if (identical(this, other)) return true;
-
-    return other.daily == daily && other.custom == custom;
-  }
-
-  @override
-  int get hashCode => daily.hashCode ^ custom.hashCode;
 }

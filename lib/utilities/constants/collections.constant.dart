@@ -1,6 +1,8 @@
-class LNDCollections {
-  static const users = "users";
-  static const assets = "assets";
-  static const bookings = "bookings";
-  static const reviews = "reviews";
+enum LNDCollections {
+  users('users'),
+  assets('assets'),
+  bookings('bookings');
+
+  final String name;
+  const LNDCollections(this.name);
 }

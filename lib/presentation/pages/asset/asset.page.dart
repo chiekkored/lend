@@ -17,7 +17,6 @@ class AssetPage extends GetView<AssetController> {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: LNDColors.outline,
-      bottomNavigationBar: AssetBottomNav(),
       body: CustomScrollView(
         slivers: [
           AssetAppBar(),
@@ -27,6 +26,7 @@ class AssetPage extends GetView<AssetController> {
           AssetUserDetails(),
         ],
       ),
+      bottomNavigationBar: AssetBottomNav(),
     );
   }
 }

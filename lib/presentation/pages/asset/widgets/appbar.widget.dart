@@ -25,9 +25,7 @@ class AssetAppBar extends GetWidget<AssetController> {
             color: LNDColors.white,
           ),
           child: Center(
-            child: LNDButton.back(
-              size: 40.0,
-            ),
+            child: LNDButton.back(),
           )),
       expandedHeight: 300.0,
       surfaceTintColor: LNDColors.white,

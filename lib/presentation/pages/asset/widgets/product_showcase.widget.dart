@@ -96,6 +96,7 @@ class AssetProductShowcase extends GetWidget<AssetController> {
                           child: LNDText.regular(
                             text: description ?? '',
                             overflow: TextOverflow.visible,
+                            isSelectable: true,
                           ),
                         ),
                       ],

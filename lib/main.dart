@@ -3,9 +3,15 @@ import 'package:get/get.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
 import 'package:lend/core/bindings/root.binding.dart';
+import 'package:lend/core/bindings/signin/signin.binding.dart';
+import 'package:lend/core/bindings/signup/signup.binding.dart';
+import 'package:lend/core/middlewares/auth.middleware.dart';
 import 'package:lend/core/services/main.service.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
+import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
+import 'package:lend/presentation/pages/signin/signin.page.dart';
+import 'package:lend/presentation/pages/signup/signup.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
 void main() async {
@@ -25,10 +31,11 @@ class Root extends StatelessWidget {
       title: 'Lend',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          scaffoldBackgroundColor: LNDColors.outline,
-          primarySwatch: Colors.green,
-          splashColor: LNDColors.primary,
-          fontFamily: 'Inter'),
+        scaffoldBackgroundColor: LNDColors.outline,
+        primarySwatch: Colors.green,
+        splashColor: LNDColors.primary,
+        fontFamily: 'Inter',
+      ),
       initialBinding: RootBinding(),
       getPages: [
         GetPage(
@@ -40,8 +47,24 @@ class Root extends StatelessWidget {
           name: AssetPage.routeName,
           page: () => const AssetPage(),
           binding: AssetBinding(),
-          maintainState: false,
           preventDuplicates: false,
+        ),
+        GetPage(
+          name: CalendarPage.routeName,
+          page: () => const CalendarPage(),
+          preventDuplicates: false,
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: SigninPage.routeName,
+          page: () => const SigninPage(),
+          binding: SigninBinding(),
+          fullscreenDialog: true,
+        ),
+        GetPage(
+          name: SignUpPage.routeName,
+          page: () => const SignUpPage(),
+          binding: SignupBinding(),
         ),
       ],
       initialRoute: NavigationPage.routeName,

@@ -4,30 +4,51 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/user.model.dart';
+import 'package:lend/presentation/common/loading.common.dart';
+import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/controllers/home/home.controller.dart';
+import 'package:lend/presentation/pages/asset/widgets/all_prices.widget.dart';
+import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/status.enum.dart';
+import 'package:lend/utilities/helpers/loggers.helper.dart';
 
 class AssetController extends GetxController {
   static final instance = Get.find<AssetController>();
 
-  Asset? asset = Get.arguments['asset'];
+  final Rx<Asset?> _asset = Rx<Asset?>(Get.arguments['asset']);
+  Asset? get asset => _asset.value;
 
   final RxBool _isUserLoading = false.obs;
-  final Rxn<User> _user = Rxn();
-
-  final _mapController = Rxn<GoogleMapController>();
-  final markers = <Circle>{}.obs;
-  final RxString _address = ''.obs;
-
   bool get isUserLoading => _isUserLoading.value;
+
+  final Rxn<User> _user = Rxn();
   User? get user => _user.value;
 
+  final _mapController = Rxn<GoogleMapController>();
   GoogleMapController? get mapController => _mapController.value;
-  CameraPosition get cameraPosition => CameraPosition(
-      target: LatLng(
-          asset?.location?.latitude ?? 0.0, asset?.location?.longitude ?? 0.0),
-      zoom: 13);
+
+  final markers = <Circle>{}.obs;
+
+  final RxString _address = ''.obs;
   String get address => _address.value;
+
+  final RxList<DateTime> _selectedDates = <DateTime>[].obs;
+  List<DateTime> get selectedDates => _selectedDates;
+
+  final RxInt _totalPrice = 0.obs;
+  int get totalPrice => _totalPrice.value;
+
+  CameraPosition get cameraPosition => CameraPosition(
+        target: LatLng(
+          asset?.location?.latitude ?? 0.0,
+          asset?.location?.longitude ?? 0.0,
+        ),
+        zoom: 13,
+      );
 
   @override
   void onInit() {
@@ -38,14 +59,32 @@ class AssetController extends GetxController {
 
   @override
   void onClose() {
+    _asset.close();
     markers.close();
 
     _mapController.close();
     _isUserLoading.close();
     _address.close();
     _user.close();
+    _selectedDates.close();
 
     super.onClose();
+  }
+
+  Future<void> getAsset() async {
+    try {
+      final assetsCollection =
+          FirebaseFirestore.instance.collection(LNDCollections.assets.name);
+
+      final result = await assetsCollection.doc(asset?.id).get();
+
+      if (result.exists) {
+        HomeController.instance
+            .updateAsset(Asset.fromMap(result.data()!, result.id));
+      }
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
+    }
   }
 
   void onMapCreated(GoogleMapController mapCtrl) {
@@ -55,7 +94,7 @@ class AssetController extends GetxController {
       Circle(
         circleId: const CircleId('current_location_circle'),
         center: cameraPosition.target,
-        radius: 500, // Radius in meters
+        radius: 500,
         fillColor: Colors.blue.withOpacity(0.5),
         strokeColor: Colors.blue,
         strokeWidth: 1,
@@ -72,26 +111,170 @@ class AssetController extends GetxController {
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks.first;
         _address.value =
-            "${place.street}, ${place.locality}, ${place.isoCountryCode}";
+            '${place.street}, ${place.locality}, ${place.isoCountryCode}';
       } else {
         _address.value = "No address found";
       }
-    } catch (e) {
-      _address.value = "Error: $e";
+    } catch (e, st) {
+      _address.value = 'No address found';
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
   }
 
   void _getUser() async {
-    _isUserLoading.value = true;
+    try {
+      _isUserLoading.value = true;
 
-    final usersCollection =
-        FirebaseFirestore.instance.collection(LNDCollections.users);
+      final usersCollection =
+          FirebaseFirestore.instance.collection(LNDCollections.users.name);
 
-    final result = await usersCollection.doc(asset?.ownerId ?? '').get();
+      final result = await usersCollection.doc(asset?.ownerId ?? '').get();
 
-    if (result.data() != null) {
-      _user.value = User.fromMap(result.data()!);
-      _isUserLoading.value = false;
+      if (result.data() != null) {
+        _user.value = User.fromMap(result.data()!);
+        _isUserLoading.value = false;
+      }
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
   }
+
+  void openAllPrices() async {
+    Get.bottomSheet(
+      const AssetAllPricesSheet(),
+      backgroundColor: LNDColors.white,
+      enableDrag: false,
+    );
+  }
+
+  void goToReservation() async {
+    await Get.toNamed(CalendarPage.routeName);
+    _selectedDates.clear();
+  }
+
+  void onCalendarChanged(List<DateTime> dates) async {
+    if (dates.first == dates.last) {
+      _selectedDates.value = [dates.last];
+      return;
+    }
+
+    if (asset?.availability?.any((av) =>
+            !av.toDate().isBefore(dates.first) &&
+            !av.toDate().isAfter(dates.last)) ??
+        false) {
+      _selectedDates.value = [dates.last];
+    } else {
+      _selectedDates.value = dates;
+    }
+    calculateTotalPrice();
+  }
+
+  void calculateTotalPrice() {
+    if (selectedDates.length < 2 || selectedDates.first == selectedDates.last) {
+      _totalPrice.value = 0;
+    }
+
+    int totalPrice = 0;
+    DateTime startDate = selectedDates.first;
+    DateTime endDate = selectedDates.last;
+    int totalDays = endDate.difference(startDate).inDays;
+
+    if (asset?.rates?.annually != null && totalDays >= 365) {
+      totalPrice += asset?.rates?.annually ?? 0;
+      int remainingDays = totalDays - 365;
+      if (remainingDays > 0) {
+        // For simplicity, we'll apply daily rate for extra days beyond a year
+        if (asset?.rates?.daily != null) {
+          totalPrice += remainingDays * (asset?.rates?.daily ?? 0);
+        }
+      }
+      _totalPrice.value = totalPrice;
+    }
+
+    DateTime currentDate = startDate;
+    while (currentDate.isBefore(endDate)) {
+      if (asset?.rates?.monthly != null) {
+        DateTime nextMonth =
+            DateTime(currentDate.year, currentDate.month + 1, currentDate.day);
+        if (!nextMonth.isAfter(endDate)) {
+          totalPrice += asset?.rates?.monthly ?? 0;
+          currentDate = nextMonth;
+          continue;
+        }
+      }
+
+      if (asset?.rates?.weekly != null) {
+        DateTime nextWeek = currentDate.add(const Duration(days: 7));
+        if (!nextWeek.isAfter(endDate)) {
+          totalPrice += asset?.rates?.weekly ?? 0;
+          currentDate = nextWeek;
+          continue;
+        }
+      }
+
+      if (asset?.rates?.daily != null) {
+        totalPrice += asset?.rates?.daily ?? 0;
+      }
+      currentDate = currentDate.add(const Duration(days: 1));
+    }
+
+    _totalPrice.value = totalPrice;
+  }
+
+  void bookAsset() async {
+    if (selectedDates.length < 2 || selectedDates.first == selectedDates.last) {
+      return;
+    }
+    try {
+      LNDLoading.show();
+
+      final List<DateTime> dates = [];
+      final start = selectedDates.first;
+      final end = selectedDates.last;
+      DateTime currentDate = start;
+
+      while (currentDate.isBefore(end)) {
+        dates.add(currentDate);
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
+
+      final batch = FirebaseFirestore.instance.batch();
+      final assetsCollection =
+          FirebaseFirestore.instance.collection(LNDCollections.assets.name);
+      final bookingsCollection = FirebaseFirestore.instance
+          .collection(LNDCollections.users.name)
+          .doc(AuthController.instance.uid)
+          .collection(LNDCollections.bookings.name);
+
+      batch.update(assetsCollection.doc(asset?.id), {
+        'availability': [...asset?.availability ?? [], ...dates]
+      });
+
+      batch.set(
+        bookingsCollection.doc(),
+        Booking(
+          assetId: asset?.id,
+          dates: dates.map((d) => Timestamp.fromDate(d)).toList(),
+          createdAt: Timestamp.now(),
+          payment: Payment(method: 'debit', transactionId: '123456'),
+          renterId: AuthController.instance.uid,
+          status: Status.confirmed.label,
+          totalPrice: totalPrice,
+        ).toMap(),
+      );
+
+      await batch.commit();
+
+      await getAsset();
+
+      LNDLoading.hide();
+      Get.until((page) => page.isFirst);
+    } catch (e, st) {
+      LNDLoading.hide();
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
+    }
+  }
+
+  bool checkAvailability(DateTime date) =>
+      !(asset?.availability?.any((av) => av.toDate() == date) ?? true);
 }
