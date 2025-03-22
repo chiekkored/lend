@@ -20,9 +20,7 @@ class HomePage extends GetView<HomeController> {
       body: NestedScrollView(
         floatHeaderSlivers: true,
         headerSliverBuilder: (_, __) {
-          return [
-            const HomeAppbarWidget(),
-          ];
+          return [const HomeAppbarWidget()];
         },
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,11 +33,12 @@ class HomePage extends GetView<HomeController> {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Row(
-                    children: Categories.values.map((category) {
-                      final isSelected =
-                          controller.selectedCategory == category;
-                      return _buildCategoryWidget(isSelected, category);
-                    }).toList(),
+                    children:
+                        Categories.values.map((category) {
+                          final isSelected =
+                              controller.selectedCategory == category;
+                          return _buildCategoryWidget(isSelected, category);
+                        }).toList(),
                   ),
                 ),
               ),
@@ -47,24 +46,27 @@ class HomePage extends GetView<HomeController> {
             Expanded(
               child: RefreshIndicator.adaptive(
                 onRefresh: () async => controller.getAssets(),
-                child: Obx(() => controller.isLoading
-                    ? const Center(
-                        child: LNDSpinner(
-                          color: LNDColors.black,
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: controller.assets.length,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(
-                            bottom: kBottomNavigationBarHeight + 24.0,
-                            top: 12.0),
-                        itemBuilder: (context, index) =>
-                            _buildPostWidget(controller.assets[index]),
-                      )),
+                child: Obx(
+                  () =>
+                      controller.isLoading
+                          ? const Center(
+                            child: LNDSpinner(color: LNDColors.black),
+                          )
+                          : ListView.builder(
+                            itemCount: controller.assets.length,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.only(
+                              bottom: kBottomNavigationBarHeight + 24.0,
+                              top: 12.0,
+                            ),
+                            itemBuilder:
+                                (context, index) =>
+                                    _buildPostWidget(controller.assets[index]),
+                          ),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -100,8 +102,9 @@ class HomePage extends GetView<HomeController> {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12.0),
-                          topRight: Radius.circular(12.0)),
+                        topLeft: Radius.circular(12.0),
+                        topRight: Radius.circular(12.0),
+                      ),
                       child: LNDImage.custom(
                         height: double.infinity,
                         width: double.infinity,
@@ -116,7 +119,7 @@ class HomePage extends GetView<HomeController> {
                         height: 35.0,
                         width: 35.0,
                         decoration: BoxDecoration(
-                          color: LNDColors.black.withOpacity(.8),
+                          color: LNDColors.black.withValues(alpha: .8),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: const Center(
@@ -166,7 +169,8 @@ class HomePage extends GetView<HomeController> {
                       color: LNDColors.hint,
                     ),
                     LNDText.bold(
-                        text: 'P${asset.rates?.daily.toMoney()} / day'),
+                      text: 'P${asset.rates?.daily.toMoney()} / day',
+                    ),
                   ],
                 ),
               ),
@@ -196,14 +200,8 @@ class HomePage extends GetView<HomeController> {
             ),
             const SizedBox(width: 8.0),
             isSelected
-                ? LNDText.semibold(
-                    text: category.label,
-                    color: LNDColors.white,
-                  )
-                : LNDText.regular(
-                    text: category.label,
-                    color: LNDColors.black,
-                  ),
+                ? LNDText.semibold(text: category.label, color: LNDColors.white)
+                : LNDText.regular(text: category.label, color: LNDColors.black),
           ],
         ),
       ),

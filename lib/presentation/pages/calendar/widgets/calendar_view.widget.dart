@@ -21,45 +21,46 @@ class CalendarView extends GetWidget<AssetController> {
             calendarType: CalendarDatePicker2Type.range,
             calendarViewMode: CalendarDatePicker2Mode.scroll,
             dayModeScrollDirection: Axis.vertical,
-            firstDate: DateTime.now().add(
-              const Duration(days: 1),
-            ),
-            todayTextStyle: LNDText.boldStyle.copyWith(
-              color: LNDColors.black,
-            ),
+            firstDate: DateTime.now().add(const Duration(days: 1)),
+            todayTextStyle: LNDText.boldStyle.copyWith(color: LNDColors.black),
             selectedDayHighlightColor: LNDColors.primary,
-            selectedRangeHighlightColor: LNDColors.primary.withOpacity(0.3),
-            daySplashColor: LNDColors.primary.withOpacity(0.5),
+            selectedRangeHighlightColor: LNDColors.primary.withValues(
+              alpha: 0.3,
+            ),
+            daySplashColor: LNDColors.primary.withValues(alpha: 0.5),
             selectableDayPredicate: controller.checkAvailability,
-            dayBuilder: (
-                {required date,
-                decoration,
-                isDisabled,
-                isSelected,
-                isToday,
-                textStyle}) {
+            dayBuilder: ({
+              required date,
+              decoration,
+              isDisabled,
+              isSelected,
+              isToday,
+              textStyle,
+            }) {
               Color color = LNDColors.black;
               if (isDisabled ?? false) color = LNDColors.gray;
               if (isSelected ?? false) color = LNDColors.white;
               final isBooked = !controller.checkAvailability(date);
 
               return Container(
-                  decoration: decoration,
-                  child: Center(
-                    child: (isToday ?? false)
-                        ? LNDText.bold(
+                decoration: decoration,
+                child: Center(
+                  child:
+                      (isToday ?? false)
+                          ? LNDText.bold(
                             text: date.day.toString(),
                             fontSize: 16.0,
                             color: Colors.red,
                           )
-                        : LNDText.regular(
+                          : LNDText.regular(
                             text: date.day.toString(),
                             fontSize: 12.0,
                             color: color,
                             textDecoration:
                                 isBooked ? TextDecoration.lineThrough : null,
                           ),
-                  ));
+                ),
+              );
             },
           ),
         ),

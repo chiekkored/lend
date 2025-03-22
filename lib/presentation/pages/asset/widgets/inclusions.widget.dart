@@ -6,9 +6,7 @@ import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 
 class AssetInclusions extends GetWidget<AssetController> {
-  const AssetInclusions({
-    super.key,
-  });
+  const AssetInclusions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +16,9 @@ class AssetInclusions extends GetWidget<AssetController> {
         child: Container(
           margin: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-              color: LNDColors.primary.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(16.0)),
+            color: LNDColors.primary.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -28,10 +27,7 @@ class AssetInclusions extends GetWidget<AssetController> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LNDText.semibold(
-                      text: 'What\'s Included',
-                      fontSize: 18.0,
-                    ),
+                    LNDText.semibold(text: 'What\'s Included', fontSize: 18.0),
                   ],
                 ),
                 ...controller.asset?.inclusions?.map(
@@ -41,14 +37,11 @@ class AssetInclusions extends GetWidget<AssetController> {
                             Icons.check_circle_rounded,
                             color: Colors.green,
                           ),
-                          LNDText.regular(
-                            text: inclusion,
-                            isSelectable: true,
-                          ),
+                          LNDText.regular(text: inclusion, isSelectable: true),
                         ],
                       ).withSpacing(8.0),
                     ) ??
-                    []
+                    [],
               ],
             ).withSpacing(8.0),
           ),

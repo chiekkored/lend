@@ -230,15 +230,17 @@ class LNDButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget childContent = isLoading
-        ? const LNDSpinner()
-        : LNDText.bold(text: text, color: textColor);
+    Widget childContent =
+        isLoading
+            ? const LNDSpinner()
+            : LNDText.bold(text: text, color: textColor);
 
-    final isFuncEnabled = enabled
-        ? isLoading
-            ? null
-            : onPressed
-        : null;
+    final isFuncEnabled =
+        enabled
+            ? isLoading
+                ? null
+                : onPressed
+            : null;
 
     if (isButtonText) {
       return CupertinoButton(
@@ -246,9 +248,10 @@ class LNDButton extends StatelessWidget {
         minSize: iconSize,
         padding: EdgeInsets.zero,
         color: child != null ? color : null,
-        child: isLoading
-            ? const LNDSpinner()
-            : isButtonIcon
+        child:
+            isLoading
+                ? const LNDSpinner()
+                : isButtonIcon
                 ? child ??
                     Icon(
                       icon,
@@ -256,29 +259,32 @@ class LNDButton extends StatelessWidget {
                       color: enabled ? color : LNDColors.black,
                     )
                 : LNDText.medium(
-                    text: text,
-                    color: enabled ? color : LNDColors.disabled,
-                    fontSize: iconSize,
-                  ),
+                  text: text,
+                  color: enabled ? color : LNDColors.disabled,
+                  fontSize: iconSize,
+                ),
       );
     } else {
       return OutlinedButton(
         onPressed: isFuncEnabled,
-        style: style ??
+        style:
+            style ??
             OutlinedButton.styleFrom(
               side: BorderSide.none,
-              backgroundColor: enabled ? color : color.withOpacity(0.5),
-              shape: shape ??
+              backgroundColor: enabled ? color : color.withValues(alpha: 0.5),
+              shape:
+                  shape ??
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32.0),
                   ),
             ),
-        child: hasPadding
-            ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18.0),
-                child: Center(child: childContent),
-              )
-            : Center(child: childContent),
+        child:
+            hasPadding
+                ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 18.0),
+                  child: Center(child: childContent),
+                )
+                : Center(child: childContent),
       );
     }
   }
