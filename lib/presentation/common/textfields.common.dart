@@ -4,7 +4,7 @@ import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
 class LNDTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool obscureText;
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
@@ -16,6 +16,7 @@ class LNDTextField extends StatelessWidget {
   final bool readOnly;
   final TextCapitalization textCapitalization;
   final int maxLines;
+  final String? Function(String?)? validator;
 
   const LNDTextField._(
     this.controller,
@@ -30,6 +31,7 @@ class LNDTextField extends StatelessWidget {
     this.readOnly,
     this.textCapitalization,
     this.maxLines,
+    this.validator,
   );
 
   static InputDecoration inputDecoration({
@@ -39,20 +41,14 @@ class LNDTextField extends StatelessWidget {
     return InputDecoration(
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadius),
-        borderSide: const BorderSide(
-          color: LNDColors.outline,
-        ),
+        borderSide: const BorderSide(color: LNDColors.outline),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadius),
-        borderSide: const BorderSide(
-          color: LNDColors.primary,
-        ),
+        borderSide: const BorderSide(color: LNDColors.primary),
       ),
       hintText: hintText,
-      hintStyle: LNDText.mediumStyle.copyWith(
-        color: LNDColors.outline,
-      ),
+      hintStyle: LNDText.mediumStyle.copyWith(color: LNDColors.outline),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadius),
       ),
@@ -72,6 +68,7 @@ class LNDTextField extends StatelessWidget {
     bool readOnly = false,
     TextCapitalization textCapitalization = TextCapitalization.sentences,
     int maxLines = 1,
+    String? Function(String?)? validator,
   }) {
     return LNDTextField._(
       controller,
@@ -82,20 +79,14 @@ class LNDTextField extends StatelessWidget {
       InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
-          borderSide: const BorderSide(
-            color: LNDColors.black,
-          ),
+          borderSide: const BorderSide(color: LNDColors.black),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
-          borderSide: const BorderSide(
-            color: LNDColors.primary,
-          ),
+          borderSide: const BorderSide(color: LNDColors.primary),
         ),
         hintText: hintText,
-        hintStyle: LNDText.mediumStyle.copyWith(
-          color: LNDColors.outline,
-        ),
+        hintStyle: LNDText.mediumStyle.copyWith(color: LNDColors.outline),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
         ),
@@ -106,12 +97,14 @@ class LNDTextField extends StatelessWidget {
       readOnly,
       textCapitalization,
       maxLines,
+      validator,
     );
   }
 
   factory LNDTextField.regular({
-    required TextEditingController controller,
+    required TextEditingController? controller,
     String? hintText,
+    String? errorText,
     bool obscureText = false,
     TextInputType keyboardType = TextInputType.text,
     TextInputAction textInputAction = TextInputAction.next,
@@ -130,6 +123,7 @@ class LNDTextField extends StatelessWidget {
     VoidCallback? onTap,
     bool readOnly = false,
     TextCapitalization textCapitalization = TextCapitalization.sentences,
+    String? Function(String?)? validator,
   }) {
     return LNDTextField._(
       controller,
@@ -139,6 +133,11 @@ class LNDTextField extends StatelessWidget {
       onChanged,
       InputDecoration(
         labelText: hintText,
+        errorText: errorText,
+        errorStyle: LNDText.mediumStyle.copyWith(
+          color: LNDColors.danger,
+          overflow: TextOverflow.visible,
+        ),
         fillColor: LNDColors.outline,
         filled: true,
         floatingLabelStyle: LNDText.mediumStyle,
@@ -146,45 +145,41 @@ class LNDTextField extends StatelessWidget {
         floatingLabelAlignment: FloatingLabelAlignment.start,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
-          borderSide: const BorderSide(
-            color: LNDColors.outline,
-          ),
+          borderSide: const BorderSide(color: LNDColors.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
-          borderSide: const BorderSide(
-            color: LNDColors.primary,
-          ),
+          borderSide: const BorderSide(color: LNDColors.primary),
         ),
-        prefixIcon: prefixIcon != null
-            ? Padding(
-                padding: const EdgeInsets.only(left: 26.0, right: 12.0),
-                child: Icon(
-                  prefixIcon,
-                  color: prefixIconColor ?? LNDColors.black,
-                  size: prefixIconSize,
-                ),
-              )
-            : null,
-        suffixIcon: suffixWidget ??
+        prefixIcon:
+            prefixIcon != null
+                ? Padding(
+                  padding: const EdgeInsets.only(left: 26.0, right: 12.0),
+                  child: Icon(
+                    prefixIcon,
+                    color: prefixIconColor ?? LNDColors.black,
+                    size: prefixIconSize,
+                  ),
+                )
+                : null,
+        suffixIcon:
+            suffixWidget ??
             (suffixIcon != null
                 ? GestureDetector(
-                    onTap: () {
-                      onTapSuffix?.call();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 26.0, left: 12.0),
-                      child: Icon(
-                        suffixIcon,
-                        color: suffixIconColor ?? LNDColors.black,
-                        size: suffixIconSize,
-                      ),
+                  onTap: () {
+                    onTapSuffix?.call();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 26.0, left: 12.0),
+                    child: Icon(
+                      suffixIcon,
+                      color: suffixIconColor ?? LNDColors.black,
+                      size: suffixIconSize,
                     ),
-                  )
+                  ),
+                )
                 : null),
-        hintStyle: LNDText.mediumStyle.copyWith(
-          color: LNDColors.outline,
-        ),
+        hintStyle: LNDText.mediumStyle.copyWith(color: LNDColors.outline),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
         ),
@@ -195,12 +190,16 @@ class LNDTextField extends StatelessWidget {
       readOnly,
       textCapitalization,
       1,
+      validator,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: LNDText.regularStyle.copyWith(
+        color: readOnly && onTap == null ? LNDColors.gray : LNDColors.black,
+      ),
       maxLines: maxLines,
       controller: controller,
       obscureText: obscureText,
@@ -212,6 +211,7 @@ class LNDTextField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       onTap: onTap,
       readOnly: readOnly,
+      validator: validator,
       inputFormatters: [
         if (keyboardType == TextInputType.number)
           FilteringTextInputFormatter.digitsOnly,

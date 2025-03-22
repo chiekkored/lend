@@ -74,7 +74,7 @@ class ProfilePage extends GetView<ProfileController> {
                   icon: Icons.logout_rounded,
                   color: LNDColors.danger,
                   showTrailing: false,
-                  onTap: () {},
+                  onTap: controller.signOut,
                 ),
               ),
             ],

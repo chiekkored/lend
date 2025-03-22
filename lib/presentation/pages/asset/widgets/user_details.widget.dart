@@ -11,9 +11,7 @@ import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AssetUserDetails extends GetWidget<AssetController> {
-  const AssetUserDetails({
-    super.key,
-  });
+  const AssetUserDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,45 +26,45 @@ class AssetUserDetails extends GetWidget<AssetController> {
             SizedBox(
               height: 40.0,
               child: Obx(
-                () => controller.isUserLoading
-                    ? Shimmer.fromColors(
-                        baseColor: LNDColors.outline,
-                        highlightColor: LNDColors.white,
-                        child: Row(
-                          children: [
-                            const CircleAvatar(
-                              backgroundColor: LNDColors.white,
-                            ),
-                            Container(
-                              height: 20.0,
-                              width: 200.0,
-                              decoration: BoxDecoration(
+                () =>
+                    controller.isUserLoading
+                        ? Shimmer.fromColors(
+                          baseColor: LNDColors.outline,
+                          highlightColor: LNDColors.white,
+                          child: Row(
+                            children: [
+                              const CircleAvatar(
+                                backgroundColor: LNDColors.white,
+                              ),
+                              Container(
+                                height: 20.0,
+                                width: 200.0,
+                                decoration: BoxDecoration(
                                   color: LNDColors.white,
-                                  borderRadius: BorderRadius.circular(16.0)),
-                            )
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                              ),
+                            ],
+                          ).withSpacing(8.0),
+                        )
+                        : Row(
+                          children: [
+                            LNDImage.circle(
+                              imageUrl: controller.user?.photoUrl,
+                              size: 40.0,
+                            ),
+                            const SizedBox(width: 8.0),
+                            LNDText.bold(
+                              text: controller.user?.firstName ?? '',
+                            ),
+                            const SizedBox(width: 2.0),
+                            const Icon(
+                              Icons.verified_rounded,
+                              size: 15.0,
+                              color: LNDColors.primary,
+                            ),
                           ],
-                        ).withSpacing(8.0),
-                      )
-                    : Row(
-                        children: [
-                          LNDImage.circle(
-                            imageUrl: controller.user?.photoUrl,
-                            size: 40.0,
-                          ),
-                          const SizedBox(
-                            width: 8.0,
-                          ),
-                          LNDText.bold(text: controller.user?.name ?? ''),
-                          const SizedBox(
-                            width: 2.0,
-                          ),
-                          const Icon(
-                            Icons.verified_rounded,
-                            size: 15.0,
-                            color: LNDColors.primary,
-                          )
-                        ],
-                      ),
+                        ),
               ),
             ),
             Column(
@@ -82,19 +80,15 @@ class AssetUserDetails extends GetWidget<AssetController> {
                           color: LNDColors.hint,
                           size: 20.0,
                         ),
-                        const SizedBox(
-                          width: 8.0,
-                        ),
-                        Obx(
-                          () => LNDText.regular(text: controller.address),
-                        ),
+                        const SizedBox(width: 8.0),
+                        Obx(() => LNDText.regular(text: controller.address)),
                       ],
                     ),
                     LNDButton.icon(
                       icon: FontAwesomeIcons.angleRight,
                       onPressed: () {},
                       size: 20.0,
-                    )
+                    ),
                   ],
                 ),
                 SizedBox(
@@ -114,7 +108,7 @@ class AssetUserDetails extends GetWidget<AssetController> {
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ).withSpacing(16.0),
           ],

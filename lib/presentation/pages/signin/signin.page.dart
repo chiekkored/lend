@@ -89,7 +89,7 @@ class SigninPage extends GetView<SigninController> {
                   children: [
                     LNDButton.widget(
                       color: const Color(0xFF4285F4),
-                      onPressed: () {},
+                      onPressed: controller.signInWithGoogle,
                       child: const FaIcon(
                         FontAwesomeIcons.google,
                         color: LNDColors.white,
@@ -99,7 +99,7 @@ class SigninPage extends GetView<SigninController> {
                       visible: Platform.isIOS,
                       child: LNDButton.widget(
                         color: Colors.black,
-                        onPressed: () {},
+                        onPressed: controller.signInWithApple,
                         child: const FaIcon(
                           FontAwesomeIcons.apple,
                           color: LNDColors.white,

@@ -1,17 +1,19 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:lend/core/models/user.model.dart';
 import 'package:lend/core/services/get_storage.service.dart';
 import 'package:lend/presentation/common/loading.common.dart';
+import 'package:lend/presentation/common/snackbar.common.dart';
+import 'package:lend/utilities/constants/collections.constant.dart';
 
 class AuthController extends GetxController {
   static final instance = Get.find<AuthController>();
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   // final LocalAuthentication auth = LocalAuthentication();
-
-  Timer? _tokenCheckTimer;
 
   // Observable User
   final Rxn<User> _firebaseUser = Rxn<User>();
@@ -109,18 +111,47 @@ class AuthController extends GetxController {
 
   // Sign Out
   Future<void> signOut() async {
+    if (_firebaseAuth.currentUser == null) return;
+
     LNDLoading.show();
 
     await LNDStorageService.clear();
     _token.value = '';
-    _tokenCheckTimer?.cancel();
+
     await _firebaseAuth.signOut();
 
     LNDLoading.hide();
+    Get.until((page) => page.isFirst);
   }
 
   void resendEmailVerification() async {
     await firebaseUser?.sendEmailVerification();
+  }
+
+  Future<void> registerToFirestore(UserCredential userCredential) async {
+    final user = userCredential.user;
+    final userCollection = FirebaseFirestore.instance.collection(
+      LNDCollections.users.name,
+    );
+
+    if (user != null) {
+      // await userCollection
+      //     .doc(user.uid)
+      //     .set(
+      //       UserModel(
+      //         uid: user.uid,
+      //         email: user.email,
+      //         name: user.displayName,
+      //         photoUrl: user.photoURL,
+      //         createdAt: Timestamp.now(),
+      //       ).toMap(),
+      //     );
+    } else {
+      LNDSnackbar.showError(
+        'Something went wrong. Please try another provider',
+      );
+      AuthController.instance.signOut();
+    }
   }
 
   // Future<bool> _biometricsCheck() async {

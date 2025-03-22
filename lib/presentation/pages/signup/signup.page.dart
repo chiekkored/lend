@@ -21,77 +21,91 @@ class SignUpPage extends GetView<SignUpController> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           leading: LNDButton.back(),
+          backgroundColor: LNDColors.white,
+          surfaceTintColor: LNDColors.white,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LNDText.bold(
-                text: 'Create an account',
-                fontSize: 32.0,
-              ),
+              LNDText.bold(text: 'Create an account', fontSize: 32.0),
               Expanded(
                 flex: 3,
                 child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      LNDTextField.regular(
-                        hintText: 'Email',
-                        controller: controller.emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        prefixIcon: FontAwesomeIcons.solidEnvelope,
-                        prefixIconColor: LNDColors.gray,
-                        prefixIconSize: 16.0,
-                      ),
-                      Obx(
-                        () => LNDTextField.regular(
-                          hintText: 'Password',
-                          controller: controller.passwordController,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: !controller.showObscureText,
-                          prefixIcon: FontAwesomeIcons.lock,
-                          prefixIconColor: LNDColors.gray,
-                          prefixIconSize: 16.0,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.none,
-                          suffixIcon: controller.showObscureText
-                              ? FontAwesomeIcons.solidEye
-                              : FontAwesomeIcons.solidEyeSlash,
-                          suffixIconSize: 16.0,
-                          onTapSuffix: controller.togglePasswordVisibility,
-                        ),
-                      ),
-                      Obx(
-                        () => LNDTextField.regular(
-                          hintText: 'Confirm Password',
-                          controller: controller.passwordConfirmController,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: !controller.showObscureConfirmText,
-                          prefixIcon: FontAwesomeIcons.lock,
-                          prefixIconColor: LNDColors.gray,
-                          prefixIconSize: 16.0,
-                          textInputAction: TextInputAction.done,
-                          textCapitalization: TextCapitalization.none,
-                          suffixIcon: controller.showObscureConfirmText
-                              ? FontAwesomeIcons.solidEye
-                              : FontAwesomeIcons.solidEyeSlash,
-                          suffixIconSize: 16.0,
-                          onTapSuffix:
-                              controller.toggleConfirmPasswordVisibility,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: LNDButton.primary(
-                          text: 'Sign up',
-                          enabled: true,
-                          onPressed: controller.signUp,
-                        ),
-                      ),
-                    ],
-                  ).withSpacing(16.0),
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: controller.signUpKey,
+                      autovalidateMode: AutovalidateMode.onUnfocus,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          LNDTextField.regular(
+                            hintText: 'Email',
+                            controller: controller.emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            prefixIcon: FontAwesomeIcons.solidEnvelope,
+                            prefixIconColor: LNDColors.gray,
+                            prefixIconSize: 16.0,
+                            validator: controller.validateEmail,
+                          ),
+                          // Obx(
+                          //   () => LNDTextField.regular(
+                          //     hintText: 'Password',
+                          //     controller: controller.passwordController,
+                          //     keyboardType: TextInputType.visiblePassword,
+                          //     obscureText: !controller.showObscureText,
+                          //     prefixIcon: FontAwesomeIcons.lock,
+                          //     prefixIconColor: LNDColors.gray,
+                          //     prefixIconSize: 16.0,
+                          //     textInputAction: TextInputAction.next,
+                          //     textCapitalization: TextCapitalization.none,
+                          //     suffixIcon:
+                          //         controller.showObscureText
+                          //             ? FontAwesomeIcons.solidEye
+                          //             : FontAwesomeIcons.solidEyeSlash,
+                          //     suffixIconSize: 16.0,
+                          //     onTapSuffix: controller.togglePasswordVisibility,
+                          //     validator: controller.validatePassword,
+                          //   ),
+                          // ),
+                          // Obx(
+                          //   () => LNDTextField.regular(
+                          //     hintText: 'Confirm Password',
+                          //     controller: controller.confirmPasswordController,
+                          //     keyboardType: TextInputType.visiblePassword,
+                          //     obscureText: !controller.showObscureConfirmText,
+                          //     prefixIcon: FontAwesomeIcons.lock,
+                          //     prefixIconColor: LNDColors.gray,
+                          //     prefixIconSize: 16.0,
+                          //     textInputAction: TextInputAction.done,
+                          //     textCapitalization: TextCapitalization.none,
+                          //     suffixIcon:
+                          //         controller.showObscureConfirmText
+                          //             ? FontAwesomeIcons.solidEye
+                          //             : FontAwesomeIcons.solidEyeSlash,
+                          //     suffixIconSize: 16.0,
+                          //     onTapSuffix:
+                          //         controller.toggleConfirmPasswordVisibility,
+                          //     validator:
+                          //         (value) => controller.validateConfirmPassword(
+                          //           controller.passwordController.text,
+                          //           value,
+                          //         ),
+                          //   ),
+                          // ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: LNDButton.primary(
+                              text: 'Continue',
+                              enabled: true,
+                              onPressed: controller.goToSetup,
+                            ),
+                          ),
+                        ],
+                      ).withSpacing(16.0),
+                    ),
+                  ),
                 ),
               ),
               SafeArea(
@@ -107,15 +121,15 @@ class SignUpPage extends GetView<SignUpController> {
                           LNDText.bold(
                             text: ' Sign in',
                             color: LNDColors.primary,
-                          )
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-              )
+              ),
             ],
-          ).withSpacing(16.0),
+          ),
         ),
       ),
     );

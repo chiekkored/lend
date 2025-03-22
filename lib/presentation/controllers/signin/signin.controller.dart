@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lend/core/bindings/navigation/navigation.binding.dart';
+import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'package:lend/presentation/common/loading.common.dart';
@@ -52,6 +55,7 @@ class SigninController extends GetxController {
       );
 
       if (userCreds.user != null) {
+        _successSignin();
         // final storedEmail = await storage.read(key: 'email');
 
         // // If a another user logged in, remove the saved key value
@@ -87,9 +91,11 @@ class SigninController extends GetxController {
   Future<void> signInWithGoogle() async {
     // Trigger the authentication flow
     try {
+      LNDLoading.show();
       final googleUser = await GoogleSignIn().signIn();
 
       if (googleUser == null) {
+        LNDLoading.hide();
         return;
       }
 
@@ -104,8 +110,13 @@ class SigninController extends GetxController {
       );
 
       // Once signed in, return the UserCredential
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+
+      _checkUserCredential(userCredential);
     } on PlatformException catch (e, st) {
+      LNDLoading.hide();
       if (e.details != '') {
         LNDSnackbar.showError(e.message ?? '');
       }
@@ -126,6 +137,8 @@ class SigninController extends GetxController {
       // Request credential for the currently signed in Apple account.
       AuthorizationCredentialAppleID? appleCredential;
       try {
+        LNDLoading.show();
+
         appleCredential = await SignInWithApple.getAppleIDCredential(
           webAuthenticationOptions: WebAuthenticationOptions(
             // clientId: dotenv.get('APPLE_CLIENT_ID'),
@@ -141,6 +154,7 @@ class SigninController extends GetxController {
           nonce: nonce,
         );
       } on SignInWithAppleAuthorizationException catch (e, st) {
+        LNDLoading.hide();
         LNDLogger.e(e.message, error: e, stackTrace: st);
         LNDSnackbar.showError(e.message);
         return;
@@ -153,7 +167,11 @@ class SigninController extends GetxController {
 
       // Sign in the user with Firebase. If the nonce we generated earlier does
       // not match the nonce in `appleCredential.identityToken`, sign in will fail.
-      await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        oauthCredential,
+      );
+
+      _checkUserCredential(userCredential);
     } on PlatformException catch (e, st) {
       LNDLogger.e(e.message ?? '', error: e, stackTrace: st);
       LNDSnackbar.showError(e.message ?? '');
@@ -180,7 +198,31 @@ class SigninController extends GetxController {
     return digest.toString();
   }
 
+  /// Navigate to the sign up page.
   void goToSignUp() {
     Get.toNamed(SignUpPage.routeName);
+  }
+
+  /// Check if the user is new or existing and navigate to the appropriate page.
+  void _checkUserCredential(UserCredential userCredential) async {
+    if (userCredential.user == null) {
+      LNDSnackbar.showError(
+        'Something went wrong. Please try another provider',
+      );
+      AuthController.instance.signOut();
+      return;
+    }
+
+    if ((userCredential.additionalUserInfo?.isNewUser ?? false)) {
+      await AuthController.instance.registerToFirestore(userCredential);
+    }
+    _successSignin();
+  }
+
+  /// Navigate to the home page after successful sign in.
+  void _successSignin() {
+    // AppController.instance.setBiometricsButtonVisibility(true);
+    LNDLoading.hide();
+    Get.offAll(() => const NavigationPage(), binding: NavigationBinding());
   }
 }

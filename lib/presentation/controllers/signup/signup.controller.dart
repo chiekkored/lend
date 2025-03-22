@@ -1,12 +1,39 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:lend/core/bindings/navigation/navigation.binding.dart';
+import 'package:lend/core/mixins/textfields.mixin.dart';
+import 'package:lend/core/models/user.model.dart';
+import 'package:lend/presentation/common/buttons.common.dart';
+import 'package:lend/presentation/common/loading.common.dart';
+import 'package:lend/presentation/common/show.common.dart';
+import 'package:lend/presentation/common/snackbar.common.dart';
+import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/pages/navigation/navigation.page.dart';
+import 'package:lend/presentation/pages/signup/components/setup.page.dart';
+import 'package:lend/presentation/pages/signup/widgets/dob.widget.dart';
+import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/constants/colors.constant.dart';
 
-class SignUpController extends GetxController {
+class SignUpController extends GetxController with TextFieldsMixin {
   static final instance = Get.find<SignUpController>();
 
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordConfirmController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final signUpKey = GlobalKey<FormState>();
+
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController dobController = TextEditingController();
+  final setupKey = GlobalKey<FormState>();
+
+  var email = ''.obs;
 
   final RxBool _showObscureText = false.obs;
   bool get showObscureText => _showObscureText.value;
@@ -17,7 +44,7 @@ class SignUpController extends GetxController {
   @override
   void onClose() {
     emailController.dispose();
-    passwordConfirmController.dispose();
+    confirmPasswordController.dispose();
     passwordController.dispose();
 
     _showObscureText.close();
@@ -26,26 +53,90 @@ class SignUpController extends GetxController {
     super.onClose();
   }
 
+  bool _validateSignUpForm() => setupKey.currentState?.validate() ?? false;
   void togglePasswordVisibility() => _showObscureText.toggle();
   void toggleConfirmPasswordVisibility() => _showObscureConfirmText.toggle();
 
+  void goToSetup() async {
+    if (!(signUpKey.currentState?.validate() ?? false)) {
+      return;
+    }
+    await Get.toNamed(SetupPage.routeName);
+    _resetFields();
+  }
+
+  void _resetFields() {
+    passwordController.clear();
+    confirmPasswordController.clear();
+    firstNameController.clear();
+    lastNameController.clear();
+    dobController.clear();
+  }
+
   void signUp() async {
+    if (!_validateSignUpForm()) return;
+
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please fill in all fields',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
       return;
     }
 
-    // Call the API to sign in
+    try {
+      LNDLoading.show();
+
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      if (userCredential.user != null) {
+        // Add User to Firestore Collection: "users"
+        await AuthController.instance.registerToFirestore(userCredential);
+
+        if (!userCredential.user!.emailVerified) {
+          await userCredential.user!.sendEmailVerification();
+          LNDSnackbar.showInfo('Sent a verification link to email provided');
+        }
+
+        LNDLoading.hide();
+        Get.offAll(() => const NavigationPage(), binding: NavigationBinding());
+      } else {
+        LNDLoading.hide();
+        LNDSnackbar.showError(
+          'Something went wrong. Please try another provider',
+        );
+        AuthController.instance.signOut();
+        return;
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        LNDSnackbar.showError('The password provided is too weak');
+        debugPrint('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        LNDSnackbar.showError('The account already exists for that email');
+        debugPrint('The account already exists for that email.');
+      } else {
+        LNDSnackbar.showError('Please try again later');
+      }
+    }
   }
 
   void goToSignIn() => Get.back();
+
+  void onTapDob() {
+    if (Platform.isIOS) {
+      LNDShow.bottomSheet(const DateOfBirth());
+    } else {
+      showDatePicker(
+        context: Get.context!,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      ).then((pickedDate) {
+        if (pickedDate != null) {
+          dobController.text = DateFormat('MMMM dd, yyyy').format(pickedDate);
+        }
+      });
+    }
+  }
 }

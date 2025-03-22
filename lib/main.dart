@@ -11,6 +11,7 @@ import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
+import 'package:lend/presentation/pages/signup/components/setup.page.dart';
 import 'package:lend/presentation/pages/signup/signup.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
@@ -66,6 +67,7 @@ class Root extends StatelessWidget {
           page: () => const SignUpPage(),
           binding: SignupBinding(),
         ),
+        GetPage(name: SetupPage.routeName, page: () => const SetupPage()),
       ],
       initialRoute: NavigationPage.routeName,
     );

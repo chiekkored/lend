@@ -3,9 +3,10 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class UserModel {
   String? uid;
-  String? name;
+  String? firstName;
+  String? lastName;
   String? address;
   String? photoUrl;
   Timestamp? createdAt;
@@ -13,9 +14,10 @@ class User {
   String? phone;
   String? type;
   bool? verified;
-  User({
+  UserModel({
     this.uid,
-    this.name,
+    this.firstName,
+    this.lastName,
     this.address,
     this.photoUrl,
     this.createdAt,
@@ -25,9 +27,10 @@ class User {
     this.verified,
   });
 
-  User copyWith({
+  UserModel copyWith({
     String? uid,
-    String? name,
+    String? firstName,
+    String? lastName,
     String? address,
     String? photoUrl,
     Timestamp? createdAt,
@@ -36,9 +39,10 @@ class User {
     String? type,
     bool? verified,
   }) {
-    return User(
+    return UserModel(
       uid: uid ?? this.uid,
-      name: name ?? this.name,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
       address: address ?? this.address,
       photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
@@ -52,12 +56,14 @@ class User {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'uid': uid,
-      'name': name,
+      'firstName': firstName,
+      'lastName': lastName,
       'address': address,
       'photoUrl': photoUrl,
-      'createdAt': createdAt != null
-          ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
-          : null,
+      'createdAt':
+          createdAt != null
+              ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
+              : null,
       'email': email,
       'phone': phone,
       'type': type,
@@ -65,10 +71,11 @@ class User {
     };
   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
       uid: map['uid'] != null ? map['uid'] as String : null,
-      name: map['name'] != null ? map['name'] as String : null,
+      firstName: map['firstName'] != null ? map['firstName'] as String : null,
+      lastName: map['lastName'] != null ? map['lastName'] as String : null,
       address: map['address'] != null ? map['address'] as String : null,
       photoUrl: map['photoUrl'] != null ? map['photoUrl'] as String : null,
       createdAt:
@@ -82,20 +89,21 @@ class User {
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) =>
-      User.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'User(uid: $uid, name: $name, address: $address, photoUrl: $photoUrl, createdAt: $createdAt, email: $email, phone: $phone, type: $type, verified: $verified)';
+    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, address: $address, photoUrl: $photoUrl, createdAt: $createdAt, email: $email, phone: $phone, type: $type, verified: $verified)';
   }
 
   @override
-  bool operator ==(covariant User other) {
+  bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
 
     return other.uid == uid &&
-        other.name == name &&
+        other.firstName == firstName &&
+        other.lastName == lastName &&
         other.address == address &&
         other.photoUrl == photoUrl &&
         other.createdAt == createdAt &&
@@ -108,7 +116,8 @@ class User {
   @override
   int get hashCode {
     return uid.hashCode ^
-        name.hashCode ^
+        firstName.hashCode ^
+        lastName.hashCode ^
         address.hashCode ^
         photoUrl.hashCode ^
         createdAt.hashCode ^

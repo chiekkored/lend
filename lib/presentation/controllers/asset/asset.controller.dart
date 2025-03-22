@@ -26,8 +26,8 @@ class AssetController extends GetxController with AuthMixin {
   final RxBool _isUserLoading = false.obs;
   bool get isUserLoading => _isUserLoading.value;
 
-  final Rxn<User> _user = Rxn();
-  User? get user => _user.value;
+  final Rxn<UserModel> _user = Rxn();
+  UserModel? get user => _user.value;
 
   final _mapController = Rxn<GoogleMapController>();
   GoogleMapController? get mapController => _mapController.value;
@@ -137,7 +137,7 @@ class AssetController extends GetxController with AuthMixin {
       final result = await usersCollection.doc(asset?.ownerId ?? '').get();
 
       if (result.data() != null) {
-        _user.value = User.fromMap(result.data()!);
+        _user.value = UserModel.fromMap(result.data()!);
         _isUserLoading.value = false;
       }
     } catch (e, st) {

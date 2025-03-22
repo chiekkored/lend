@@ -9,6 +9,7 @@ class LNDText extends StatelessWidget {
   final bool required;
   final List<LNDText>? textParts;
   final TextDecoration? textDecoration;
+  final VoidCallback? onTap;
 
   const LNDText._(
     this.text,
@@ -18,43 +19,44 @@ class LNDText extends StatelessWidget {
     this.required,
     this.textParts,
     this.textDecoration,
+    this.onTap,
   );
 
   static TextStyle get regularStyle => const TextStyle(
-        fontFamily: 'Inter',
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.5,
-        fontStyle: FontStyle.normal,
-        color: LNDColors.black,
-        overflow: TextOverflow.ellipsis,
-      );
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w400,
+    letterSpacing: 0.5,
+    fontStyle: FontStyle.normal,
+    color: LNDColors.black,
+    overflow: TextOverflow.ellipsis,
+  );
 
   static TextStyle get mediumStyle => const TextStyle(
-        fontFamily: 'Inter',
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
-        fontStyle: FontStyle.normal,
-        color: LNDColors.black,
-        overflow: TextOverflow.ellipsis,
-      );
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.5,
+    fontStyle: FontStyle.normal,
+    color: LNDColors.black,
+    overflow: TextOverflow.ellipsis,
+  );
 
   static TextStyle get semiboldStyle => const TextStyle(
-        fontFamily: 'Inter',
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.5,
-        fontStyle: FontStyle.normal,
-        color: LNDColors.black,
-        overflow: TextOverflow.ellipsis,
-      );
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.5,
+    fontStyle: FontStyle.normal,
+    color: LNDColors.black,
+    overflow: TextOverflow.ellipsis,
+  );
 
   static TextStyle get boldStyle => const TextStyle(
-        fontFamily: 'Inter',
-        fontWeight: FontWeight.w700,
-        letterSpacing: 0.5,
-        fontStyle: FontStyle.normal,
-        color: LNDColors.black,
-        overflow: TextOverflow.ellipsis,
-      );
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.5,
+    fontStyle: FontStyle.normal,
+    color: LNDColors.black,
+    overflow: TextOverflow.ellipsis,
+  );
 
   factory LNDText.regular({
     required String text,
@@ -67,6 +69,7 @@ class LNDText extends StatelessWidget {
     bool required = false,
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
+    VoidCallback? onTap,
   }) {
     return LNDText._(
       text,
@@ -81,6 +84,7 @@ class LNDText extends StatelessWidget {
       required,
       textParts,
       textDecoration,
+      onTap,
     );
   }
 
@@ -95,6 +99,7 @@ class LNDText extends StatelessWidget {
     bool required = false,
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
+    VoidCallback? onTap,
   }) {
     return LNDText._(
       text,
@@ -109,6 +114,7 @@ class LNDText extends StatelessWidget {
       required,
       textParts,
       textDecoration,
+      onTap,
     );
   }
 
@@ -123,6 +129,7 @@ class LNDText extends StatelessWidget {
     bool required = false,
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
+    VoidCallback? onTap,
   }) {
     return LNDText._(
       text,
@@ -137,6 +144,7 @@ class LNDText extends StatelessWidget {
       required,
       textParts,
       textDecoration,
+      onTap,
     );
   }
 
@@ -151,6 +159,7 @@ class LNDText extends StatelessWidget {
     bool required = false,
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
+    VoidCallback? onTap,
   }) {
     return LNDText._(
       text,
@@ -165,6 +174,7 @@ class LNDText extends StatelessWidget {
       required,
       textParts,
       textDecoration,
+      onTap,
     );
   }
 
@@ -173,24 +183,30 @@ class LNDText extends StatelessWidget {
     List<TextSpan> spans = [
       TextSpan(text: text, style: style.copyWith(decoration: textDecoration)),
       if (required)
-        TextSpan(
-          text: '*',
-          style: style.copyWith(color: LNDColors.black),
-        ),
+        TextSpan(text: '*', style: style.copyWith(color: LNDColors.black)),
       if (textParts != null)
-        ...textParts!.map((e) => TextSpan(
-            text: e.text, style: e.style.copyWith(decoration: textDecoration))),
+        ...textParts!.map(
+          (e) => TextSpan(
+            text: e.text,
+            style: e.style.copyWith(decoration: textDecoration),
+          ),
+        ),
     ];
 
-    return isSelectable
-        ? SelectableText.rich(
-            TextSpan(children: spans),
-            textAlign: textAlign,
-          )
-        : Text.rich(
-            TextSpan(children: spans),
-            textAlign: textAlign,
-            softWrap: true,
-          );
+    Widget textWidget =
+        isSelectable
+            ? SelectableText.rich(
+              TextSpan(children: spans),
+              textAlign: textAlign,
+            )
+            : Text.rich(
+              TextSpan(children: spans),
+              textAlign: textAlign,
+              softWrap: true,
+            );
+
+    return onTap != null
+        ? GestureDetector(onTap: onTap, child: textWidget)
+        : textWidget;
   }
 }
