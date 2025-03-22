@@ -14,19 +14,21 @@ class MyRentalsPage extends GetView<MyRentalsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LNDColors.white,
-      body: NestedScrollView(
-        physics:
-            !controller.isAuthenticated
-                ? const NeverScrollableScrollPhysics()
-                : null,
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (_, __) {
-          return [const MyRentalsAppbar()];
-        },
-        body:
-            !controller.isAuthenticated
-                ? _SigninView()
-                : const Center(child: Text('Logged in!')),
+      body: SafeArea(
+        child: NestedScrollView(
+          physics:
+              !controller.isAuthenticated
+                  ? const NeverScrollableScrollPhysics()
+                  : null,
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (_, __) {
+            return [const MyRentalsAppbar()];
+          },
+          body:
+              !controller.isAuthenticated
+                  ? _SigninView()
+                  : const Center(child: Text('Logged in!')),
+        ),
       ),
     );
   }

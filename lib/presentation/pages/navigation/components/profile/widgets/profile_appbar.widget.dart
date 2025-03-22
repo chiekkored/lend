@@ -9,7 +9,6 @@ class ProfileAppbar extends StatelessWidget {
     return SliverAppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: false,
-      pinned: true,
       surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
       title: LNDText.bold(text: 'Profile', fontSize: 32.0),
     );

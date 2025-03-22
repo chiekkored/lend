@@ -13,44 +13,92 @@ class ProfilePage extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: LNDColors.white,
-      body: NestedScrollView(
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (_, __) {
-          return [const ProfileAppbar()];
-        },
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              margin: const EdgeInsets.all(12.0),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: LNDColors.white,
-                borderRadius: BorderRadius.circular(16.0),
-                border: Border.all(color: LNDColors.outline),
+      body: SafeArea(
+        child: NestedScrollView(
+          physics: const BouncingScrollPhysics(),
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (_, __) {
+            return [const ProfileAppbar()];
+          },
+          body: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(12.0),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: LNDColors.white,
+                  borderRadius: BorderRadius.circular(16.0),
+                  border: Border.all(color: LNDColors.outline),
+                ),
+                child:
+                    !controller.isAuthenticated
+                        ? _SigninView()
+                        : ListTile(
+                          leading: const CircleAvatar(radius: 24.0),
+                          title: LNDText.regular(text: 'Chiekko Red Alino'),
+                          subtitle: LNDText.regular(
+                            text: 'View Profile',
+                            color: LNDColors.gray,
+                            fontSize: 12.0,
+                          ),
+                          trailing: const Icon(
+                            Icons.chevron_right_rounded,
+                            color: LNDColors.gray,
+                            size: 30.0,
+                          ),
+                        ),
               ),
-              child:
-                  !controller.isAuthenticated
-                      ? _SigninView()
-                      : ListTile(
-                        leading: const CircleAvatar(radius: 24.0),
-                        title: LNDText.regular(text: 'Chiekko Red Alino'),
-                        subtitle: LNDText.regular(
-                          text: 'View Profile',
-                          color: LNDColors.gray,
-                          fontSize: 12.0,
-                        ),
-                        trailing: const Icon(
-                          Icons.chevron_right_rounded,
-                          color: LNDColors.gray,
-                          size: 30.0,
-                        ),
-                      ),
-            ),
-          ],
+              ColoredBox(
+                color: LNDColors.white,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildListWidget(
+                      label: 'Settings',
+                      icon: Icons.settings_rounded,
+                      onTap: () {},
+                    ),
+                    _buildListWidget(
+                      label: 'About',
+                      icon: Icons.menu_book_rounded,
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ),
+              ColoredBox(
+                color: LNDColors.white,
+                child: _buildListWidget(
+                  label: 'Logout',
+                  icon: Icons.logout_rounded,
+                  color: LNDColors.danger,
+                  showTrailing: false,
+                  onTap: () {},
+                ),
+              ),
+            ],
+          ).withSpacing(16.0),
         ),
       ),
+    );
+  }
+
+  Widget _buildListWidget({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+    Color color = LNDColors.black,
+    bool showTrailing = true,
+  }) {
+    return ListTile(
+      dense: true,
+      leading: Icon(icon, color: color),
+      onTap: onTap,
+      splashColor: Colors.transparent,
+      title: LNDText.regular(text: label, color: color),
+      trailing:
+          showTrailing ? Icon(Icons.chevron_right_rounded, color: color) : null,
     );
   }
 }

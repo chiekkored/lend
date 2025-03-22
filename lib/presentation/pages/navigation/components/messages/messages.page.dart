@@ -14,19 +14,21 @@ class MessagesPage extends GetView<MessagesController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LNDColors.white,
-      body: NestedScrollView(
-        physics:
-            !controller.isAuthenticated
-                ? const NeverScrollableScrollPhysics()
-                : null,
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (_, __) {
-          return [const MessagesAppbar()];
-        },
-        body:
-            !controller.isAuthenticated
-                ? _SigninView()
-                : const Center(child: Text('Logged in!')),
+      body: SafeArea(
+        child: NestedScrollView(
+          physics:
+              !controller.isAuthenticated
+                  ? const NeverScrollableScrollPhysics()
+                  : null,
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (_, __) {
+            return [const MessagesAppbar()];
+          },
+          body:
+              !controller.isAuthenticated
+                  ? _SigninView()
+                  : const Center(child: Text('Logged in!')),
+        ),
       ),
     );
   }
