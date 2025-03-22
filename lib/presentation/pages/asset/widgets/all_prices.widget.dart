@@ -16,60 +16,34 @@ class AssetAllPricesSheet extends GetWidget<AssetController> {
     final annually = controller.asset?.rates?.annually;
     final notes = controller.asset?.rates?.notes;
 
-    return SafeArea(
-      child: Container(
-        // height: height != null ? height + (Platform.isIOS ? 16.0 : 0) : null,
-        width: Get.width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
+    return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(top: 16.0),
+      shrinkWrap: true,
+      children: [
+        _buildListItem(
+            label: 'Daily',
+            value: daily,
+            icon: Icons.calendar_view_day_rounded),
+        _buildListItem(
+            label: 'Weekly',
+            value: weekly,
+            icon: Icons.calendar_view_week_rounded),
+        _buildListItem(
+            label: 'Monthly',
+            value: monthly,
+            icon: Icons.calendar_view_month_rounded),
+        _buildListItem(
+          label: 'Annually',
+          value: annually,
+          icon: Icons.calendar_month_rounded,
         ),
-        padding: const EdgeInsets.only(
-            top: 8.0, left: 16.0, right: 16.0, bottom: 16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                height: 5.0,
-                width: 60.0,
-                decoration: BoxDecoration(
-                    color: LNDColors.gray,
-                    borderRadius: BorderRadius.circular(16.0)),
-              ),
-            ),
-            ListView(
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.only(top: 16.0),
-              shrinkWrap: true,
-              children: [
-                _buildListItem(
-                    label: 'Daily',
-                    value: daily,
-                    icon: Icons.calendar_view_day_rounded),
-                _buildListItem(
-                    label: 'Weekly',
-                    value: weekly,
-                    icon: Icons.calendar_view_week_rounded),
-                _buildListItem(
-                    label: 'Monthly',
-                    value: monthly,
-                    icon: Icons.calendar_view_month_rounded),
-                _buildListItem(
-                  label: 'Annually',
-                  value: annually,
-                  icon: Icons.calendar_month_rounded,
-                ),
-                LNDText.bold(
-                  text: 'Notes:',
-                  color: LNDColors.hint,
-                ),
-                LNDText.regular(text: notes ?? '')
-              ],
-            )
-          ],
+        LNDText.bold(
+          text: 'Notes:',
+          color: LNDColors.hint,
         ),
-      ),
+        LNDText.regular(text: notes ?? '')
+      ],
     );
   }
 

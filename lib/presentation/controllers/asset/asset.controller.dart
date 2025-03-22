@@ -3,20 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lend/core/mixins/auth.mixin.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/user.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
+import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/pages/asset/widgets/all_prices.widget.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
-import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
-class AssetController extends GetxController {
+class AssetController extends GetxController with AuthMixin {
   static final instance = Get.find<AssetController>();
 
   final Rx<Asset?> _asset = Rx<Asset?>(Get.arguments['asset']);
@@ -43,12 +44,12 @@ class AssetController extends GetxController {
   int get totalPrice => _totalPrice.value;
 
   CameraPosition get cameraPosition => CameraPosition(
-        target: LatLng(
-          asset?.location?.latitude ?? 0.0,
-          asset?.location?.longitude ?? 0.0,
-        ),
-        zoom: 13,
-      );
+    target: LatLng(
+      asset?.location?.latitude ?? 0.0,
+      asset?.location?.longitude ?? 0.0,
+    ),
+    zoom: 13,
+  );
 
   @override
   void onInit() {
@@ -73,14 +74,16 @@ class AssetController extends GetxController {
 
   Future<void> getAsset() async {
     try {
-      final assetsCollection =
-          FirebaseFirestore.instance.collection(LNDCollections.assets.name);
+      final assetsCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.assets.name,
+      );
 
       final result = await assetsCollection.doc(asset?.id).get();
 
       if (result.exists) {
-        HomeController.instance
-            .updateAsset(Asset.fromMap(result.data()!, result.id));
+        HomeController.instance.updateAsset(
+          Asset.fromMap(result.data()!, result.id),
+        );
       }
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
@@ -95,7 +98,7 @@ class AssetController extends GetxController {
         circleId: const CircleId('current_location_circle'),
         center: cameraPosition.target,
         radius: 500,
-        fillColor: Colors.blue.withOpacity(0.5),
+        fillColor: Colors.blue.withValues(alpha: 0.5),
         strokeColor: Colors.blue,
         strokeWidth: 1,
       ),
@@ -106,8 +109,10 @@ class AssetController extends GetxController {
 
   Future<void> _getAddressFromLatLng(LatLng position) async {
     try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks.first;
         _address.value =
@@ -125,8 +130,9 @@ class AssetController extends GetxController {
     try {
       _isUserLoading.value = true;
 
-      final usersCollection =
-          FirebaseFirestore.instance.collection(LNDCollections.users.name);
+      final usersCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.users.name,
+      );
 
       final result = await usersCollection.doc(asset?.ownerId ?? '').get();
 
@@ -140,11 +146,7 @@ class AssetController extends GetxController {
   }
 
   void openAllPrices() async {
-    Get.bottomSheet(
-      const AssetAllPricesSheet(),
-      backgroundColor: LNDColors.white,
-      enableDrag: false,
-    );
+    LNDShow.bottomSheet(const AssetAllPricesSheet(), enableDrag: false);
   }
 
   void goToReservation() async {
@@ -158,9 +160,11 @@ class AssetController extends GetxController {
       return;
     }
 
-    if (asset?.availability?.any((av) =>
-            !av.toDate().isBefore(dates.first) &&
-            !av.toDate().isAfter(dates.last)) ??
+    if (asset?.availability?.any(
+          (av) =>
+              !av.toDate().isBefore(dates.first) &&
+              !av.toDate().isAfter(dates.last),
+        ) ??
         false) {
       _selectedDates.value = [dates.last];
     } else {
@@ -194,8 +198,11 @@ class AssetController extends GetxController {
     DateTime currentDate = startDate;
     while (currentDate.isBefore(endDate)) {
       if (asset?.rates?.monthly != null) {
-        DateTime nextMonth =
-            DateTime(currentDate.year, currentDate.month + 1, currentDate.day);
+        DateTime nextMonth = DateTime(
+          currentDate.year,
+          currentDate.month + 1,
+          currentDate.day,
+        );
         if (!nextMonth.isAfter(endDate)) {
           totalPrice += asset?.rates?.monthly ?? 0;
           currentDate = nextMonth;
@@ -239,15 +246,16 @@ class AssetController extends GetxController {
       }
 
       final batch = FirebaseFirestore.instance.batch();
-      final assetsCollection =
-          FirebaseFirestore.instance.collection(LNDCollections.assets.name);
+      final assetsCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.assets.name,
+      );
       final bookingsCollection = FirebaseFirestore.instance
           .collection(LNDCollections.users.name)
           .doc(AuthController.instance.uid)
           .collection(LNDCollections.bookings.name);
 
       batch.update(assetsCollection.doc(asset?.id), {
-        'availability': [...asset?.availability ?? [], ...dates]
+        'availability': [...asset?.availability ?? [], ...dates],
       });
 
       batch.set(
@@ -277,4 +285,8 @@ class AssetController extends GetxController {
 
   bool checkAvailability(DateTime date) =>
       !(asset?.availability?.any((av) => av.toDate() == date) ?? true);
+
+  void addBookmark() async {
+    if (checkAuth()) return;
+  }
 }

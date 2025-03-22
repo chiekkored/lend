@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/asset/asset.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 
 class AssetProductDetails extends GetWidget<AssetController> {
-  const AssetProductDetails({
-    super.key,
-  });
+  const AssetProductDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +34,12 @@ class AssetProductDetails extends GetWidget<AssetController> {
                         isSelectable: true,
                       ),
                     ),
-                    const Icon(
-                      Icons.bookmark_add_outlined,
+                    LNDButton.icon(
+                      icon: Icons.bookmark_add_outlined,
                       size: 30.0,
                       color: LNDColors.hint,
-                    )
+                      onPressed: controller.addBookmark,
+                    ),
                     // const Icon(
                     //   Icons.bookmark_added_rounded,
                     //   size: 30.0,
@@ -60,14 +60,8 @@ class AssetProductDetails extends GetWidget<AssetController> {
                   color: LNDColors.primary,
                   size: 20.0,
                 ),
-                LNDText.bold(
-                  text: '4.8',
-                  color: LNDColors.primary,
-                ),
-                LNDText.regular(
-                  text: '(400 reviews)',
-                  color: LNDColors.hint,
-                ),
+                LNDText.bold(text: '4.8', color: LNDColors.primary),
+                LNDText.regular(text: '(400 reviews)', color: LNDColors.hint),
               ],
             ).withSpacing(6.0),
           ],

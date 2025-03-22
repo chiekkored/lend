@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/navigation/navigation.controller.dart';
 import 'package:lend/presentation/pages/navigation/components/home/home.page.dart';
+import 'package:lend/presentation/pages/navigation/components/messages/messages.page.dart';
+import 'package:lend/presentation/pages/navigation/components/my_rentals/my_rentals.page.dart';
 import 'package:lend/presentation/pages/navigation/components/profile/profile.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
@@ -21,13 +23,10 @@ class NavigationPage extends GetView<NavigationController> {
         PersistentTabConfig(
           item: ItemConfig(
             textStyle: LNDText.mediumStyle.copyWith(fontSize: 10.0),
-            icon: const Icon(
-              Icons.home_rounded,
-              size: selectedIconSize,
-            ),
+            icon: const Icon(Icons.search_outlined, size: selectedIconSize + 3),
             inactiveIcon: const Icon(
-              Icons.home_outlined,
-              size: unselectedIconSize,
+              Icons.search_rounded,
+              size: unselectedIconSize + 3,
             ),
             activeForegroundColor: LNDColors.primary,
             inactiveForegroundColor: LNDColors.unselected,
@@ -37,10 +36,7 @@ class NavigationPage extends GetView<NavigationController> {
         PersistentTabConfig(
           item: ItemConfig(
             textStyle: LNDText.mediumStyle.copyWith(fontSize: 10.0),
-            icon: const Icon(
-              Icons.handshake_rounded,
-              size: selectedIconSize,
-            ),
+            icon: const Icon(Icons.handshake_rounded, size: selectedIconSize),
             inactiveIcon: const Icon(
               Icons.handshake_outlined,
               size: unselectedIconSize,
@@ -48,15 +44,12 @@ class NavigationPage extends GetView<NavigationController> {
             activeForegroundColor: LNDColors.primary,
             inactiveForegroundColor: LNDColors.unselected,
           ),
-          screen: const ProfilePage(),
+          screen: const MyRentalsPage(),
         ),
         PersistentTabConfig(
           item: ItemConfig(
             textStyle: LNDText.mediumStyle.copyWith(fontSize: 10.0),
-            icon: const Icon(
-              Icons.inbox_rounded,
-              size: selectedIconSize,
-            ),
+            icon: const Icon(Icons.inbox_rounded, size: selectedIconSize),
             inactiveIcon: const Icon(
               Icons.inbox_outlined,
               size: unselectedIconSize,
@@ -64,7 +57,7 @@ class NavigationPage extends GetView<NavigationController> {
             activeForegroundColor: LNDColors.primary,
             inactiveForegroundColor: LNDColors.unselected,
           ),
-          screen: const ProfilePage(),
+          screen: const MessagesPage(),
         ),
         PersistentTabConfig(
           item: ItemConfig(
@@ -83,9 +76,8 @@ class NavigationPage extends GetView<NavigationController> {
           screen: const ProfilePage(),
         ),
       ],
-      navBarBuilder: (navBarConfig) => Style1BottomNavBar(
-        navBarConfig: navBarConfig,
-      ),
+      navBarBuilder:
+          (navBarConfig) => Style1BottomNavBar(navBarConfig: navBarConfig),
     );
   }
 }

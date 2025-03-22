@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -19,32 +21,23 @@ class SigninPage extends GetView<SigninController> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: canPop
-            ? AppBar(
-                leading: LNDButton.close(),
-              )
-            : null,
+        appBar: canPop ? AppBar(leading: LNDButton.close()) : null,
         backgroundColor: LNDColors.white,
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               children: [
-                const FlutterLogo(
-                  size: 150.0,
-                ),
+                const FlutterLogo(size: 150.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: Column(
                     children: [
-                      LNDText.bold(
-                        text: 'Welcome to Lend!',
-                        fontSize: 32.0,
-                      ),
+                      LNDText.bold(text: 'Welcome to Lend!', fontSize: 32.0),
                       LNDText.regular(
                         text: 'Find and rent what you need, when you need it.',
                         color: LNDColors.hint,
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -67,9 +60,10 @@ class SigninPage extends GetView<SigninController> {
                     prefixIconSize: 16.0,
                     textInputAction: TextInputAction.done,
                     textCapitalization: TextCapitalization.none,
-                    suffixIcon: controller.showObscureText
-                        ? FontAwesomeIcons.solidEye
-                        : FontAwesomeIcons.solidEyeSlash,
+                    suffixIcon:
+                        controller.showObscureText
+                            ? FontAwesomeIcons.solidEye
+                            : FontAwesomeIcons.solidEyeSlash,
                     suffixIconSize: 16.0,
                     onTapSuffix: controller.togglePasswordVisibility,
                     onFieldSubmitted: (_) => controller.signIn(),
@@ -78,37 +72,38 @@ class SigninPage extends GetView<SigninController> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: LNDButton.primary(
-                      text: 'Sign in', enabled: true, onPressed: () {}),
+                    text: 'Sign in',
+                    enabled: true,
+                    onPressed: controller.signIn,
+                  ),
                 ),
                 Row(
                   children: [
-                    const Expanded(
-                      child: Divider(),
-                    ),
-                    LNDText.regular(
-                      text: 'OR',
-                      color: LNDColors.gray,
-                    ),
-                    const Expanded(
-                      child: Divider(),
-                    ),
+                    const Expanded(child: Divider()),
+                    LNDText.regular(text: 'OR', color: LNDColors.gray),
+                    const Expanded(child: Divider()),
                   ],
                 ).withSpacing(8.0),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     LNDButton.widget(
                       color: const Color(0xFF4285F4),
                       onPressed: () {},
                       child: const FaIcon(
                         FontAwesomeIcons.google,
+                        color: LNDColors.white,
                       ),
                     ),
-                    LNDButton.widget(
-                      color: Colors.black,
-                      onPressed: () {},
-                      child: const FaIcon(
-                        FontAwesomeIcons.apple,
+                    Visibility(
+                      visible: Platform.isIOS,
+                      child: LNDButton.widget(
+                        color: Colors.black,
+                        onPressed: () {},
+                        child: const FaIcon(
+                          FontAwesomeIcons.apple,
+                          color: LNDColors.white,
+                        ),
                       ),
                     ),
                     LNDButton.widget(
@@ -116,10 +111,11 @@ class SigninPage extends GetView<SigninController> {
                       onPressed: () {},
                       child: const FaIcon(
                         FontAwesomeIcons.facebookF,
+                        color: LNDColors.white,
                       ),
                     ),
                   ],
-                ),
+                ).withSpacing(36.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: GestureDetector(
@@ -131,11 +127,11 @@ class SigninPage extends GetView<SigninController> {
                         LNDText.bold(
                           text: ' Sign up',
                           color: LNDColors.primary,
-                        )
+                        ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ).withSpacing(16.0),
           ),

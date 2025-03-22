@@ -85,7 +85,10 @@ class SignUpPage extends GetView<SignUpController> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: LNDButton.primary(
-                            text: 'Sign up', enabled: true, onPressed: () {}),
+                          text: 'Sign up',
+                          enabled: true,
+                          onPressed: controller.signUp,
+                        ),
                       ),
                     ],
                   ).withSpacing(16.0),
