@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:lend/core/models/user.model.dart';
 import 'package:lend/core/services/get_storage.service.dart';
 import 'package:lend/presentation/common/loading.common.dart';
+import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 
@@ -42,7 +43,8 @@ class AuthController extends GetxController {
 
   void _handleAuthChanged(User? user) {
     if (user != null) {
-      ProfileController.instance.getUserData(user);
+      ProfileController.instance.getUserData(userId: user.uid);
+      MyRentalsController.instance.getMyRentals(userId: user.uid);
     }
   }
 

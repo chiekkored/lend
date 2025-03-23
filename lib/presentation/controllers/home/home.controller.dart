@@ -10,8 +10,9 @@ import 'package:lend/utilities/helpers/loggers.helper.dart';
 class HomeController extends GetxController {
   static final instance = Get.find<HomeController>();
 
-  final assetsCollection =
-      FirebaseFirestore.instance.collection(LNDCollections.assets.name);
+  final assetsCollection = FirebaseFirestore.instance.collection(
+    LNDCollections.assets.name,
+  );
 
   final Rx<Categories> _selectedCategory = Rx(Categories.all);
   final RxBool _isLoading = false.obs;
@@ -50,10 +51,12 @@ class HomeController extends GetxController {
 
       final result = await query.get();
 
-      _assets.value = result.docs
-          .map((asset) =>
-              Asset.fromMap(asset.data() as Map<String, dynamic>, asset.id))
-          .toList();
+      _assets.value =
+          result.docs
+              .map(
+                (asset) => Asset.fromMap(asset.data() as Map<String, dynamic>),
+              )
+              .toList();
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
@@ -78,7 +81,7 @@ class HomeController extends GetxController {
   }
 
   void openAssetPage(Asset asset) {
-    Get.toNamed(AssetPage.routeName, arguments: {'asset': asset});
+    Get.toNamed(AssetPage.routeName, arguments: asset);
   }
 
   void updateAsset(Asset newAsset) {
@@ -95,17 +98,12 @@ class HomeController extends GetxController {
       description:
           'High-resolution mirrorless camera perfect for professional photography.',
       category: 'Electronics',
-      inclusions: [
-        "3 Batteries",
-        "Hard Case",
-        "128 gb SD Card",
-        "Tripod",
-      ],
+      inclusions: ["3 Batteries", "Hard Case", "128 gb SD Card", "Tripod"],
       rates: Rates(daily: 1500, monthly: 0, annually: 0, notes: 'Just a note'),
       availability: [
-        Timestamp.fromDate(DateTime(2025, 3, 20)),
-        Timestamp.fromDate(DateTime(2025, 3, 21)),
-        Timestamp.fromDate(DateTime(2025, 3, 22)),
+        // Timestamp.fromDate(DateTime(2025, 3, 20)),
+        // Timestamp.fromDate(DateTime(2025, 3, 21)),
+        // Timestamp.fromDate(DateTime(2025, 3, 22)),
       ],
       location: const GeoPoint(10.6840, 122.9563),
       images: [

@@ -8,9 +8,7 @@ import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 
 class AssetProductShowcase extends GetWidget<AssetController> {
-  const AssetProductShowcase({
-    super.key,
-  });
+  const AssetProductShowcase({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,8 @@ class AssetProductShowcase extends GetWidget<AssetController> {
     final description = controller.asset?.description;
     return SliverToBoxAdapter(
       child: Visibility(
-        visible: (showcase?.isNotEmpty ?? false) &&
+        visible:
+            (showcase?.isNotEmpty ?? false) &&
             (description?.isNotEmpty ?? false),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -30,7 +29,10 @@ class AssetProductShowcase extends GetWidget<AssetController> {
               if (showcase?.isNotEmpty ?? false) ...[
                 Padding(
                   padding: const EdgeInsets.only(
-                      left: 16.0, right: 16.0, bottom: 16.0),
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 16.0,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -47,7 +49,7 @@ class AssetProductShowcase extends GetWidget<AssetController> {
                           color: LNDColors.black,
                           size: 12.0,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -56,26 +58,20 @@ class AssetProductShowcase extends GetWidget<AssetController> {
                   child: ListView.separated(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: showcase != null
-                        ? (showcase.length > 5 ? 5 : showcase.length)
-                        : 0,
+                    itemCount:
+                        showcase != null
+                            ? (showcase.length > 5 ? 5 : showcase.length)
+                            : 0,
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    separatorBuilder: (context, index) => const SizedBox(
-                      width: 6.0,
-                    ),
+                    separatorBuilder:
+                        (context, index) => const SizedBox(width: 6.0),
                     itemBuilder: (_, index) {
                       final showcase = controller.asset?.showcase?[index];
-                      return LNDImage.square(
-                        imageUrl: showcase,
-                        size: 125.0,
-                      );
+                      return LNDImage.square(imageUrl: showcase, size: 125.0);
                     },
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Divider(),
-                ),
+                const Padding(padding: EdgeInsets.all(16.0), child: Divider()),
               ],
               Visibility(
                 visible: description?.isNotEmpty ?? false,

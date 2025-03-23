@@ -5,12 +5,15 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/user.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
+import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/home/home.controller.dart';
+import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/asset/widgets/all_prices.widget.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
@@ -20,8 +23,11 @@ import 'package:lend/utilities/helpers/loggers.helper.dart';
 class AssetController extends GetxController {
   static final instance = Get.find<AssetController>();
 
-  final Rx<Asset?> _asset = Rx<Asset?>(Get.arguments['asset']);
+  final Rx<Asset?> _asset = Rx<Asset?>(Get.arguments as Asset?);
   Asset? get asset => _asset.value;
+
+  final RxBool _isAssetLoading = false.obs;
+  bool get isAssetLoading => _isAssetLoading.value;
 
   final RxBool _isUserLoading = false.obs;
   bool get isUserLoading => _isUserLoading.value;
@@ -53,6 +59,9 @@ class AssetController extends GetxController {
 
   @override
   void onInit() {
+    if (asset?.description == null) {
+      getAsset();
+    }
     _getUser();
 
     super.onInit();
@@ -72,7 +81,7 @@ class AssetController extends GetxController {
     super.onClose();
   }
 
-  Future<void> getAsset() async {
+  Future<void> refreshAsset() async {
     try {
       final assetsCollection = FirebaseFirestore.instance.collection(
         LNDCollections.assets.name,
@@ -81,9 +90,28 @@ class AssetController extends GetxController {
       final result = await assetsCollection.doc(asset?.id).get();
 
       if (result.exists) {
-        HomeController.instance.updateAsset(
-          Asset.fromMap(result.data()!, result.id),
-        );
+        HomeController.instance.updateAsset(Asset.fromMap(result.data()!));
+      }
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
+    }
+  }
+
+  Future<void> getAsset() async {
+    try {
+      _isAssetLoading.value = true;
+      final assetsCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.assets.name,
+      );
+
+      final result = await assetsCollection.doc(asset?.id).get();
+
+      if (result.exists) {
+        _asset.value = Asset.fromMap(result.data()!);
+        _isAssetLoading.value = false;
+      } else {
+        LNDSnackbar.showError('Product unavailable');
+        Get.back();
       }
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
@@ -162,8 +190,8 @@ class AssetController extends GetxController {
 
     if (asset?.availability?.any(
           (av) =>
-              !av.toDate().isBefore(dates.first) &&
-              !av.toDate().isAfter(dates.last),
+              !av.date.toDate().isBefore(dates.first) &&
+              !av.date.toDate().isAfter(dates.last),
         ) ??
         false) {
       _selectedDates.value = [dates.last];
@@ -235,13 +263,20 @@ class AssetController extends GetxController {
     try {
       LNDLoading.show();
 
-      final List<DateTime> dates = [];
+      final List<Availability> dates = [];
       final start = selectedDates.first;
       final end = selectedDates.last;
       DateTime currentDate = start;
 
       while (currentDate.isBefore(end)) {
-        dates.add(currentDate);
+        dates.add(
+          Availability(
+            date: Timestamp.fromDate(currentDate),
+            userId: ProfileController.instance.user?.uid,
+            firstName: ProfileController.instance.user?.firstName,
+            lastName: ProfileController.instance.user?.lastName,
+          ),
+        );
         currentDate = currentDate.add(const Duration(days: 1));
       }
 
@@ -254,15 +289,25 @@ class AssetController extends GetxController {
           .doc(AuthController.instance.uid)
           .collection(LNDCollections.bookings.name);
 
-      batch.update(assetsCollection.doc(asset?.id), {
-        'availability': [...asset?.availability ?? [], ...dates],
-      });
+      final newAvailability = {
+        'availability': FieldValue.arrayUnion(
+          dates.map((d) => d.toMap()).toList(),
+        ),
+      };
+
+      batch.update(assetsCollection.doc(asset?.id), newAvailability);
 
       batch.set(
         bookingsCollection.doc(),
         Booking(
-          assetId: asset?.id,
-          dates: dates.map((d) => Timestamp.fromDate(d)).toList(),
+          asset: Asset(
+            id: asset?.id ?? '',
+            ownerId: asset?.ownerId,
+            title: asset?.title,
+            images: asset?.images,
+            category: asset?.category,
+          ),
+          dates: dates.map((d) => d.date).toList(),
           createdAt: Timestamp.now(),
           payment: Payment(method: 'debit', transactionId: '123456'),
           renterId: AuthController.instance.uid,
@@ -273,7 +318,7 @@ class AssetController extends GetxController {
 
       await batch.commit();
 
-      await getAsset();
+      await refreshAsset();
 
       LNDLoading.hide();
       Get.until((page) => page.isFirst);
@@ -284,7 +329,7 @@ class AssetController extends GetxController {
   }
 
   bool checkAvailability(DateTime date) =>
-      !(asset?.availability?.any((av) => av.toDate() == date) ?? true);
+      !(asset?.availability?.any((av) => av.date.toDate() == date) ?? true);
 
   void addBookmark() async {
     if (AuthController.instance.isAuthenticated) return;

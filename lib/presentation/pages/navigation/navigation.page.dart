@@ -78,7 +78,10 @@ class NavigationPage extends GetView<NavigationController> {
         ),
       ],
       navBarBuilder:
-          (navBarConfig) => Style1BottomNavBar(navBarConfig: navBarConfig),
+          (navBarConfig) => Style1BottomNavBar(
+            navBarConfig: navBarConfig,
+            navBarDecoration: const NavBarDecoration(color: LNDColors.white),
+          ),
     );
   }
 }

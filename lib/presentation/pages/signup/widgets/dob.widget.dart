@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/controllers/signup/signup.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/extensions/string.extension.dart';
 
 class DateOfBirth extends GetWidget<SignUpController> {
   const DateOfBirth({super.key});
@@ -25,9 +26,7 @@ class DateOfBirth extends GetWidget<SignUpController> {
             child: LNDButton.text(
               text: 'Done',
               onPressed: () {
-                final formattedDate = DateFormat(
-                  'MMMM dd, yyyy',
-                ).format(selectedDate);
+                final formattedDate = selectedDate.toMonthDayYear();
                 controller.dobController.text = formattedDate;
                 Get.back();
               },
@@ -44,7 +43,7 @@ class DateOfBirth extends GetWidget<SignUpController> {
               onDateTimeChanged: (DateTime value) {
                 selectedDate = value;
 
-                final formattedDate = DateFormat('MMMM dd, yyyy').format(value);
+                final formattedDate = value.toMonthDayYear();
                 controller.dobController.text = formattedDate;
               },
             ),

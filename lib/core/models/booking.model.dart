@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import 'package:lend/core/models/asset.model.dart';
+
 class Booking {
-  String? assetId;
+  Asset? asset;
   Timestamp? createdAt;
   Payment? payment;
   String? renterId;
@@ -13,7 +15,7 @@ class Booking {
   int? totalPrice;
   List<Timestamp>? dates;
   Booking({
-    required this.assetId,
+    required this.asset,
     required this.createdAt,
     required this.payment,
     required this.renterId,
@@ -23,7 +25,7 @@ class Booking {
   });
 
   Booking copyWith({
-    String? assetId,
+    Asset? asset,
     Timestamp? createdAt,
     Payment? payment,
     String? renterId,
@@ -32,7 +34,7 @@ class Booking {
     List<Timestamp>? dates,
   }) {
     return Booking(
-      assetId: assetId ?? this.assetId,
+      asset: asset ?? this.asset,
       createdAt: createdAt ?? this.createdAt,
       payment: payment ?? this.payment,
       renterId: renterId ?? this.renterId,
@@ -44,10 +46,11 @@ class Booking {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'assetId': assetId,
-      'createdAt': createdAt != null
-          ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
-          : null,
+      'asset': asset?.toMap(),
+      'createdAt':
+          createdAt != null
+              ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
+              : null,
       'payment': payment?.toMap(),
       'renterId': renterId,
       'status': status,
@@ -58,12 +61,16 @@ class Booking {
 
   factory Booking.fromMap(Map<String, dynamic> map) {
     return Booking(
-      assetId: map['assetId'] != null ? map['assetId'] as String : null,
+      asset:
+          map['asset'] != null
+              ? Asset.fromMap(map['asset'] as Map<String, dynamic>)
+              : null,
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
-      payment: map['payment'] != null
-          ? Payment.fromMap(map['payment'] as Map<String, dynamic>)
-          : null,
+      payment:
+          map['payment'] != null
+              ? Payment.fromMap(map['payment'] as Map<String, dynamic>)
+              : null,
       renterId: map['renterId'] != null ? map['renterId'] as String : null,
       status: map['status'] != null ? map['status'] as String : null,
       totalPrice: map['totalPrice'] != null ? map['totalPrice'] as int : null,
@@ -78,14 +85,14 @@ class Booking {
 
   @override
   String toString() {
-    return 'Booking(assetId: $assetId, createdAt: $createdAt, payment: $payment, renterId: $renterId, status: $status, totalPrice: $totalPrice, dates: $dates)';
+    return 'Booking(asset: $asset, createdAt: $createdAt, payment: $payment, renterId: $renterId, status: $status, totalPrice: $totalPrice, dates: $dates)';
   }
 
   @override
   bool operator ==(covariant Booking other) {
     if (identical(this, other)) return true;
 
-    return other.assetId == assetId &&
+    return other.asset == asset &&
         other.createdAt == createdAt &&
         other.payment == payment &&
         other.renterId == renterId &&
@@ -96,7 +103,7 @@ class Booking {
 
   @override
   int get hashCode {
-    return assetId.hashCode ^
+    return asset.hashCode ^
         createdAt.hashCode ^
         payment.hashCode ^
         renterId.hashCode ^
@@ -109,15 +116,9 @@ class Booking {
 class Payment {
   String? method;
   String? transactionId;
-  Payment({
-    this.method,
-    this.transactionId,
-  });
+  Payment({this.method, this.transactionId});
 
-  Payment copyWith({
-    String? method,
-    String? transactionId,
-  }) {
+  Payment copyWith({String? method, String? transactionId}) {
     return Payment(
       method: method ?? this.method,
       transactionId: transactionId ?? this.transactionId,
@@ -125,10 +126,7 @@ class Payment {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'method': method,
-      'transactionId': transactionId,
-    };
+    return <String, dynamic>{'method': method, 'transactionId': transactionId};
   }
 
   factory Payment.fromMap(Map<String, dynamic> map) {

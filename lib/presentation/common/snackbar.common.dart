@@ -53,7 +53,7 @@ class LNDSnackbar {
     _showSnackbar(
       title,
       message,
-      LNDColors.white,
+      LNDColors.danger,
       Icons.error_rounded,
       showButton,
       buttonText,

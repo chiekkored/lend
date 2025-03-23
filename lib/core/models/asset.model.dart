@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/rates.model.dart';
 
 class Asset {
@@ -12,7 +14,7 @@ class Asset {
   String? description;
   String? category;
   Rates? rates;
-  List<Timestamp>? availability;
+  List<Availability>? availability;
   GeoPoint? location;
   List<String>? images;
   List<String>? showcase;
@@ -36,13 +38,13 @@ class Asset {
   });
 
   Asset copyWith({
-    required String id,
+    String? id,
     String? ownerId,
     String? title,
     String? description,
     String? category,
     Rates? rates,
-    List<Timestamp>? availability,
+    List<Availability>? availability,
     GeoPoint? location,
     List<String>? images,
     List<String>? showcase,
@@ -51,7 +53,7 @@ class Asset {
     String? status,
   }) {
     return Asset(
-      id: id,
+      id: id ?? this.id,
       ownerId: ownerId ?? this.ownerId,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -75,42 +77,50 @@ class Asset {
       'description': description,
       'category': category,
       'rates': rates?.toMap(),
-      'availability':
-          availability?.map((x) => Timestamp(x.seconds, x.nanoseconds)),
-      'location': location != null
-          ? GeoPoint(location!.latitude, location!.longitude)
-          : null,
+      'availability': availability?.map((x) => x.toMap()).toList(),
+      'location':
+          location != null
+              ? GeoPoint(location!.latitude, location!.longitude)
+              : null,
       'images': images,
       'showcase': showcase,
       'inclusions': inclusions,
-      'createdAt': createdAt != null
-          ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
-          : null,
+      'createdAt':
+          createdAt != null
+              ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
+              : null,
       'status': status,
-    };
+    }..removeWhere((key, value) => value == null);
   }
 
-  factory Asset.fromMap(Map<String, dynamic> map, String id) {
+  factory Asset.fromMap(Map<String, dynamic> map) {
     return Asset(
-      id: id,
+      id: map['id'],
       ownerId: map['ownerId'] != null ? map['ownerId'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
       category: map['category'] != null ? map['category'] as String : null,
-      rates: map['rates'] != null
-          ? Rates.fromMap(map['rates'] as Map<String, dynamic>)
-          : null,
-      availability: map['availability'] != null
-          ? List<Timestamp>.from(map['availability'])
-          : null,
+      rates:
+          map['rates'] != null
+              ? Rates.fromMap(map['rates'] as Map<String, dynamic>)
+              : null,
+      availability:
+          map['availability'] != null
+              ? List<Availability>.from(
+                map['availability'].map(
+                  (x) => Availability.fromMap(x as Map<String, dynamic>),
+                ),
+              )
+              : null,
       location: map['location'] != null ? map['location'] as GeoPoint : null,
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
       showcase:
           map['showcase'] != null ? List<String>.from((map['showcase'])) : null,
-      inclusions: map['inclusions'] != null
-          ? List<String>.from((map['inclusions']))
-          : null,
+      inclusions:
+          map['inclusions'] != null
+              ? List<String>.from((map['inclusions']))
+              : null,
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
       status: map['status'] != null ? map['status'] as String : null,
@@ -119,8 +129,8 @@ class Asset {
 
   String toJson() => json.encode(toMap());
 
-  factory Asset.fromJson(String source, String id) =>
-      Asset.fromMap(json.decode(source) as Map<String, dynamic>, id);
+  factory Asset.fromJson(String source) =>
+      Asset.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -131,8 +141,8 @@ class Asset {
   bool operator ==(covariant Asset other) {
     if (identical(this, other)) return true;
 
-    return other.ownerId == ownerId &&
-        other.id == id &&
+    return other.id == id &&
+        other.ownerId == ownerId &&
         other.title == title &&
         other.description == description &&
         other.category == category &&

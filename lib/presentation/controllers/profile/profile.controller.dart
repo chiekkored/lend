@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/mixins/auth.mixin.dart';
 import 'package:lend/core/models/user.model.dart';
@@ -16,13 +15,13 @@ class ProfileController extends GetxController with AuthMixin {
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
-  void getUserData(User? firebaseUser) async {
-    if (firebaseUser == null) return;
+  void getUserData({required String? userId}) async {
+    if (userId == null) return;
     _isLoading.value = true;
 
     final userCollection = FirebaseFirestore.instance
         .collection(LNDCollections.users.name)
-        .doc(firebaseUser.uid);
+        .doc(userId);
 
     final userDoc = await userCollection.get();
 
