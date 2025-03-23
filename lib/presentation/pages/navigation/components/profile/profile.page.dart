@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lend/core/models/user.model.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
+import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/navigation/components/profile/widgets/profile_appbar.widget.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
+import 'package:lend/utilities/helpers/utilities.helper.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfilePage extends GetView<ProfileController> {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: NestedScrollView(
+    UserModel? user = controller.user;
+    return SafeArea(
+      child: Scaffold(
+        body: NestedScrollView(
           physics: const BouncingScrollPhysics(),
           floatHeaderSlivers: true,
           headerSliverBuilder: (_, __) {
@@ -37,8 +42,41 @@ class ProfilePage extends GetView<ProfileController> {
                       !controller.isAuthenticated
                           ? _SigninView()
                           : ListTile(
-                            leading: const CircleAvatar(radius: 24.0),
-                            title: LNDText.regular(text: 'Chiekko Red Alino'),
+                            leading:
+                                controller.isLoading
+                                    ? Shimmer.fromColors(
+                                      baseColor: LNDColors.outline,
+                                      highlightColor: LNDColors.white,
+                                      child: const CircleAvatar(
+                                        radius: 25.0,
+                                        backgroundColor: LNDColors.white,
+                                      ),
+                                    )
+                                    : LNDImage.circle(
+                                      imageUrl: user?.photoUrl,
+                                      size: 50.0,
+                                    ),
+                            title:
+                                controller.isLoading
+                                    ? Shimmer.fromColors(
+                                      baseColor: LNDColors.outline,
+                                      highlightColor: LNDColors.white,
+                                      child: Container(
+                                        height: 20.0,
+                                        decoration: BoxDecoration(
+                                          color: LNDColors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            8.0,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    : LNDText.regular(
+                                      text: LNDUtils.formatFullName(
+                                        firstName: user?.firstName,
+                                        lastName: user?.lastName,
+                                      ),
+                                    ),
                             subtitle: LNDText.regular(
                               text: 'View Profile',
                               color: LNDColors.gray,

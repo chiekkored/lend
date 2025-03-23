@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lend/presentation/common/texts.common.dart';
+import 'package:lend/utilities/constants/colors.constant.dart';
 
 class ProfileAppbar extends StatelessWidget {
   const ProfileAppbar({super.key});
@@ -7,9 +8,10 @@ class ProfileAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: LNDColors.white,
       centerTitle: false,
-      surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+      pinned: true,
+      surfaceTintColor: LNDColors.white,
       title: LNDText.bold(text: 'Profile', fontSize: 32.0),
     );
   }

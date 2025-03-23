@@ -1,14 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 
 mixin AuthMixin {
-  bool get isAuthenticated => AuthController.instance.firebaseUser != null;
+  Rxn<User> get firebaseUser => AuthController.instance.firebaseUser;
+  bool get isAuthenticated => firebaseUser.value != null;
 
   /// Check if the user is authenticated.
   /// If not, redirect to the SigninPage
   bool checkAuth() {
-    if (AuthController.instance.firebaseUser == null) {
+    if (!isAuthenticated) {
       Get.toNamed(SigninPage.routeName);
 
       return false;

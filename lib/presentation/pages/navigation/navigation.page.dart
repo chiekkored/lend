@@ -18,6 +18,7 @@ class NavigationPage extends GetView<NavigationController> {
     const selectedIconSize = 35.0;
     const unselectedIconSize = 35.0;
     return PersistentTabView(
+      backgroundColor: LNDColors.white,
       controller: controller.navigationController,
       tabs: [
         PersistentTabConfig(
