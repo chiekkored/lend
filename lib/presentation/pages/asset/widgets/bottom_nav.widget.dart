@@ -56,10 +56,12 @@ class AssetBottomNav extends GetWidget<AssetController> {
                   ),
                 ],
               ),
-              LNDButton.primary(
-                text: 'Reserve now',
-                enabled: true,
-                onPressed: controller.goToReservation,
+              Obx(
+                () => LNDButton.primary(
+                  text: 'Reserve now',
+                  enabled: !controller.isAssetLoading,
+                  onPressed: controller.goToReservation,
+                ),
               ),
             ],
           ),

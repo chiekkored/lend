@@ -98,39 +98,17 @@ class HomePage extends GetView<HomeController> {
                     topRight: Radius.circular(16.0),
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12.0),
-                        topRight: Radius.circular(12.0),
-                      ),
-                      child: LNDImage.custom(
-                        height: double.infinity,
-                        width: double.infinity,
-                        imageUrl: asset.images?.first,
-                        borderRadius: 0.0,
-                      ),
-                    ),
-                    Positioned(
-                      top: 15.0,
-                      right: 15.0,
-                      child: Container(
-                        height: 35.0,
-                        width: 35.0,
-                        decoration: BoxDecoration(
-                          color: LNDColors.black.withValues(alpha: .8),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: const Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.heart,
-                            color: LNDColors.primary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12.0),
+                    topRight: Radius.circular(12.0),
+                  ),
+                  child: LNDImage.custom(
+                    height: double.infinity,
+                    width: double.infinity,
+                    imageUrl: asset.images?.first,
+                    borderRadius: 0.0,
+                  ),
                 ),
               ),
             ),

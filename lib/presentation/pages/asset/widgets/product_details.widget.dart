@@ -54,23 +54,28 @@ class AssetProductDetails extends GetWidget<AssetController> {
                 ),
               ],
             ),
-            Row(
-              children: [
-                const FaIcon(
-                  FontAwesomeIcons.solidStar,
-                  color: LNDColors.primary,
-                  size: 20.0,
-                ),
-                if (!controller.isAssetLoading)
-                  const LNDShimmer(
-                    child: LNDShimmerBox(height: 20.0, width: 100.0),
-                  )
-                else ...[
-                  LNDText.bold(text: '4.8', color: LNDColors.primary),
-                  LNDText.regular(text: '(400 reviews)', color: LNDColors.hint),
+            Obx(
+              () => Row(
+                children: [
+                  const FaIcon(
+                    FontAwesomeIcons.solidStar,
+                    color: LNDColors.primary,
+                    size: 20.0,
+                  ),
+                  if (controller.isAssetLoading)
+                    const LNDShimmer(
+                      child: LNDShimmerBox(height: 20.0, width: 100.0),
+                    )
+                  else ...[
+                    LNDText.bold(text: '4.8', color: LNDColors.primary),
+                    LNDText.regular(
+                      text: '(400 reviews)',
+                      color: LNDColors.hint,
+                    ),
+                  ],
                 ],
-              ],
-            ).withSpacing(6.0),
+              ).withSpacing(6.0),
+            ),
           ],
         ).withSpacing(16.0),
       ),

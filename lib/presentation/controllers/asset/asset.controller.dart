@@ -15,10 +15,11 @@ import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/asset/widgets/all_prices.widget.dart';
-import 'package:lend/presentation/pages/calendar/calendar.page.dart';
+import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
+import 'package:lend/utilities/helpers/navigator.helper.dart';
 
 class AssetController extends GetxController {
   static final instance = Get.find<AssetController>();
@@ -178,7 +179,7 @@ class AssetController extends GetxController {
   }
 
   void goToReservation() async {
-    await Get.toNamed(CalendarPage.routeName);
+    await LNDNavigate.toCalendar();
     _selectedDates.clear();
   }
 
@@ -333,5 +334,14 @@ class AssetController extends GetxController {
 
   void addBookmark() async {
     if (AuthController.instance.isAuthenticated) return;
+  }
+
+  void openPhoto(int index) {
+    LNDNavigate.toPhotoView(
+      args: PhotoViewArguments(
+        images: asset?.showcase ?? [],
+        intialIndex: index,
+      ),
+    );
   }
 }

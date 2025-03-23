@@ -1,14 +1,6 @@
 import 'package:lend/utilities/extensions/string.extension.dart';
 
 class LNDUtils {
-  static final LNDUtils _instance = LNDUtils._internal();
-
-  factory LNDUtils() {
-    return _instance;
-  }
-
-  LNDUtils._internal();
-
   static String formatFullName({
     required String? firstName,
     required String? lastName,

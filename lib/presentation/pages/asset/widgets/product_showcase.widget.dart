@@ -67,7 +67,16 @@ class AssetProductShowcase extends GetWidget<AssetController> {
                         (context, index) => const SizedBox(width: 6.0),
                     itemBuilder: (_, index) {
                       final showcase = controller.asset?.showcase?[index];
-                      return LNDImage.square(imageUrl: showcase, size: 125.0);
+                      return GestureDetector(
+                        onTap: () => controller.openPhoto(index),
+                        child: Hero(
+                          tag: '$showcase',
+                          child: LNDImage.square(
+                            imageUrl: showcase,
+                            size: 125.0,
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
