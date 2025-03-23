@@ -336,12 +336,18 @@ class AssetController extends GetxController {
     if (AuthController.instance.isAuthenticated) return;
   }
 
-  void openPhoto(int index) {
+  void openPhotoShowcase(int index) {
     LNDNavigate.toPhotoView(
       args: PhotoViewArguments(
         images: asset?.showcase ?? [],
         intialIndex: index,
       ),
+    );
+  }
+
+  void openPhotoAsset(int index) {
+    LNDNavigate.toPhotoView(
+      args: PhotoViewArguments(images: asset?.images ?? [], intialIndex: index),
     );
   }
 }

@@ -7,9 +7,7 @@ import 'package:lend/presentation/controllers/asset/asset.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
 class AssetAppBar extends GetWidget<AssetController> {
-  const AssetAppBar({
-    super.key,
-  });
+  const AssetAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +15,15 @@ class AssetAppBar extends GetWidget<AssetController> {
       leadingWidth: 52.0,
       backgroundColor: LNDColors.white,
       leading: Container(
-          height: 40.0,
-          width: 40.0,
-          margin: const EdgeInsets.only(left: 12.0),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: LNDColors.white,
-          ),
-          child: Center(
-            child: LNDButton.back(),
-          )),
+        height: 40.0,
+        width: 40.0,
+        margin: const EdgeInsets.only(left: 12.0),
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: LNDColors.white,
+        ),
+        child: Center(child: LNDButton.back()),
+      ),
       expandedHeight: 300.0,
       surfaceTintColor: LNDColors.white,
       stretch: true,
@@ -50,13 +47,19 @@ class AssetAppBar extends GetWidget<AssetController> {
             // ),
             centerTitle: false,
             background: FlutterCarousel(
-              items: controller.asset?.images
-                      ?.map(
-                        (image) => LNDImage.custom(
-                          imageUrl: image,
-                          height: double.infinity,
-                          width: double.infinity,
-                          borderRadius: 0.0,
+              items:
+                  controller.asset?.images
+                      ?.asMap()
+                      .entries
+                      .map(
+                        (entry) => GestureDetector(
+                          onTap: () => controller.openPhotoAsset(entry.key),
+                          child: LNDImage.custom(
+                            imageUrl: entry.value,
+                            height: double.infinity,
+                            width: double.infinity,
+                            borderRadius: 0.0,
+                          ),
                         ),
                       )
                       .toList() ??
