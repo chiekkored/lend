@@ -16,6 +16,7 @@ import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/asset/widgets/all_prices.widget.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
+import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -179,7 +180,7 @@ class AssetController extends GetxController {
   }
 
   void goToReservation() async {
-    await LNDNavigate.toCalendar();
+    await LNDNavigate.toCalendarPage();
     _selectedDates.clear();
   }
 
@@ -337,7 +338,7 @@ class AssetController extends GetxController {
   }
 
   void openPhotoShowcase(int index) {
-    LNDNavigate.toPhotoView(
+    LNDNavigate.toPhotoViewPage(
       args: PhotoViewArguments(
         images: asset?.showcase ?? [],
         intialIndex: index,
@@ -346,8 +347,14 @@ class AssetController extends GetxController {
   }
 
   void openPhotoAsset(int index) {
-    LNDNavigate.toPhotoView(
+    LNDNavigate.toPhotoViewPage(
       args: PhotoViewArguments(images: asset?.images ?? [], intialIndex: index),
+    );
+  }
+
+  void openSeeAllShowcase() {
+    LNDNavigate.toProductShowcasePage(
+      args: ProductShowcaseArguments(showcase: asset?.showcase ?? []),
     );
   }
 }

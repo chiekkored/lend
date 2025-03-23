@@ -21,10 +21,7 @@ class LNDImage extends StatelessWidget {
     this.width = 50.0,
   });
 
-  factory LNDImage.circle({
-    required String? imageUrl,
-    double size = 50.0,
-  }) {
+  factory LNDImage.circle({required String? imageUrl, double size = 50.0}) {
     return LNDImage._(imageUrl: imageUrl, size: size, borderRadius: size / 2);
   }
 
@@ -69,23 +66,20 @@ class LNDImage extends StatelessWidget {
     } else if (Uri.tryParse(imageUrl)?.hasScheme ?? false) {
       return CachedNetworkImage(
         imageUrl: imageUrl,
-        placeholder: (context, s) => ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadius),
-          child: Shimmer.fromColors(
-            baseColor: LNDColors.outline,
-            highlightColor: LNDColors.white,
-            child: const ColoredBox(
-              color: LNDColors.outline,
+        cacheKey: imageUrl,
+        placeholder:
+            (context, s) => ClipRRect(
+              borderRadius: BorderRadius.circular(borderRadius),
+              child: Shimmer.fromColors(
+                baseColor: LNDColors.outline,
+                highlightColor: LNDColors.white,
+                child: const ColoredBox(color: LNDColors.outline),
+              ),
             ),
-          ),
-        ),
         imageBuilder: (_, imageProvider) {
           return ClipRRect(
             borderRadius: BorderRadius.circular(borderRadius),
-            child: Image(
-              image: imageProvider,
-              fit: BoxFit.cover,
-            ),
+            child: Image(image: imageProvider, fit: BoxFit.cover),
           );
         },
         errorWidget: (_, __, ___) => _buildFallbackImage(),

@@ -44,7 +44,7 @@ class AssetProductShowcase extends GetWidget<AssetController> {
                         visible: (showcase?.length ?? 0) > 5,
                         child: LNDButton.text(
                           text: 'See More',
-                          onPressed: () {},
+                          onPressed: controller.openSeeAllShowcase,
                           enabled: true,
                           color: LNDColors.black,
                           size: 12.0,

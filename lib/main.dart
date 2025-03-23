@@ -11,6 +11,7 @@ import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
+import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/components/setup.page.dart';
 import 'package:lend/presentation/pages/signup/signup.page.dart';
@@ -71,9 +72,13 @@ class Root extends StatelessWidget {
         GetPage(name: SetupPage.routeName, page: () => const SetupPage()),
         GetPage(
           name: PhotoViewPage.routeName,
-          page: () => PhotoViewPage(),
+          page: () => const PhotoViewPage(),
           fullscreenDialog: true,
           transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: ProductShowcasePage.routeName,
+          page: () => ProductShowcasePage(),
         ),
       ],
       initialRoute: NavigationPage.routeName,

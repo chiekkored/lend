@@ -12,17 +12,50 @@ class PhotoViewArguments {
   PhotoViewArguments({required this.images, required this.intialIndex});
 }
 
-class PhotoViewPage extends StatelessWidget {
+class PhotoViewPage extends StatefulWidget {
   static const routeName = '/photo_view';
-  PhotoViewPage({super.key});
+  const PhotoViewPage({super.key});
 
-  final args = Get.arguments as PhotoViewArguments;
+  @override
+  State<PhotoViewPage> createState() => _PhotoViewPageState();
+}
+
+class _PhotoViewPageState extends State<PhotoViewPage> {
+  late final PhotoViewArguments args;
+  late final PageController pageController;
+  late int currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    args = Get.arguments as PhotoViewArguments;
+    currentIndex = args.intialIndex;
+    pageController = PageController(initialPage: args.intialIndex);
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: LNDButton.close(color: Colors.white),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: LNDText.regular(
+                text: '${currentIndex + 1}/${args.images.length}',
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
       body: PhotoViewGallery.builder(
         scrollPhysics: const BouncingScrollPhysics(),
@@ -35,7 +68,7 @@ class PhotoViewPage extends StatelessWidget {
             initialScale: PhotoViewComputedScale.contained,
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered * 2,
-            heroAttributes: PhotoViewHeroAttributes(tag: args.images[index]),
+            heroAttributes: PhotoViewHeroAttributes(tag: args.images),
             errorBuilder:
                 (context, error, stackTrace) => Center(
                   child: LNDText.regular(text: 'Failed to load image'),
@@ -57,7 +90,12 @@ class PhotoViewPage extends StatelessWidget {
                 ),
               ),
             ),
-        pageController: PageController(initialPage: args.intialIndex),
+        pageController: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
       ),
     );
   }
