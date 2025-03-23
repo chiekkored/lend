@@ -2,14 +2,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
 import 'package:lend/core/mixins/textfields.mixin.dart';
 import 'package:lend/core/models/user.model.dart';
-import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
@@ -17,8 +15,7 @@ import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/signup/components/setup.page.dart';
 import 'package:lend/presentation/pages/signup/widgets/dob.widget.dart';
-import 'package:lend/utilities/constants/collections.constant.dart';
-import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/user_types.enum.dart';
 
 class SignUpController extends GetxController with TextFieldsMixin {
   static final instance = Get.find<SignUpController>();
@@ -32,8 +29,6 @@ class SignUpController extends GetxController with TextFieldsMixin {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController dobController = TextEditingController();
   final setupKey = GlobalKey<FormState>();
-
-  var email = ''.obs;
 
   final RxBool _showObscureText = false.obs;
   bool get showObscureText => _showObscureText.value;
@@ -91,15 +86,33 @@ class SignUpController extends GetxController with TextFieldsMixin {
 
       if (userCredential.user != null) {
         // Add User to Firestore Collection: "users"
-        await AuthController.instance.registerToFirestore(userCredential);
+        final UserModel user = UserModel(
+          uid: userCredential.user?.uid,
+          firstName: firstNameController.text.trim(),
+          lastName: lastNameController.text.trim(),
+          dateOfBirth: DateFormat(
+            'MMMM dd, yyyy',
+          ).parse(dobController.text.trim()),
+          address: '',
+          photoUrl: '',
+          createdAt: Timestamp.now(),
+          email: email,
+          phone: '',
+          type: UserType.renter.label,
+          verified: false,
+        );
 
-        if (!userCredential.user!.emailVerified) {
-          await userCredential.user!.sendEmailVerification();
-          LNDSnackbar.showInfo('Sent a verification link to email provided');
-        }
+        await AuthController.instance.registerToFirestore(user: user);
+
+        // if (!userCredential.user!.emailVerified) {
+        //   await userCredential.user!.sendEmailVerification();
+        //   LNDSnackbar.showInfo('Sent a verification link to email provided');
+        // }
 
         LNDLoading.hide();
-        Get.offAll(() => const NavigationPage(), binding: NavigationBinding());
+        // Get.offAll(() => const NavigationPage(), binding: NavigationBinding());
+
+        Get.until((page) => page.isFirst);
       } else {
         LNDLoading.hide();
         LNDSnackbar.showError(
@@ -123,11 +136,15 @@ class SignUpController extends GetxController with TextFieldsMixin {
 
   void goToSignIn() => Get.back();
 
-  void onTapDob() {
+  Future<void> onTapDob() async {
     if (Platform.isIOS) {
-      LNDShow.bottomSheet(const DateOfBirth());
+      await LNDShow.bottomSheet(
+        const DateOfBirth(),
+        enableDrag: false,
+        isDismissible: false,
+      );
     } else {
-      showDatePicker(
+      await showDatePicker(
         context: Get.context!,
         initialDate: DateTime.now(),
         firstDate: DateTime(1900),

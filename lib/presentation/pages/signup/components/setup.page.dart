@@ -88,11 +88,7 @@ class SetupPage extends GetView<SignUpController> {
                             hintText: 'Date of Birth',
                             controller: controller.dobController,
                             readOnly: true,
-                            validator:
-                                (value) => controller.validateField(
-                                  value,
-                                  label: 'Date of Birth',
-                                ),
+                            validator: controller.validateDateOfBirth,
                             onTap: controller.onTapDob,
                           ),
                           LNDText.regular(
@@ -124,7 +120,7 @@ class SetupPage extends GetView<SignUpController> {
                                       : FontAwesomeIcons.solidEyeSlash,
                               suffixIconSize: 16.0,
                               onTapSuffix: controller.togglePasswordVisibility,
-                              validator: controller.validatePassword,
+                              // validator: controller.validatePassword,
                             ),
                           ),
                           Obx(
@@ -145,11 +141,11 @@ class SetupPage extends GetView<SignUpController> {
                               suffixIconSize: 16.0,
                               onTapSuffix:
                                   controller.toggleConfirmPasswordVisibility,
-                              validator:
-                                  (value) => controller.validateConfirmPassword(
-                                    controller.passwordController.text,
-                                    value,
-                                  ),
+                              // validator:
+                              //     (value) => controller.validateConfirmPassword(
+                              //       controller.passwordController.text,
+                              //       value,
+                              //     ),
                             ),
                           ),
                         ],

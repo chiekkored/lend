@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/user.model.dart';
 import 'package:lend/core/services/get_storage.service.dart';
 import 'package:lend/presentation/common/loading.common.dart';
-import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 
 class AuthController extends GetxController {
@@ -24,6 +24,7 @@ class AuthController extends GetxController {
   FirebaseAuth get firebaseAuth => _firebaseAuth;
   String get token => _token.value;
   String? get uid => firebaseUser?.uid;
+  bool get isAuthenticated => _firebaseUser.value != null;
 
   @override
   void onInit() {
@@ -128,30 +129,12 @@ class AuthController extends GetxController {
     await firebaseUser?.sendEmailVerification();
   }
 
-  Future<void> registerToFirestore(UserCredential userCredential) async {
-    final user = userCredential.user;
+  Future<void> registerToFirestore({required UserModel user}) async {
     final userCollection = FirebaseFirestore.instance.collection(
       LNDCollections.users.name,
     );
 
-    if (user != null) {
-      // await userCollection
-      //     .doc(user.uid)
-      //     .set(
-      //       UserModel(
-      //         uid: user.uid,
-      //         email: user.email,
-      //         name: user.displayName,
-      //         photoUrl: user.photoURL,
-      //         createdAt: Timestamp.now(),
-      //       ).toMap(),
-      //     );
-    } else {
-      LNDSnackbar.showError(
-        'Something went wrong. Please try another provider',
-      );
-      AuthController.instance.signOut();
-    }
+    await userCollection.doc(user.uid).set(user.toMap());
   }
 
   // Future<bool> _biometricsCheck() async {

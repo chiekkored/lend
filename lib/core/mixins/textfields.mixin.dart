@@ -1,4 +1,5 @@
 import 'package:get/get_utils/src/get_utils/get_utils.dart';
+import 'package:intl/intl.dart';
 
 mixin TextFieldsMixin {
   String? validateField(String? value, {required String label}) {
@@ -13,7 +14,8 @@ mixin TextFieldsMixin {
       return 'Date of birth is required';
     }
     // if date of birth is under 18 years old
-    if (DateTime.now().difference(DateTime.parse(value)).inDays < 6570) {
+    final dob = DateFormat('MMMM dd, yyyy').parse(value);
+    if (DateTime.now().difference(dob).inDays < 6570) {
       return 'You must be at least 18 years old';
     }
     return null;
@@ -46,7 +48,7 @@ mixin TextFieldsMixin {
 
   String? validateConfirmPassword(String? password, String? confirmPassword) {
     if (confirmPassword == null || confirmPassword.isEmpty) {
-      return 'Confirmation password is required';
+      return 'Password confirmation is required';
     }
     if (password != confirmPassword) {
       return 'Passwords do not match';

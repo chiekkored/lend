@@ -7,6 +7,7 @@ class UserModel {
   String? uid;
   String? firstName;
   String? lastName;
+  DateTime? dateOfBirth;
   String? address;
   String? photoUrl;
   Timestamp? createdAt;
@@ -15,22 +16,24 @@ class UserModel {
   String? type;
   bool? verified;
   UserModel({
-    this.uid,
-    this.firstName,
-    this.lastName,
-    this.address,
-    this.photoUrl,
-    this.createdAt,
-    this.email,
-    this.phone,
-    this.type,
-    this.verified,
+    required this.uid,
+    required this.firstName,
+    required this.lastName,
+    required this.dateOfBirth,
+    required this.address,
+    required this.photoUrl,
+    required this.createdAt,
+    required this.email,
+    required this.phone,
+    required this.type,
+    required this.verified,
   });
 
   UserModel copyWith({
     String? uid,
     String? firstName,
     String? lastName,
+    DateTime? dateOfBirth,
     String? address,
     String? photoUrl,
     Timestamp? createdAt,
@@ -43,6 +46,7 @@ class UserModel {
       uid: uid ?? this.uid,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       address: address ?? this.address,
       photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
@@ -58,6 +62,7 @@ class UserModel {
       'uid': uid,
       'firstName': firstName,
       'lastName': lastName,
+      'dateOfBirth': dateOfBirth?.millisecondsSinceEpoch,
       'address': address,
       'photoUrl': photoUrl,
       'createdAt':
@@ -76,6 +81,10 @@ class UserModel {
       uid: map['uid'] != null ? map['uid'] as String : null,
       firstName: map['firstName'] != null ? map['firstName'] as String : null,
       lastName: map['lastName'] != null ? map['lastName'] as String : null,
+      dateOfBirth:
+          map['dateOfBirth'] != null
+              ? DateTime.fromMillisecondsSinceEpoch(map['dateOfBirth'] as int)
+              : null,
       address: map['address'] != null ? map['address'] as String : null,
       photoUrl: map['photoUrl'] != null ? map['photoUrl'] as String : null,
       createdAt:
@@ -94,7 +103,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, address: $address, photoUrl: $photoUrl, createdAt: $createdAt, email: $email, phone: $phone, type: $type, verified: $verified)';
+    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, address: $address, photoUrl: $photoUrl, createdAt: $createdAt, email: $email, phone: $phone, type: $type, verified: $verified)';
   }
 
   @override
@@ -104,6 +113,7 @@ class UserModel {
     return other.uid == uid &&
         other.firstName == firstName &&
         other.lastName == lastName &&
+        other.dateOfBirth == dateOfBirth &&
         other.address == address &&
         other.photoUrl == photoUrl &&
         other.createdAt == createdAt &&
@@ -118,6 +128,7 @@ class UserModel {
     return uid.hashCode ^
         firstName.hashCode ^
         lastName.hashCode ^
+        dateOfBirth.hashCode ^
         address.hashCode ^
         photoUrl.hashCode ^
         createdAt.hashCode ^

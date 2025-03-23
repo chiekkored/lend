@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:lend/core/mixins/auth.mixin.dart';
+
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/user.model.dart';
@@ -14,10 +14,10 @@ import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/pages/asset/widgets/all_prices.widget.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
-import 'package:lend/utilities/enums/status.enum.dart';
+import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
-class AssetController extends GetxController with AuthMixin {
+class AssetController extends GetxController {
   static final instance = Get.find<AssetController>();
 
   final Rx<Asset?> _asset = Rx<Asset?>(Get.arguments['asset']);
@@ -266,7 +266,7 @@ class AssetController extends GetxController with AuthMixin {
           createdAt: Timestamp.now(),
           payment: Payment(method: 'debit', transactionId: '123456'),
           renterId: AuthController.instance.uid,
-          status: Status.confirmed.label,
+          status: BookingStatus.confirmed.label,
           totalPrice: totalPrice,
         ).toMap(),
       );
@@ -287,6 +287,6 @@ class AssetController extends GetxController with AuthMixin {
       !(asset?.availability?.any((av) => av.toDate() == date) ?? true);
 
   void addBookmark() async {
-    if (checkAuth()) return;
+    if (AuthController.instance.isAuthenticated) return;
   }
 }

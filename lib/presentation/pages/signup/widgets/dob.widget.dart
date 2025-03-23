@@ -11,7 +11,10 @@ class DateOfBirth extends GetWidget<SignUpController> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime selectedDate = DateTime.now();
+    DateTime selectedDate =
+        controller.dobController.text.isNotEmpty
+            ? DateFormat('MMMM dd, yyyy').parse(controller.dobController.text)
+            : DateTime.now();
 
     return Container(
       color: Colors.white,
@@ -36,6 +39,7 @@ class DateOfBirth extends GetWidget<SignUpController> {
             height: 300.0,
             padding: const EdgeInsets.all(16.0),
             child: CupertinoDatePicker(
+              initialDateTime: selectedDate,
               mode: CupertinoDatePickerMode.date,
               onDateTimeChanged: (DateTime value) {
                 selectedDate = value;

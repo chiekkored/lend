@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lend/core/bindings/navigation/navigation.binding.dart';
+import 'package:lend/core/models/user.model.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
-import 'package:lend/presentation/pages/navigation/navigation.page.dart';
+import 'package:lend/utilities/enums/user_types.enum.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'package:lend/presentation/common/loading.common.dart';
@@ -214,7 +215,21 @@ class SigninController extends GetxController {
     }
 
     if ((userCredential.additionalUserInfo?.isNewUser ?? false)) {
-      await AuthController.instance.registerToFirestore(userCredential);
+      final UserModel user = UserModel(
+        uid: userCredential.user?.uid,
+        firstName: userCredential.user?.displayName?.split(' ')[0] ?? '',
+        lastName: userCredential.user?.displayName?.split(' ')[1] ?? '',
+        dateOfBirth: null,
+        address: '',
+        photoUrl: userCredential.user?.photoURL ?? '',
+        createdAt: Timestamp.now(),
+        email: userCredential.user?.email ?? '',
+        phone: userCredential.user?.phoneNumber ?? '',
+        type: UserType.renter.label,
+        verified: userCredential.user?.emailVerified,
+      );
+
+      await AuthController.instance.registerToFirestore(user: user);
     }
     _successSignin();
   }
@@ -223,6 +238,8 @@ class SigninController extends GetxController {
   void _successSignin() {
     // AppController.instance.setBiometricsButtonVisibility(true);
     LNDLoading.hide();
-    Get.offAll(() => const NavigationPage(), binding: NavigationBinding());
+    // Get.offAll(() => const NavigationPage(), binding: NavigationBinding());
+
+    Get.until((page) => page.isFirst);
   }
 }

@@ -4,6 +4,7 @@ import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/navigation/components/profile/widgets/profile_appbar.widget.dart';
+import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 
@@ -31,23 +32,25 @@ class ProfilePage extends GetView<ProfileController> {
                   borderRadius: BorderRadius.circular(16.0),
                   border: Border.all(color: LNDColors.outline),
                 ),
-                child:
-                    !controller.isAuthenticated
-                        ? _SigninView()
-                        : ListTile(
-                          leading: const CircleAvatar(radius: 24.0),
-                          title: LNDText.regular(text: 'Chiekko Red Alino'),
-                          subtitle: LNDText.regular(
-                            text: 'View Profile',
-                            color: LNDColors.gray,
-                            fontSize: 12.0,
+                child: Obx(
+                  () =>
+                      !controller.isAuthenticated
+                          ? _SigninView()
+                          : ListTile(
+                            leading: const CircleAvatar(radius: 24.0),
+                            title: LNDText.regular(text: 'Chiekko Red Alino'),
+                            subtitle: LNDText.regular(
+                              text: 'View Profile',
+                              color: LNDColors.gray,
+                              fontSize: 12.0,
+                            ),
+                            trailing: const Icon(
+                              Icons.chevron_right_rounded,
+                              color: LNDColors.gray,
+                              size: 30.0,
+                            ),
                           ),
-                          trailing: const Icon(
-                            Icons.chevron_right_rounded,
-                            color: LNDColors.gray,
-                            size: 30.0,
-                          ),
-                        ),
+                ),
               ),
               ColoredBox(
                 color: LNDColors.white,
@@ -120,7 +123,10 @@ class _SigninView extends GetView<ProfileController> {
           LNDButton.primary(
             text: 'Sign in',
             enabled: true,
-            onPressed: controller.checkAuth,
+            onPressed:
+                controller.isAuthenticated
+                    ? null
+                    : () => Get.toNamed(SigninPage.routeName),
           ),
         ],
       ).withSpacing(8.0),

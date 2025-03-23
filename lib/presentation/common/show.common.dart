@@ -12,15 +12,14 @@ class LNDShow {
     double? height,
     bool enableDrag = true,
     bool hasPadding = true,
+    bool isDismissible = true,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
   }) {
     return Get.bottomSheet(
       Container(
         height: height,
         width: Get.width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
         padding: const EdgeInsets.only(
           top: 8.0,
           left: 16.0,
@@ -47,6 +46,7 @@ class LNDShow {
       ),
       backgroundColor: LNDColors.white,
       enableDrag: enableDrag,
+      isDismissible: isDismissible,
     );
   }
 
@@ -63,63 +63,59 @@ class LNDShow {
     if (Platform.isIOS) {
       return showCupertinoDialog<T>(
         context: Get.context!,
-        builder: (context) => CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: [
-            CupertinoDialogAction(
-              onPressed: () {
-                onCancel?.call();
-                Get.back();
-              },
-              child: Text(
-                cancelText,
-                style: TextStyle(color: cancelColor),
-              ),
+        builder:
+            (context) => CupertinoAlertDialog(
+              title: Text(title),
+              content: Text(content),
+              actions: [
+                CupertinoDialogAction(
+                  onPressed: () {
+                    onCancel?.call();
+                    Get.back();
+                  },
+                  child: Text(cancelText, style: TextStyle(color: cancelColor)),
+                ),
+                CupertinoDialogAction(
+                  onPressed: () {
+                    onConfirm?.call();
+                    Get.back();
+                  },
+                  isDefaultAction: true,
+                  child: Text(
+                    confirmText,
+                    style: TextStyle(color: confirmColor),
+                  ),
+                ),
+              ],
             ),
-            CupertinoDialogAction(
-              onPressed: () {
-                onConfirm?.call();
-                Get.back();
-              },
-              isDefaultAction: true,
-              child: Text(
-                confirmText,
-                style: TextStyle(color: confirmColor),
-              ),
-            ),
-          ],
-        ),
       );
     } else {
       return showDialog<T>(
         context: Get.context!,
-        builder: (context) => AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: [
-            TextButton(
-              onPressed: () {
-                onCancel?.call();
-                Navigator.pop(context);
-              },
-              child: Text(
-                cancelText,
-                style: TextStyle(color: cancelColor),
-              ),
+        builder:
+            (context) => AlertDialog(
+              title: Text(title),
+              content: Text(content),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    onCancel?.call();
+                    Navigator.pop(context);
+                  },
+                  child: Text(cancelText, style: TextStyle(color: cancelColor)),
+                ),
+                TextButton(
+                  onPressed: () {
+                    onConfirm?.call();
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    confirmText,
+                    style: TextStyle(color: confirmColor),
+                  ),
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                onConfirm?.call();
-                Navigator.pop(context);
-              },
-              child: Text(
-                confirmText,
-                style: TextStyle(color: confirmColor),
-              ),
-            ),
-          ],
-        ),
       );
     }
   }

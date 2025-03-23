@@ -42,58 +42,16 @@ class SignUpPage extends GetView<SignUpController> {
                         children: [
                           LNDTextField.regular(
                             hintText: 'Email',
+                            autofocus: true,
                             controller: controller.emailController,
                             keyboardType: TextInputType.emailAddress,
                             prefixIcon: FontAwesomeIcons.solidEnvelope,
+                            textInputAction: TextInputAction.done,
                             prefixIconColor: LNDColors.gray,
                             prefixIconSize: 16.0,
                             validator: controller.validateEmail,
+                            onFieldSubmitted: (_) => controller.goToSetup(),
                           ),
-                          // Obx(
-                          //   () => LNDTextField.regular(
-                          //     hintText: 'Password',
-                          //     controller: controller.passwordController,
-                          //     keyboardType: TextInputType.visiblePassword,
-                          //     obscureText: !controller.showObscureText,
-                          //     prefixIcon: FontAwesomeIcons.lock,
-                          //     prefixIconColor: LNDColors.gray,
-                          //     prefixIconSize: 16.0,
-                          //     textInputAction: TextInputAction.next,
-                          //     textCapitalization: TextCapitalization.none,
-                          //     suffixIcon:
-                          //         controller.showObscureText
-                          //             ? FontAwesomeIcons.solidEye
-                          //             : FontAwesomeIcons.solidEyeSlash,
-                          //     suffixIconSize: 16.0,
-                          //     onTapSuffix: controller.togglePasswordVisibility,
-                          //     validator: controller.validatePassword,
-                          //   ),
-                          // ),
-                          // Obx(
-                          //   () => LNDTextField.regular(
-                          //     hintText: 'Confirm Password',
-                          //     controller: controller.confirmPasswordController,
-                          //     keyboardType: TextInputType.visiblePassword,
-                          //     obscureText: !controller.showObscureConfirmText,
-                          //     prefixIcon: FontAwesomeIcons.lock,
-                          //     prefixIconColor: LNDColors.gray,
-                          //     prefixIconSize: 16.0,
-                          //     textInputAction: TextInputAction.done,
-                          //     textCapitalization: TextCapitalization.none,
-                          //     suffixIcon:
-                          //         controller.showObscureConfirmText
-                          //             ? FontAwesomeIcons.solidEye
-                          //             : FontAwesomeIcons.solidEyeSlash,
-                          //     suffixIconSize: 16.0,
-                          //     onTapSuffix:
-                          //         controller.toggleConfirmPasswordVisibility,
-                          //     validator:
-                          //         (value) => controller.validateConfirmPassword(
-                          //           controller.passwordController.text,
-                          //           value,
-                          //         ),
-                          //   ),
-                          // ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
                             child: LNDButton.primary(
