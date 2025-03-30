@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
+import 'package:lend/core/bindings/post_listing/post_listing.binding.dart';
 import 'package:lend/core/bindings/root.binding.dart';
 import 'package:lend/core/bindings/signin/signin.binding.dart';
 import 'package:lend/core/bindings/signup/signup.binding.dart';
@@ -11,6 +12,7 @@ import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
+import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/components/setup.page.dart';
@@ -35,8 +37,7 @@ class Root extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: LNDColors.outline,
-        primarySwatch: Colors.green,
-        splashColor: LNDColors.primary,
+        splashFactory: NoSplash.splashFactory,
         fontFamily: 'Inter',
       ),
       initialBinding: RootBinding(),
@@ -79,6 +80,12 @@ class Root extends StatelessWidget {
         GetPage(
           name: ProductShowcasePage.routeName,
           page: () => ProductShowcasePage(),
+        ),
+        GetPage(
+          name: PostListingPage.routeName,
+          page: () => const PostListingPage(),
+          binding: PostListingBinding(),
+          fullscreenDialog: true,
         ),
       ],
       initialRoute: NavigationPage.routeName,

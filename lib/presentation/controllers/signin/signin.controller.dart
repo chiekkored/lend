@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lend/core/models/user.model.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/utilities/enums/eligibility.enum.dart';
 import 'package:lend/utilities/enums/user_types.enum.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -226,7 +227,8 @@ class SigninController extends GetxController {
         email: userCredential.user?.email ?? '',
         phone: userCredential.user?.phoneNumber ?? '',
         type: UserType.renter.label,
-        verified: userCredential.user?.emailVerified,
+        isListingEligible: Eligibility.no,
+        isRentingEligible: Eligibility.no,
       );
 
       await AuthController.instance.registerToFirestore(user: user);

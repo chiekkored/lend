@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:lend/utilities/enums/eligibility.enum.dart';
+
 class UserModel {
   String? uid;
   String? firstName;
@@ -14,7 +16,8 @@ class UserModel {
   String? email;
   String? phone;
   String? type;
-  bool? verified;
+  Eligibility? isListingEligible;
+  Eligibility? isRentingEligible;
   UserModel({
     required this.uid,
     required this.firstName,
@@ -26,7 +29,8 @@ class UserModel {
     required this.email,
     required this.phone,
     required this.type,
-    required this.verified,
+    required this.isListingEligible,
+    required this.isRentingEligible,
   });
 
   UserModel copyWith({
@@ -40,7 +44,8 @@ class UserModel {
     String? email,
     String? phone,
     String? type,
-    bool? verified,
+    Eligibility? isListingEligible,
+    Eligibility? isRentingEligible,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -53,7 +58,8 @@ class UserModel {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       type: type ?? this.type,
-      verified: verified ?? this.verified,
+      isListingEligible: isListingEligible ?? this.isListingEligible,
+      isRentingEligible: isRentingEligible ?? this.isRentingEligible,
     );
   }
 
@@ -72,7 +78,8 @@ class UserModel {
       'email': email,
       'phone': phone,
       'type': type,
-      'verified': verified,
+      'isListingEligible': isListingEligible?.label,
+      'isRentingEligible': isRentingEligible?.label,
     };
   }
 
@@ -92,7 +99,14 @@ class UserModel {
       email: map['email'] != null ? map['email'] as String : null,
       phone: map['phone'] != null ? map['phone'] as String : null,
       type: map['type'] != null ? map['type'] as String : null,
-      verified: map['verified'] != null ? map['verified'] as bool : null,
+      isListingEligible: Eligibility.values.firstWhere(
+        (element) => element.label == map['isListingEligible'],
+        orElse: () => Eligibility.no,
+      ),
+      isRentingEligible: Eligibility.values.firstWhere(
+        (element) => element.label == map['isRentingEligible'],
+        orElse: () => Eligibility.no,
+      ),
     );
   }
 
@@ -103,7 +117,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, address: $address, photoUrl: $photoUrl, createdAt: $createdAt, email: $email, phone: $phone, type: $type, verified: $verified)';
+    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, address: $address, photoUrl: $photoUrl, createdAt: $createdAt, email: $email, phone: $phone, type: $type, isListingEligible: $isListingEligible, isRentingEligible: $isRentingEligible)';
   }
 
   @override
@@ -120,7 +134,8 @@ class UserModel {
         other.email == email &&
         other.phone == phone &&
         other.type == type &&
-        other.verified == verified;
+        other.isListingEligible == isListingEligible &&
+        other.isRentingEligible == isRentingEligible;
   }
 
   @override
@@ -135,6 +150,7 @@ class UserModel {
         email.hashCode ^
         phone.hashCode ^
         type.hashCode ^
-        verified.hashCode;
+        isListingEligible.hashCode ^
+        isRentingEligible.hashCode;
   }
 }

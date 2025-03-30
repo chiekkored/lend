@@ -69,7 +69,7 @@ class LNDButton extends StatelessWidget {
       text: text,
       enabled: enabled,
       onPressed: onPressed,
-      color: LNDColors.hint,
+      color: LNDColors.outline,
       textColor: textColor,
       isLoading: isLoading,
       hasPadding: hasPadding,

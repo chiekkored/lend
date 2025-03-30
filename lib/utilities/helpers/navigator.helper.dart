@@ -3,6 +3,7 @@ import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
+import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/signup.page.dart';
@@ -34,5 +35,11 @@ class LNDNavigate {
 
   static Future<T?>? toCalendarPage<T>() async {
     return await Get.toNamed(CalendarPage.routeName);
+  }
+
+  static Future<T?>? toPostListing<T>({
+    required PostListingArguments? args,
+  }) async {
+    return await Get.toNamed(PostListingPage.routeName, arguments: args);
   }
 }

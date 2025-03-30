@@ -51,3 +51,24 @@ extension DateFormatter on DateTime {
     return DateFormat('QQQ yyyy').format(this);
   }
 }
+
+extension StringFormatter on String {
+  /// Converts a string to a String with comma
+  String toMoney() {
+    // Check if the string is a number
+    if (double.tryParse(this) == null) {
+      return this;
+    }
+    // Add commas to the number
+    final numberParts = split('.');
+    final formattedNumber = numberParts[0].replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+      (Match match) => '${match[1]},',
+    );
+    final formattedText =
+        numberParts.length > 1
+            ? '$formattedNumber.${numberParts[1]}'
+            : formattedNumber;
+    return formattedText;
+  }
+}

@@ -13,6 +13,7 @@ import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/pages/signup/components/setup.page.dart';
 import 'package:lend/presentation/pages/signup/widgets/dob.widget.dart';
+import 'package:lend/utilities/enums/eligibility.enum.dart';
 import 'package:lend/utilities/enums/user_types.enum.dart';
 
 class SignUpController extends GetxController with TextFieldsMixin {
@@ -97,7 +98,8 @@ class SignUpController extends GetxController with TextFieldsMixin {
           email: email,
           phone: '',
           type: UserType.renter.label,
-          verified: false,
+          isListingEligible: Eligibility.no,
+          isRentingEligible: Eligibility.no,
         );
 
         await AuthController.instance.registerToFirestore(user: user);

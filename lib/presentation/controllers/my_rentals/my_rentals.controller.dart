@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:lend/core/mixins/auth.mixin.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/booking.model.dart';
-import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/helpers/navigator.helper.dart';
 
 class MyRentalsController extends GetxController with AuthMixin {
   static MyRentalsController get instance => Get.find<MyRentalsController>();
@@ -34,6 +34,10 @@ class MyRentalsController extends GetxController with AuthMixin {
   }
 
   void goToAsset(Asset? asset) {
-    Get.toNamed(AssetPage.routeName, arguments: asset);
+    LNDNavigate.toAssetPage(args: asset);
+  }
+
+  void goToPostListing() {
+    LNDNavigate.toPostListing(args: null);
   }
 }
