@@ -73,15 +73,20 @@ class PostListingPage extends GetView<PostListingController> {
                 ),
                 _buildTextBox(
                   textController: controller.descriptionController,
+                  required: false,
                   text: 'Description',
                   subtitle:
                       'Describe your product in detail, highlighting key features and specifications.',
                 ),
                 _buildTextField(
                   textController: controller.categoryController,
+                  required: true,
                   text: 'Category',
                   subtitle: 'Select the category that best fits your product.',
-                  required: true,
+                  readOnly: true,
+                  onTap: () {
+                    controller.showCategories(context);
+                  },
                 ),
                 _buildRateField(
                   textController: controller.dailyPriceController,
@@ -400,6 +405,7 @@ class PostListingPage extends GetView<PostListingController> {
   Widget _buildTextBox({
     required TextEditingController textController,
     required String text,
+    required bool required,
     String? subtitle,
     String? example,
   }) {
@@ -414,7 +420,10 @@ class PostListingPage extends GetView<PostListingController> {
             labelText: text,
             borderRadius: 12.0,
             helperText: subtitle,
-            validator: (value) => controller.validateField(value, label: text),
+            validator:
+                required
+                    ? (value) => controller.validateField(value, label: text)
+                    : null,
           ),
           if (example?.isNotEmpty ?? false)
             LNDText.regular(

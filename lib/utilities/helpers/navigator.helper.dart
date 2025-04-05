@@ -8,11 +8,12 @@ import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/add_inclusions.widget.dart';
+import 'package:lend/presentation/pages/post_listing/widgets/categories.widget.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/location_picker.widget.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/signup.page.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:lend/utilities/enums/categories.enum.dart';
 
 class LNDNavigate {
   LNDNavigate._();
@@ -59,14 +60,14 @@ class LNDNavigate {
     required BuildContext context,
   }) async {
     // Suggestion: Return a value from the modal bottom sheet
-    return CupertinoScaffold.showCupertinoModalBottomSheet(
-      context: context,
+    return LNDShow.modalSheet(
+      context,
       expand: true,
-      builder: (_) => const AddInclusions(),
+      content: const AddInclusions(),
     );
   }
 
-  static Future<LocationCallbackModel?>? showLocationPicker<T>({
+  static Future<LocationCallbackModel?>? showLocationPicker({
     required BuildContext context,
     required LocationCallbackModel? location,
   }) async {
@@ -76,6 +77,17 @@ class LNDNavigate {
       enableDrag: false,
       expand: false,
       isDismissible: false,
+    );
+  }
+
+  static Future<Categories?>? showCategories({
+    required BuildContext context,
+    required Categories? category,
+  }) async {
+    return LNDShow.modalSheet(
+      context,
+      expand: true,
+      content: CategoriesW(category: category),
     );
   }
 }

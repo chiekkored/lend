@@ -15,6 +15,9 @@ class LocationPickerW extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final focusNode = FocusNode();
+    focusNode.requestFocus();
+
     return GetBuilder(
       init: LocationPickerController(locationCallback: locationCallback),
       builder:
@@ -31,6 +34,7 @@ class LocationPickerW extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: GooglePlaceAutoCompleteTextField(
+                      focusNode: focusNode,
                       textEditingController: controller.locationController,
                       googleAPIKey: dotenv.env['GOOGLE_MAPS_PLACES_API_KEY']!,
                       isLatLngRequired: true,

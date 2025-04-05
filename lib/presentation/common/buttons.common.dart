@@ -216,7 +216,7 @@ class LNDButton extends StatelessWidget {
     Color? color,
     bool isLoading = false,
     bool hasPadding = true,
-    double size = 30,
+    double size = 20,
   }) {
     return LNDButton._(
       text: '',

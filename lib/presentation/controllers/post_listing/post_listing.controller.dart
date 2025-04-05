@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
+import 'package:lend/utilities/enums/categories.enum.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
 
 import 'package:lend/core/mixins/textfields.mixin.dart';
@@ -150,6 +151,21 @@ class PostListingController extends GetxController with TextFieldsMixin {
           result.latLng?.longitude ?? 0.0,
         ),
       );
+    }
+  }
+
+  void showCategories(BuildContext context) async {
+    final result = await LNDNavigate.showCategories(
+      context: context,
+      category:
+          categoryController.text.isNotEmpty
+              ? Categories.values
+                  .where((element) => element.label == categoryController.text)
+                  .first
+              : null,
+    );
+    if (result != null) {
+      categoryController.text = result.label;
     }
   }
 
