@@ -1,13 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lend/core/models/location.model.dart';
+import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
+import 'package:lend/utilities/helpers/navigator.helper.dart';
 
 import 'package:lend/core/mixins/textfields.mixin.dart';
 import 'package:lend/presentation/common/show.common.dart';
-import 'package:lend/presentation/pages/post_listing/widgets/add_inclusions.widget.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/availability.widget.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/edit_rates.widget.dart';
-import 'package:lend/presentation/pages/post_listing/widgets/location_picker.widget.dart';
 import 'package:lend/utilities/enums/availability.enum.dart';
 import 'package:lend/utilities/extensions/string.extension.dart';
 
@@ -35,6 +37,8 @@ class PostListingController extends GetxController with TextFieldsMixin {
 
   final RxList<String> inclusions = <String>[].obs;
   final Rx<Availability> availability = Availability.available.obs;
+
+  Location? _location;
 
   @override
   void onInit() {
@@ -119,21 +123,34 @@ class PostListingController extends GetxController with TextFieldsMixin {
   void showAddInclusions(BuildContext context) {
     inclusionController.clear();
 
-    CupertinoScaffold.showCupertinoModalBottomSheet(
-      context: context,
-      expand: true,
-      builder: (_) => const AddInclusions(),
-    );
+    LNDNavigate.showAddInclusions(context: context);
   }
 
-  void showLocationPicker(BuildContext context) {
-    LNDShow.modalSheet(
-      context,
-      content: const LocationPickerW(),
-      enableDrag: false,
-      expand: false,
-      isDismissible: false,
+  void showLocationPicker(BuildContext context) async {
+    final result = await LNDNavigate.showLocationPicker(
+      context: context,
+      location:
+          locationController.text.isNotEmpty
+              ? LocationCallbackModel(
+                address: locationController.text,
+                latLng: LatLng(
+                  _location?.latLng?.latitude ?? 0.0,
+                  _location?.latLng?.longitude ?? 0.0,
+                ),
+              )
+              : null,
     );
+
+    if (result != null) {
+      locationController.text = result.address ?? '';
+      _location = Location(
+        description: result.address ?? '',
+        latLng: GeoPoint(
+          result.latLng?.latitude ?? 0.0,
+          result.latLng?.longitude ?? 0.0,
+        ),
+      );
+    }
   }
 
   void showAvailability() {
@@ -166,5 +183,6 @@ class PostListingController extends GetxController with TextFieldsMixin {
     debugPrint('weeklyPriceController: ${weeklyPriceController.text}');
     debugPrint('monthlyPriceController: ${monthlyPriceController.text}');
     debugPrint('annualPriceController: ${annualPriceController.text}');
+    // debugPrint('location: ${_location}');
   }
 }

@@ -53,8 +53,8 @@ class AssetController extends GetxController {
 
   CameraPosition get cameraPosition => CameraPosition(
     target: LatLng(
-      asset?.location?.latitude ?? 0.0,
-      asset?.location?.longitude ?? 0.0,
+      asset?.location?.latLng?.latitude ?? 0.0,
+      asset?.location?.latLng?.longitude ?? 0.0,
     ),
     zoom: 13,
   );

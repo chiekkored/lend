@@ -10,12 +10,13 @@ import 'package:lend/presentation/controllers/location_picker/location_picker.co
 import 'package:lend/utilities/constants/colors.constant.dart';
 
 class LocationPickerW extends StatelessWidget {
-  const LocationPickerW({super.key});
+  final LocationCallbackModel? locationCallback;
+  const LocationPickerW({super.key, this.locationCallback});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: LocationPickerController(),
+      init: LocationPickerController(locationCallback: locationCallback),
       builder:
           (controller) => GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -28,10 +29,7 @@ class LocationPickerW extends StatelessWidget {
               body: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 0.0,
-                      vertical: 8.0,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: GooglePlaceAutoCompleteTextField(
                       textEditingController: controller.locationController,
                       googleAPIKey: dotenv.env['GOOGLE_MAPS_PLACES_API_KEY']!,
@@ -89,11 +87,15 @@ class LocationPickerW extends StatelessWidget {
                   ),
                   SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      padding: const EdgeInsets.only(
+                        left: 24.0,
+                        right: 24.0,
+                        top: 8.0,
+                      ),
                       child: LNDButton.primary(
                         text: 'Apply',
                         enabled: true,
-                        onPressed: () {},
+                        onPressed: controller.applyLocation,
                         hasPadding: false,
                       ),
                     ),

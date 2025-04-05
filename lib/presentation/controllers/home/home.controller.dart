@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
@@ -105,7 +106,10 @@ class HomeController extends GetxController {
         // Timestamp.fromDate(DateTime(2025, 3, 21)),
         // Timestamp.fromDate(DateTime(2025, 3, 22)),
       ],
-      location: const GeoPoint(10.6840, 122.9563),
+      location: Location(
+        description: '123 Main St, Springfield, USA',
+        latLng: const GeoPoint(37.7749, -122.4194),
+      ),
       images: [
         'https://www.the-digital-picture.com/Images/Review/Canon-EOS-R5.jpg',
         'https://www.dpreview.com/files/p/articles/7757595702/20200709-Canon-EOS-R5-Product-Images-1.jpeg',

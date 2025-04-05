@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
-import 'package:lend/utilities/helpers/navigator.helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LocationCallbackModel {
@@ -16,15 +15,22 @@ class LocationCallbackModel {
 }
 
 class LocationPickerController extends GetxController {
+  final LocationCallbackModel? locationCallback;
+  LocationPickerController({this.locationCallback});
+
   static final LocationPickerController instance =
       Get.find<LocationPickerController>();
 
   final locationController = TextEditingController();
 
+  final _zoomLevel = 14.0;
+
   Rx<CameraPosition> cameraPosition =
       const CameraPosition(target: LatLng(0, 0), zoom: 14.0).obs;
 
-  final Rx<LatLng?> _currentPosition = const LatLng(0, 0).obs;
+  final Rx<LatLng> _currentPosition = const LatLng(0, 0).obs;
+
+  final Rx<LatLng> _pinnedPosition = const LatLng(0, 0).obs;
 
   final marker = <Marker>{}.obs;
 
@@ -35,6 +41,8 @@ class LocationPickerController extends GetxController {
     locationController.dispose();
     mapController?.dispose();
     cameraPosition.close();
+    _currentPosition.close();
+    _pinnedPosition.close();
     marker.close();
 
     super.onClose();
@@ -44,6 +52,26 @@ class LocationPickerController extends GetxController {
   void onInit() {
     super.onInit();
     _getCurrentLocation();
+  }
+
+  @override
+  void onReady() {
+    _setInitialValues();
+
+    super.onReady();
+  }
+
+  void _setInitialValues() {
+    if (locationCallback != null) {
+      locationController.text = locationCallback?.address ?? '';
+
+      updateCameraWithMarker(
+        LatLng(
+          locationCallback?.latLng?.latitude ?? 0.0,
+          locationCallback?.latLng?.longitude ?? 0.0,
+        ),
+      );
+    }
   }
 
   Future<bool> _getCurrentLocation() async {
@@ -68,7 +96,7 @@ class LocationPickerController extends GetxController {
       // Update camera position
       cameraPosition.value = CameraPosition(
         target: LatLng(position.latitude, position.longitude),
-        zoom: 14.0,
+        zoom: _zoomLevel,
       );
 
       // Update current location
@@ -112,6 +140,8 @@ class LocationPickerController extends GetxController {
     mapController?.animateCamera(
       CameraUpdate.newCameraPosition(cameraPosition.value),
     );
+
+    _pinnedPosition.value = latLng;
   }
 
   void _showPermissionDeniedMessage() {
@@ -140,32 +170,25 @@ class LocationPickerController extends GetxController {
     marker.clear();
     mapController?.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: _currentPosition.value ?? const LatLng(0, 0),
-          zoom: 14.0,
-        ),
+        CameraPosition(target: _currentPosition.value, zoom: _zoomLevel),
       ),
     );
   }
 
   void applyLocation() {
-    LNDNavigate().showLocationPicker(
-      location: locationController.text,
-      latLng: LatLng(
-        cameraPosition.value.target.latitude,
-        cameraPosition.value.target.longitude,
-      ),
-    );
     // Logic to apply the selected location
     // For example, you might want to save the location or update the UI
     Get.back<LocationCallbackModel>(
-      result: LocationCallbackModel(
-        address: locationController.text,
-        latLng: LatLng(
-          cameraPosition.value.target.latitude,
-          cameraPosition.value.target.longitude,
-        ),
-      ),
+      result:
+          locationController.text.isNotEmpty
+              ? LocationCallbackModel(
+                address: locationController.text,
+                latLng: LatLng(
+                  _pinnedPosition.value.latitude,
+                  _pinnedPosition.value.longitude,
+                ),
+              )
+              : null,
     );
   }
 }

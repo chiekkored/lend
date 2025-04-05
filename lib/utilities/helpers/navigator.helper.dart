@@ -1,15 +1,20 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/presentation/common/show.common.dart';
+import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
+import 'package:lend/presentation/pages/post_listing/widgets/add_inclusions.widget.dart';
+import 'package:lend/presentation/pages/post_listing/widgets/location_picker.widget.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/signup.page.dart';
-import 'package:lend/utilities/helpers/bottom_sheet.helper.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class LNDNavigate extends NavigatorBottomSheetHelper {
+class LNDNavigate {
   LNDNavigate._();
   static final LNDNavigate _instance = LNDNavigate._();
   factory LNDNavigate() {
@@ -50,31 +55,27 @@ class LNDNavigate extends NavigatorBottomSheetHelper {
     return await Get.toNamed(PostListingPage.routeName, arguments: args);
   }
 
-  @override
-  String showLocationPicker<T>() {
-    return LNDShow.bottomSheet(
-      LocationPickerPage(),
+  static Future<T?>? showAddInclusions<T>({
+    required BuildContext context,
+  }) async {
+    // Suggestion: Return a value from the modal bottom sheet
+    return CupertinoScaffold.showCupertinoModalBottomSheet(
+      context: context,
       expand: true,
-      isDismissible: true,
-      enableDrag: true,
+      builder: (_) => const AddInclusions(),
     );
   }
 
-  @override
-  String showInclusions<T>({
-    required List<String> inclusions,
-    bool isEditable = false,
-  }) {
-    // TODO: implement showInclusions
-    throw UnimplementedError();
+  static Future<LocationCallbackModel?>? showLocationPicker<T>({
+    required BuildContext context,
+    required LocationCallbackModel? location,
+  }) async {
+    return LNDShow.modalSheet<LocationCallbackModel?>(
+      context,
+      content: LocationPickerW(locationCallback: location),
+      enableDrag: false,
+      expand: false,
+      isDismissible: false,
+    );
   }
-}
-
-abstract class NavigatorBottomSheetHelper {
-  String showLocationPicker<T>();
-
-  String showInclusions<T>({
-    required List<String> inclusions,
-    bool isEditable = false,
-  });
 }

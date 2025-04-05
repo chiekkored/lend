@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:lend/core/models/availability.model.dart';
+import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
 
 class Asset {
@@ -15,7 +16,7 @@ class Asset {
   String? category;
   Rates? rates;
   List<Availability>? availability;
-  GeoPoint? location;
+  Location? location;
   List<String>? images;
   List<String>? showcase;
   List<String>? inclusions;
@@ -45,7 +46,7 @@ class Asset {
     String? category,
     Rates? rates,
     List<Availability>? availability,
-    GeoPoint? location,
+    Location? location,
     List<String>? images,
     List<String>? showcase,
     List<String>? inclusions,
@@ -78,10 +79,7 @@ class Asset {
       'category': category,
       'rates': rates?.toMap(),
       'availability': availability?.map((x) => x.toMap()).toList(),
-      'location':
-          location != null
-              ? GeoPoint(location!.latitude, location!.longitude)
-              : null,
+      'location': location?.toMap(),
       'images': images,
       'showcase': showcase,
       'inclusions': inclusions,
@@ -113,7 +111,10 @@ class Asset {
                 ),
               )
               : null,
-      location: map['location'] != null ? map['location'] as GeoPoint : null,
+      location:
+          map['location'] != null
+              ? Location.fromMap(map['location'] as Map<String, dynamic>)
+              : null,
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
       showcase:
           map['showcase'] != null ? List<String>.from((map['showcase'])) : null,
