@@ -20,6 +20,7 @@ class LNDButton extends StatelessWidget {
   final double iconSize;
   final ButtonStyle? style;
   final Widget? child;
+  final bool isBold;
 
   const LNDButton._({
     required this.text,
@@ -36,6 +37,7 @@ class LNDButton extends StatelessWidget {
     this.icon,
     this.style,
     this.child,
+    this.isBold = false,
   });
 
   factory LNDButton.primary({
@@ -127,6 +129,7 @@ class LNDButton extends StatelessWidget {
     bool isLoading = false,
     bool hasPadding = true,
     double size = 14.0,
+    bool isBold = false,
   }) {
     return LNDButton._(
       text: text,
@@ -137,6 +140,7 @@ class LNDButton extends StatelessWidget {
       hasPadding: hasPadding,
       isButtonText: true,
       iconSize: size,
+      isBold: isBold,
     );
   }
 
@@ -258,6 +262,12 @@ class LNDButton extends StatelessWidget {
                       size: iconSize,
                       color: enabled ? color : LNDColors.black,
                     )
+                : isBold
+                ? LNDText.bold(
+                  text: text,
+                  color: enabled ? color : LNDColors.disabled,
+                  fontSize: iconSize,
+                )
                 : LNDText.medium(
                   text: text,
                   color: enabled ? color : LNDColors.disabled,

@@ -41,7 +41,7 @@ class SignUpPage extends GetView<SignUpController> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           LNDTextField.regular(
-                            hintText: 'Email',
+                            labelText: 'Email',
                             autofocus: true,
                             controller: controller.emailController,
                             keyboardType: TextInputType.emailAddress,

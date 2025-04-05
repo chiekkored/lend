@@ -7,8 +7,15 @@ import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/signup.page.dart';
+import 'package:lend/utilities/helpers/bottom_sheet.helper.dart';
 
-class LNDNavigate {
+class LNDNavigate extends NavigatorBottomSheetHelper {
+  LNDNavigate._();
+  static final LNDNavigate _instance = LNDNavigate._();
+  factory LNDNavigate() {
+    return _instance;
+  }
+
   static Future<T?>? toSigninPage<T>() async {
     return await Get.toNamed(SigninPage.routeName);
   }
@@ -42,4 +49,32 @@ class LNDNavigate {
   }) async {
     return await Get.toNamed(PostListingPage.routeName, arguments: args);
   }
+
+  @override
+  String showLocationPicker<T>() {
+    return LNDShow.bottomSheet(
+      LocationPickerPage(),
+      expand: true,
+      isDismissible: true,
+      enableDrag: true,
+    );
+  }
+
+  @override
+  String showInclusions<T>({
+    required List<String> inclusions,
+    bool isEditable = false,
+  }) {
+    // TODO: implement showInclusions
+    throw UnimplementedError();
+  }
+}
+
+abstract class NavigatorBottomSheetHelper {
+  String showLocationPicker<T>();
+
+  String showInclusions<T>({
+    required List<String> inclusions,
+    bool isEditable = false,
+  });
 }

@@ -38,7 +38,7 @@ class SetupPage extends GetView<SignUpController> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       LNDTextField.regular(
-                        hintText: 'Email',
+                        labelText: 'Email',
                         controller: controller.emailController,
                         keyboardType: TextInputType.emailAddress,
                         prefixIcon: FontAwesomeIcons.solidEnvelope,
@@ -54,7 +54,7 @@ class SetupPage extends GetView<SignUpController> {
                       Column(
                         children: [
                           LNDTextField.regular(
-                            hintText: 'First Name',
+                            labelText: 'First Name',
                             controller: controller.firstNameController,
                             validator:
                                 (value) => controller.validateField(
@@ -63,7 +63,7 @@ class SetupPage extends GetView<SignUpController> {
                                 ),
                           ),
                           LNDTextField.regular(
-                            hintText: 'Last Name',
+                            labelText: 'Last Name',
                             controller: controller.lastNameController,
                             validator:
                                 (value) => controller.validateField(
@@ -85,7 +85,7 @@ class SetupPage extends GetView<SignUpController> {
                       Column(
                         children: [
                           LNDTextField.regular(
-                            hintText: 'Date of Birth',
+                            labelText: 'Date of Birth',
                             controller: controller.dobController,
                             readOnly: true,
                             validator: controller.validateDateOfBirth,
@@ -105,7 +105,7 @@ class SetupPage extends GetView<SignUpController> {
                         children: [
                           Obx(
                             () => LNDTextField.regular(
-                              hintText: 'Password',
+                              labelText: 'Password',
                               controller: controller.passwordController,
                               keyboardType: TextInputType.visiblePassword,
                               obscureText: !controller.showObscureText,
@@ -125,7 +125,7 @@ class SetupPage extends GetView<SignUpController> {
                           ),
                           Obx(
                             () => LNDTextField.regular(
-                              hintText: 'Confirm Password',
+                              labelText: 'Confirm Password',
                               controller: controller.confirmPasswordController,
                               keyboardType: TextInputType.visiblePassword,
                               obscureText: !controller.showObscureConfirmText,

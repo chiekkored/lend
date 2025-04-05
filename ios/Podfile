@@ -46,5 +46,17 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    
+    # Add Google Maps specific settings
+    # target.build_configurations.each do |config|
+    #   config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+    # end
   end
+  # Google Maps https://pub.dev/packages/geolocator#usage
+  # if target.name == "geolocator_apple"
+  #   target.build_configurations.each do |config|
+  #     config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'BYPASS_PERMISSION_LOCATION_ALWAYS=1']
+  #   end
+  # end
+  # End of Google Maps
 end

@@ -183,7 +183,7 @@ class LNDText extends StatelessWidget {
     List<TextSpan> spans = [
       TextSpan(text: text, style: style.copyWith(decoration: textDecoration)),
       if (required)
-        TextSpan(text: '*', style: style.copyWith(color: LNDColors.black)),
+        TextSpan(text: '*', style: style.copyWith(color: LNDColors.danger)),
       if (textParts != null)
         ...textParts!.map(
           (e) => TextSpan(

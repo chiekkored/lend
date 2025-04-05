@@ -35,7 +35,7 @@ class AssetInclusions extends GetWidget<AssetController> {
                         children: [
                           const Icon(
                             Icons.check_circle_rounded,
-                            color: Colors.green,
+                            color: LNDColors.success,
                           ),
                           LNDText.regular(text: inclusion, isSelectable: true),
                         ],

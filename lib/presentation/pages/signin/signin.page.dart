@@ -21,7 +21,14 @@ class SigninPage extends GetView<SigninController> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: canPop ? AppBar(leading: LNDButton.close()) : null,
+        appBar:
+            canPop
+                ? AppBar(
+                  leading: LNDButton.close(),
+                  surfaceTintColor: LNDColors.white,
+                  backgroundColor: LNDColors.white,
+                )
+                : null,
         backgroundColor: LNDColors.white,
         body: SingleChildScrollView(
           child: Padding(
@@ -42,16 +49,17 @@ class SigninPage extends GetView<SigninController> {
                   ),
                 ),
                 LNDTextField.regular(
-                  hintText: 'Email',
+                  labelText: 'Email',
                   controller: controller.emailController,
                   keyboardType: TextInputType.emailAddress,
                   prefixIcon: FontAwesomeIcons.solidEnvelope,
                   prefixIconColor: LNDColors.gray,
                   prefixIconSize: 16.0,
+                  textCapitalization: TextCapitalization.none,
                 ),
                 Obx(
                   () => LNDTextField.regular(
-                    hintText: 'Password',
+                    labelText: 'Password',
                     controller: controller.passwordController,
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: !controller.showObscureText,

@@ -21,15 +21,22 @@ class PostListingPage extends GetView<PostListingController> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         backgroundColor: LNDColors.white,
         appBar: AppBar(
-          leading: LNDButton.close(),
+          leading: LNDButton.text(
+            text: 'Cancel',
+            onPressed: Get.back,
+            enabled: true,
+            color: LNDColors.primary,
+          ),
+          leadingWidth: 80.0,
+          automaticallyImplyLeading: true,
           backgroundColor: LNDColors.white,
           surfaceTintColor: LNDColors.white,
           title: LNDText.bold(text: 'Create Listing', fontSize: 24.0),
-          centerTitle: false,
+          actionsPadding: const EdgeInsets.only(right: 12.0),
           actions: [
             LNDButton.text(
               text: 'Next',
@@ -42,111 +49,129 @@ class PostListingPage extends GetView<PostListingController> {
                 // }
               },
               enabled: true,
+              isBold: true,
               color: LNDColors.primary,
             ),
           ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildCoverPhotos(),
-              _buildTextField(
-                controller: controller.titleController,
-                text: 'Product Title',
-                subtitle:
-                    'Provide a clear and concise title that accurately '
-                    'represents your product.',
-                example: 'DJI Osmo Pocket 3',
-              ),
-              _buildTextBox(
-                text: 'Description',
-                subtitle:
-                    'Describe your product in detail, highlighting key features and specifications.',
-              ),
-              _buildTextField(
-                controller: controller.categoryController,
-                text: 'Category',
-                subtitle: 'Select the category that best fits your product.',
-              ),
-              _buildRateField(
-                controller: controller.dailyPriceController,
-                text: 'Daily Rate',
-                // subtitle:
-                //     'Set your daily rental rate; weekly, monthly, and annual '
-                //     'rates will be auto-calculated unless you choose to edit '
-                //     'them. Note: Only the daily rate is required.',
-              ),
+          child: Form(
+            key: controller.formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildCoverPhotos(),
+                _buildTextField(
+                  textController: controller.titleController,
+                  text: 'Product Title',
+                  subtitle:
+                      'Provide a clear and concise title that accurately '
+                      'represents your product.',
+                  example: 'DJI Osmo Pocket 3',
+                  required: true,
+                ),
+                _buildTextBox(
+                  textController: controller.descriptionController,
+                  text: 'Description',
+                  subtitle:
+                      'Describe your product in detail, highlighting key features and specifications.',
+                ),
+                _buildTextField(
+                  textController: controller.categoryController,
+                  text: 'Category',
+                  subtitle: 'Select the category that best fits your product.',
+                  required: true,
+                ),
+                _buildRateField(
+                  textController: controller.dailyPriceController,
+                  text: 'Daily Rate',
+                ),
 
-              // Column(
-              //   children: [
-              //     _buildSwitchField(
-              //       label: 'Use auto-calculated rates',
-              //       icon: Icons.money_rounded,
-              //       // icon: Icons.currency_exchange_rounded,
-              //       value: controller.isCustomPrice,
-              //     ),
-              //     Obx(() {
-              //       return controller.isCustomPrice.isFalse
-              //           ? _buildPricing()
-              //           : const SizedBox.shrink();
-              //     }),
-              //   ],
-              // ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 60.0),
-                child: Divider(),
-              ),
-              _buildListField(
-                label: 'Add Inclusions',
-                icon: Icons.list_alt_outlined,
-                subtitle:
-                    'List all items and services '
-                    'included with the rental to set clear expectations.',
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildSwitchField(
-                    label: 'Use Registered Address',
-                    icon: Icons.location_searching_rounded,
-                    value: controller.isCustomLocation,
+                // Column(
+                //   children: [
+                //     _buildSwitchField(
+                //       label: 'Use auto-calculated rates',
+                //       icon: Icons.money_rounded,
+                //       // icon: Icons.currency_exchange_rounded,
+                //       value: controller.isCustomPrice,
+                //     ),
+                //     Obx(() {
+                //       return controller.isCustomPrice.isFalse
+                //           ? _buildPricing()
+                //           : const SizedBox.shrink();
+                //     }),
+                //   ],
+                // ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 60.0),
+                  child: Divider(),
+                ),
+                Obx(
+                  () => _buildListField(
+                    label: 'Add Inclusions',
+                    icon: Icons.list_alt_outlined,
                     subtitle:
-                        'Toggle to enter a custom address or use your registered '
-                        'home/business address.',
+                        'List all items and services '
+                        'included with the rental to set clear expectations.',
+                    count:
+                        controller.inclusions.isEmpty
+                            ? null
+                            : controller.inclusions.length.toString(),
+                    onTap: () => controller.showAddInclusions(context),
                   ),
-                  Obx(() {
-                    return controller.isCustomLocation.isFalse
-                        ? Padding(
-                          padding: const EdgeInsets.only(top: 0.0),
-                          child: _buildTextField(
-                            controller: controller.locationController,
-                            text: 'Location',
-                            subtitle:
-                                'Enter the exact address where the product is available for rent.',
-                            example:
-                                '123 Main St., Brgy. San Antonio, Pasig City',
-                          ),
-                        )
-                        : const SizedBox.shrink();
-                  }),
-                ],
-              ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildSwitchField(
+                      label: 'Use Registered Address',
+                      icon: Icons.location_searching_rounded,
+                      value: controller.isCustomLocation,
+                      subtitle:
+                          'Toggle to enter a custom address or use your registered '
+                          'home/business address.',
+                    ),
+                    Obx(() {
+                      return controller.isCustomLocation.isFalse
+                          ? Padding(
+                            padding: const EdgeInsets.only(top: 0.0),
+                            child: _buildTextField(
+                              textController: controller.locationController,
+                              required: controller.isCustomLocation.isFalse,
+                              readOnly: true,
+                              onTap:
+                                  () => controller.showLocationPicker(context),
+                              text: 'Location',
+                              subtitle:
+                                  'Enter the exact address where the product is available for rent.',
+                              example:
+                                  '123 Main St., Brgy. San Antonio, Pasig City',
+                            ),
+                          )
+                          : const SizedBox.shrink();
+                    }),
+                  ],
+                ),
 
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 60.0),
-                child: Divider(),
-              ),
-              _buildListField(
-                label: 'Availability',
-                icon: Icons.visibility_outlined,
-                subtitle:
-                    'Indicate the current availability of your product: '
-                    'Available, Hidden, or Under Maintenance.',
-              ),
-            ],
-          ).withSpacing(16.0),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 60.0),
+                  child: Divider(),
+                ),
+                Obx(
+                  () => _buildListField(
+                    label: 'Availability',
+                    icon: Icons.visibility_outlined,
+                    subtitle:
+                        'Indicate the current availability of your product: '
+                        'Available, Hidden, or Under Maintenance.',
+                    value: controller.availability.value.label,
+                    onTap: () => controller.showAvailability(),
+                  ),
+                ),
+              ],
+            ).withSpacing(16.0),
+          ),
         ),
       ),
     );
@@ -203,7 +228,7 @@ class PostListingPage extends GetView<PostListingController> {
                         BlendMode.srcIn,
                       ),
                     ),
-                    LNDText.bold(text: 'Add Cover Photos'),
+                    LNDText.bold(text: 'Add Cover Photos', required: true),
                   ],
                 ),
               ),
@@ -225,18 +250,41 @@ class PostListingPage extends GetView<PostListingController> {
   Padding _buildListField({
     required String label,
     required IconData icon,
+    required void Function() onTap,
     String? subtitle,
+    String? count,
+    String? value,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0.0),
       child: ListTile(
         visualDensity: VisualDensity.comfortable,
         contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-        title: LNDText.medium(text: label),
+        title: LNDText.medium(
+          text: label,
+          textParts: [
+            if (value?.isNotEmpty ?? false) ...[
+              LNDText.bold(text: ': '),
+              LNDText.bold(text: value ?? '', color: LNDColors.primary),
+            ],
+          ],
+        ),
         leading: Icon(icon),
-        trailing: const Icon(
-          Icons.chevron_right_rounded,
-          color: LNDColors.hint,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (count != null)
+              Chip(
+                label: LNDText.regular(text: count, color: LNDColors.white),
+                color: const WidgetStatePropertyAll(LNDColors.primary),
+                shape: const CircleBorder(
+                  side: BorderSide(color: LNDColors.primary),
+                ),
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+              ),
+            const Icon(Icons.chevron_right_rounded, color: LNDColors.hint),
+          ],
         ),
         subtitle:
             (subtitle?.isNotEmpty ?? false)
@@ -246,31 +294,34 @@ class PostListingPage extends GetView<PostListingController> {
                   color: LNDColors.hint,
                 )
                 : null,
-        onTap: () {},
+        onTap: onTap,
       ),
     );
   }
 
   Widget _buildTextField({
-    required TextEditingController controller,
+    required TextEditingController textController,
     required String text,
+    required bool required,
+    bool? readOnly,
     String? prefixText,
     String? suffixText,
     String? subtitle,
     String? example,
     TextInputType? keyboardType,
+    VoidCallback? onTap,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LNDTextField.regular(
-            controller: controller,
-            hintText: text,
-            borderRadius: 12.0,
+          LNDTextField.form(
+            controller: textController,
+            labelText: text,
             prefixText: prefixText,
             keyboardType: keyboardType ?? TextInputType.text,
+            required: required,
             prefixStyle:
                 prefixText != null
                     ? LNDText.mediumStyle.copyWith(
@@ -279,26 +330,27 @@ class PostListingPage extends GetView<PostListingController> {
                     )
                     : null,
             suffixText: suffixText,
+            helperText: subtitle,
+            validator: (value) => controller.validateField(value, label: text),
+            readOnly: readOnly ?? false,
+            onTap: onTap,
           ),
-          if (subtitle?.isNotEmpty ?? false)
-            LNDText.regular(
-              text: subtitle ?? '',
-              fontSize: 12.0,
-              color: LNDColors.hint,
-            ),
           if (example?.isNotEmpty ?? false)
-            LNDText.regular(
-              text: 'e.g. ',
-              fontSize: 12.0,
-              color: LNDColors.hint,
-              textAlign: TextAlign.start,
-              textParts: [
-                LNDText.semibold(
-                  text: '"$example"',
-                  fontSize: 12.0,
-                  color: LNDColors.hint,
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: LNDText.regular(
+                text: 'e.g. ',
+                fontSize: 12.0,
+                color: LNDColors.hint,
+                textAlign: TextAlign.start,
+                textParts: [
+                  LNDText.semibold(
+                    text: '"$example"',
+                    fontSize: 12.0,
+                    color: LNDColors.hint,
+                  ),
+                ],
+              ),
             ),
         ],
       ),
@@ -306,7 +358,7 @@ class PostListingPage extends GetView<PostListingController> {
   }
 
   Widget _buildRateField({
-    required TextEditingController controller,
+    required TextEditingController textController,
     required String text,
     String? suffixText,
     String? subtitle,
@@ -318,17 +370,14 @@ class PostListingPage extends GetView<PostListingController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           LNDTextField.money(
-            controller: controller,
-            hintText: text,
+            controller: textController,
+            labelText: text,
             borderRadius: 12.0,
             suffixText: suffixText,
+            helperText: subtitle,
+            required: true,
+            validator: (value) => controller.validateField(value, label: text),
           ),
-          if (subtitle?.isNotEmpty ?? false)
-            LNDText.regular(
-              text: subtitle ?? '',
-              fontSize: 12.0,
-              color: LNDColors.hint,
-            ),
           if (example?.isNotEmpty ?? false)
             LNDText.regular(
               text: 'e.g. ',
@@ -349,6 +398,7 @@ class PostListingPage extends GetView<PostListingController> {
   }
 
   Widget _buildTextBox({
+    required TextEditingController textController,
     required String text,
     String? subtitle,
     String? example,
@@ -359,17 +409,13 @@ class PostListingPage extends GetView<PostListingController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           LNDTextField.textBox(
-            controller: TextEditingController(),
+            controller: textController,
             maxLines: 4,
-            hintText: text,
+            labelText: text,
             borderRadius: 12.0,
+            helperText: subtitle,
+            validator: (value) => controller.validateField(value, label: text),
           ),
-          if (subtitle?.isNotEmpty ?? false)
-            LNDText.regular(
-              text: subtitle ?? '',
-              fontSize: 12.0,
-              color: LNDColors.hint,
-            ),
           if (example?.isNotEmpty ?? false)
             LNDText.regular(
               text: 'e.g. ',

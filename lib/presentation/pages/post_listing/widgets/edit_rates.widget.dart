@@ -34,7 +34,7 @@ class EditRates extends StatelessWidget {
             children: [
               LNDTextField.money(
                 controller: TextEditingController(),
-                hintText: 'Weekly rate',
+                labelText: 'Weekly rate',
                 borderRadius: 12.0,
               ),
               LNDText.regular(
@@ -51,7 +51,7 @@ class EditRates extends StatelessWidget {
               ),
               LNDTextField.money(
                 controller: TextEditingController(),
-                hintText: 'Monthly rate',
+                labelText: 'Monthly rate',
                 borderRadius: 12.0,
               ),
               LNDText.regular(
@@ -68,7 +68,7 @@ class EditRates extends StatelessWidget {
               ),
               LNDTextField.money(
                 controller: TextEditingController(),
-                hintText: 'Annual rate',
+                labelText: 'Annual rate',
                 borderRadius: 12.0,
               ),
               LNDText.regular(

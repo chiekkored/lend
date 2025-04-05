@@ -62,5 +62,9 @@
 	</array>
 	<!-- End of the Google Sign-in Section -->
 	
+	<!-- Google Maps -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location when open.</string>
+	<!-- End of Google Maps -->
 </dict>
 </plist>

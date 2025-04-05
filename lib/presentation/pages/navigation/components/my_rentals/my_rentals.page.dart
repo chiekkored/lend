@@ -33,7 +33,7 @@ class MyRentalsPage extends GetView<MyRentalsController> {
             },
             body:
                 !controller.isAuthenticated
-                    ? _SigninView()
+                    ? ColoredBox(color: LNDColors.white, child: _SigninView())
                     : SingleChildScrollView(
                       child: Column(
                         children: [

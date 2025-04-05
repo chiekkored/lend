@@ -4,47 +4,44 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class LNDShow {
   LNDShow._();
   static Future<T?> bottomSheet<T>(
     Widget content, {
     double? height,
+    bool expand = false,
     bool enableDrag = true,
     bool hasPadding = true,
     bool isDismissible = true,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
   }) {
-    return Get.bottomSheet(
-      Container(
-        height: height,
-        width: Get.width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
-        padding: const EdgeInsets.only(
-          top: 8.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 16.0,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                height: 5.0,
-                width: 60.0,
-                decoration: BoxDecoration(
-                  color: LNDColors.gray,
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-              ),
-            ),
-            content,
-          ],
-        ),
-      ),
+    return showBarModalBottomSheet(
+      context: Get.context!,
+      expand: expand,
+      builder: (_) => content,
       backgroundColor: LNDColors.white,
+      enableDrag: enableDrag,
+      isDismissible: isDismissible,
+    );
+  }
+
+  static Future<T?> modalSheet<T>(
+    BuildContext context, {
+    required Widget content,
+    double? height,
+    bool expand = false,
+    bool enableDrag = true,
+    bool hasPadding = true,
+    bool isDismissible = true,
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
+  }) {
+    return CupertinoScaffold.showCupertinoModalBottomSheet(
+      builder: (_) => content,
+      backgroundColor: LNDColors.white,
+      context: context,
+      expand: expand,
       enableDrag: enableDrag,
       isDismissible: isDismissible,
     );

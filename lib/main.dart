@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
@@ -18,11 +20,13 @@ import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/components/setup.page.dart';
 import 'package:lend/presentation/pages/signup/signup.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await MainService.initializeFirebase();
+  await dotenv.load(fileName: '.env');
 
   runApp(const Root());
 }
@@ -83,7 +87,7 @@ class Root extends StatelessWidget {
         ),
         GetPage(
           name: PostListingPage.routeName,
-          page: () => const PostListingPage(),
+          page: () => const CupertinoScaffold(body: PostListingPage()),
           binding: PostListingBinding(),
           fullscreenDialog: true,
         ),
