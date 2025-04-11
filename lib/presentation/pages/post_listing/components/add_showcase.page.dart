@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -28,24 +27,10 @@ class AddShowcasePage extends GetView<PostListingController> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: CupertinoContextMenu.builder(
-              actions: [
-                CupertinoContextMenuAction(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  isDefaultAction: true,
-                  trailingIcon: CupertinoIcons.doc_on_clipboard_fill,
-                  child: const Text('Copy'),
-                ),
-              ],
-              builder: (context, animationController) {
-                return LNDButton.icon(
-                  icon: Icons.add_photo_alternate_rounded,
-                  size: 25.0,
-                  onPressed: controller.addShowcasePhotos,
-                );
-              },
+            child: LNDButton.icon(
+              icon: Icons.add_photo_alternate_rounded,
+              size: 25.0,
+              onPressed: controller.addShowcasePhotos,
             ),
           ),
         ],
