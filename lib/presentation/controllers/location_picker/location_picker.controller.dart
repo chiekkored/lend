@@ -158,7 +158,7 @@ class LocationPickerController extends GetxController {
         if (!canOpen) {
           LNDSnackbar.showWarning(
             "Unable to open app settings. Open phone's settings and enable "
-            'camera access manually.',
+            'location access manually.',
           );
         }
       },

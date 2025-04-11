@@ -14,6 +14,7 @@ import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
+import 'package:lend/presentation/pages/post_listing/widgets/add_showcase.widget.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/components/setup.page.dart';
@@ -89,6 +90,10 @@ class Root extends StatelessWidget {
           page: () => const CupertinoScaffold(body: PostListingPage()),
           binding: PostListingBinding(),
           fullscreenDialog: true,
+        ),
+        GetPage(
+          name: AddShowcasePage.routeName,
+          page: () => const AddShowcasePage(),
         ),
       ],
       initialRoute: NavigationPage.routeName,

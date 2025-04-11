@@ -260,17 +260,17 @@ class LNDButton extends StatelessWidget {
                     Icon(
                       icon,
                       size: iconSize,
-                      color: enabled ? color : LNDColors.black,
+                      color: enabled ? color : LNDColors.gray,
                     )
                 : isBold
                 ? LNDText.bold(
                   text: text,
-                  color: enabled ? color : LNDColors.disabled,
+                  color: enabled ? color : LNDColors.gray,
                   fontSize: iconSize,
                 )
                 : LNDText.medium(
                   text: text,
-                  color: enabled ? color : LNDColors.disabled,
+                  color: enabled ? color : LNDColors.gray,
                   fontSize: iconSize,
                 ),
       );

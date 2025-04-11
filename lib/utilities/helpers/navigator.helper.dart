@@ -8,6 +8,7 @@ import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/add_inclusions.widget.dart';
+import 'package:lend/presentation/pages/post_listing/widgets/add_showcase.widget.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/categories.widget.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/location_picker.widget.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
@@ -65,6 +66,10 @@ class LNDNavigate {
       expand: true,
       content: const AddInclusions(),
     );
+  }
+
+  static Future<T?>? toAddShowcase<T>() async {
+    return await Get.toNamed(AddShowcasePage.routeName);
   }
 
   static Future<LocationCallbackModel?>? showLocationPicker({

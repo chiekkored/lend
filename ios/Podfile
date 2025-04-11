@@ -35,7 +35,7 @@ target 'Runner' do
   use_modular_headers!
 
   # Fixes "Failed to parse JSON at file:gRPC-Core/1.65.2/gRPC-Core.podspec.json"
-  pod 'gRPC-Core', '1.65.1'
+  pod 'gRPC-Core', '1.69.0'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do

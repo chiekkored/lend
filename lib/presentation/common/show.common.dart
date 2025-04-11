@@ -44,6 +44,7 @@ class LNDShow {
       expand: expand,
       enableDrag: enableDrag,
       isDismissible: isDismissible,
+      duration: const Duration(milliseconds: 300),
     );
   }
 
