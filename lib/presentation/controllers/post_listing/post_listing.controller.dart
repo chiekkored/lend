@@ -186,26 +186,30 @@ class PostListingController extends GetxController with TextFieldsMixin {
   void showLocationPicker(BuildContext context) async {
     final result = await LNDNavigate.showLocationPicker(
       context: context,
-      location:
-          locationController.text.isNotEmpty
-              ? LocationCallbackModel(
-                address: locationController.text,
-                latLng: LatLng(
+      location: LocationCallbackModel(
+        address: locationController.text,
+        latLng:
+            _location?.latLng == null
+                ? null
+                : LatLng(
                   _location?.latLng?.latitude ?? 0.0,
                   _location?.latLng?.longitude ?? 0.0,
                 ),
-              )
-              : null,
+      ),
     );
 
     if (result != null) {
+      debugPrint('result.latLng: ${result.latLng}');
       locationController.text = result.address ?? '';
       _location = Location(
-        description: result.address ?? '',
-        latLng: GeoPoint(
-          result.latLng?.latitude ?? 0.0,
-          result.latLng?.longitude ?? 0.0,
-        ),
+        description: result.address,
+        latLng:
+            result.latLng == null
+                ? null
+                : GeoPoint(
+                  result.latLng?.latitude ?? 0.0,
+                  result.latLng?.longitude ?? 0.0,
+                ),
       );
     }
   }

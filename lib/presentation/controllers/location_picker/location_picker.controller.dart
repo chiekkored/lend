@@ -30,7 +30,7 @@ class LocationPickerController extends GetxController {
 
   final Rx<LatLng> _currentPosition = const LatLng(0, 0).obs;
 
-  final Rx<LatLng> _pinnedPosition = const LatLng(0, 0).obs;
+  final Rx<LatLng?> _pinnedPosition = Rx(null);
 
   final marker = <Marker>{}.obs;
 
@@ -49,15 +49,12 @@ class LocationPickerController extends GetxController {
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    _getCurrentLocation();
-  }
-
-  @override
   void onReady() {
-    _setInitialValues();
-
+    if (locationCallback != null) {
+      _setInitialValues();
+    } else {
+      getToCurrentLocation();
+    }
     super.onReady();
   }
 
@@ -65,16 +62,20 @@ class LocationPickerController extends GetxController {
     if (locationCallback != null) {
       locationController.text = locationCallback?.address ?? '';
 
-      updateCameraWithMarker(
-        LatLng(
-          locationCallback?.latLng?.latitude ?? 0.0,
-          locationCallback?.latLng?.longitude ?? 0.0,
-        ),
-      );
+      if (locationCallback?.latLng != null) {
+        updateCameraWithMarker(
+          LatLng(
+            locationCallback?.latLng?.latitude ?? 0.0,
+            locationCallback?.latLng?.longitude ?? 0.0,
+          ),
+        );
+      } else {
+        getToCurrentLocation();
+      }
     }
   }
 
-  Future<bool> _getCurrentLocation() async {
+  Future<void> getToCurrentLocation() async {
     try {
       // Request permission first
       LocationPermission permission = await Geolocator.checkPermission();
@@ -84,7 +85,7 @@ class LocationPickerController extends GetxController {
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever) {
           _showPermissionDeniedMessage();
-          return false;
+          return;
         }
       }
 
@@ -108,10 +109,8 @@ class LocationPickerController extends GetxController {
           CameraUpdate.newCameraPosition(cameraPosition.value),
         );
       }
-      return true;
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
-      return false;
     }
   }
 
@@ -134,7 +133,7 @@ class LocationPickerController extends GetxController {
     );
 
     // Update camera position
-    cameraPosition.value = CameraPosition(target: latLng, zoom: 18.0);
+    cameraPosition.value = CameraPosition(target: latLng, zoom: _zoomLevel);
 
     // Animate camera to new position
     mapController?.animateCamera(
@@ -183,10 +182,13 @@ class LocationPickerController extends GetxController {
           locationController.text.isNotEmpty
               ? LocationCallbackModel(
                 address: locationController.text,
-                latLng: LatLng(
-                  _pinnedPosition.value.latitude,
-                  _pinnedPosition.value.longitude,
-                ),
+                latLng:
+                    _pinnedPosition.value == null
+                        ? null
+                        : LatLng(
+                          _pinnedPosition.value?.latitude ?? 0.0,
+                          _pinnedPosition.value?.longitude ?? 0.0,
+                        ),
               )
               : null,
     );

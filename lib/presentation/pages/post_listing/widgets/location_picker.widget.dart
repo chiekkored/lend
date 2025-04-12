@@ -63,6 +63,7 @@ class LocationPickerW extends StatelessWidget {
                       itemClick: (prediction) {
                         controller.locationController.text =
                             prediction.description ?? '';
+                        FocusManager.instance.primaryFocus?.unfocus();
                       },
                       itemBuilder: (_, __, prediction) {
                         return ListTile(
@@ -76,17 +77,39 @@ class LocationPickerW extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Obx(
-                      () => GoogleMap(
-                        buildingsEnabled: false,
-                        initialCameraPosition: controller.cameraPosition.value,
-                        onMapCreated: controller.onMapCreated,
-                        markers: controller.marker.toSet(),
-                        myLocationEnabled: true,
-                        myLocationButtonEnabled: true,
-                        zoomGesturesEnabled: true,
-                        scrollGesturesEnabled: true,
-                      ),
+                    child: Stack(
+                      children: [
+                        Obx(
+                          () => GoogleMap(
+                            buildingsEnabled: false,
+                            initialCameraPosition:
+                                controller.cameraPosition.value,
+                            onMapCreated: controller.onMapCreated,
+                            markers: controller.marker.toSet(),
+                            myLocationEnabled: true,
+                            myLocationButtonEnabled: false,
+                            zoomGesturesEnabled: true,
+                            scrollGesturesEnabled: true,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 10.0,
+                          right: 10.0,
+                          child: LNDButton.widget(
+                            color: LNDColors.outline,
+                            borderRadius: 8.0,
+                            size: 30.0,
+                            onPressed: () {
+                              controller.getToCurrentLocation();
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            },
+                            child: const Icon(
+                              Icons.near_me_rounded,
+                              color: LNDColors.black,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SafeArea(

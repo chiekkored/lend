@@ -21,6 +21,7 @@ class LNDButton extends StatelessWidget {
   final ButtonStyle? style;
   final Widget? child;
   final bool isBold;
+  final double? borderRadius;
 
   const LNDButton._({
     required this.text,
@@ -38,6 +39,7 @@ class LNDButton extends StatelessWidget {
     this.style,
     this.child,
     this.isBold = false,
+    this.borderRadius = 32.0,
   });
 
   factory LNDButton.primary({
@@ -150,7 +152,6 @@ class LNDButton extends StatelessWidget {
     bool? enabled,
     Color? color,
     bool isLoading = false,
-    bool hasPadding = true,
     double size = 50,
   }) {
     return LNDButton._(
@@ -159,7 +160,6 @@ class LNDButton extends StatelessWidget {
       onPressed: onPressed,
       color: color ?? LNDColors.black,
       isLoading: isLoading,
-      hasPadding: hasPadding,
       isButtonText: true,
       isButtonIcon: true,
       icon: icon,
@@ -175,12 +175,14 @@ class LNDButton extends StatelessWidget {
     bool isLoading = false,
     bool hasPadding = true,
     double size = 50,
+    double borderRadius = 32.0,
   }) {
     return LNDButton._(
       text: '',
       enabled: true,
       onPressed: onPressed,
       color: color ?? LNDColors.black,
+      borderRadius: borderRadius,
       isLoading: isLoading,
       hasPadding: hasPadding,
       isButtonText: true,
@@ -251,6 +253,7 @@ class LNDButton extends StatelessWidget {
         onPressed: isFuncEnabled,
         minSize: iconSize,
         padding: EdgeInsets.zero,
+        borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 32.0)),
         color: child != null ? color : null,
         child:
             isLoading
@@ -285,7 +288,7 @@ class LNDButton extends StatelessWidget {
               shape:
                   shape ??
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
+                    borderRadius: BorderRadius.circular(borderRadius ?? 32.0),
                   ),
             ),
         child:

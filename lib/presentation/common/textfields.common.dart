@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
@@ -136,19 +137,29 @@ class LNDTextField extends StatelessWidget {
       suffix: suffixWidget,
       suffixIcon:
           suffixIcon != null
-              ? GestureDetector(
-                onTap: () {
-                  onTapSuffix?.call();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 26.0, left: 12.0),
-                  child: Icon(
-                    suffixIcon,
-                    color: suffixIconColor ?? LNDColors.black,
-                    size: suffixIconSize,
-                  ),
+              ? Padding(
+                padding: const EdgeInsets.only(right: 26.0, left: 12.0),
+                child: LNDButton.icon(
+                  icon: suffixIcon,
+                  size: 25.0,
+                  onPressed: () {
+                    onTapSuffix?.call();
+                  },
                 ),
               )
+              // ? GestureDetector(
+              //   onTap: () {
+              //     onTapSuffix?.call();
+              //   },
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(right: 26.0, left: 12.0),
+              //     child: Icon(
+              //       suffixIcon,
+              //       color: suffixIconColor ?? LNDColors.black,
+              //       size: suffixIconSize,
+              //     ),
+              //   ),
+              // )
               : null,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadius ?? 16.0),
