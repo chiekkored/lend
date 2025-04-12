@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,7 +41,8 @@ class AssetController extends GetxController {
   final _mapController = Rxn<GoogleMapController>();
   GoogleMapController? get mapController => _mapController.value;
 
-  final markers = <Circle>{}.obs;
+  final circles = <Circle>{}.obs;
+  final markers = <Marker>{}.obs;
 
   final RxString _address = ''.obs;
   String get address => _address.value;
@@ -50,11 +53,8 @@ class AssetController extends GetxController {
   final RxInt _totalPrice = 0.obs;
   int get totalPrice => _totalPrice.value;
 
-  CameraPosition get cameraPosition => CameraPosition(
-    target: LatLng(
-      asset?.location?.latLng?.latitude ?? 0.0,
-      asset?.location?.latLng?.longitude ?? 0.0,
-    ),
+  CameraPosition cameraPosition = const CameraPosition(
+    target: LatLng(0.0, 0.0),
     zoom: 13,
   );
 
@@ -72,6 +72,7 @@ class AssetController extends GetxController {
   void onClose() {
     _asset.close();
     markers.close();
+    circles.close();
 
     _mapController.close();
     _isUserLoading.close();
@@ -121,39 +122,71 @@ class AssetController extends GetxController {
 
   void onMapCreated(GoogleMapController mapCtrl) {
     _mapController.value = mapCtrl;
-
-    markers.add(
-      Circle(
-        circleId: const CircleId('current_location_circle'),
-        center: cameraPosition.target,
-        radius: 500,
-        fillColor: Colors.blue.withValues(alpha: 0.5),
-        strokeColor: Colors.blue,
-        strokeWidth: 1,
+    cameraPosition = CameraPosition(
+      target: LatLng(
+        asset?.location?.latLng?.latitude ?? 0.0,
+        asset?.location?.latLng?.longitude ?? 0.0,
       ),
+      zoom: 13,
     );
+
+    if (asset?.location?.useSpecificLocation == true) {
+      mapCtrl.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+      markers.add(
+        Marker(
+          markerId: const MarkerId('selected-location'),
+          position: cameraPosition.target,
+        ),
+      );
+    } else {
+      const radius = 500.0;
+      final randomLocation = _getRandomLocationWithinRadius(
+        cameraPosition.target,
+        radius,
+      );
+      mapCtrl.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: randomLocation, zoom: 13),
+        ),
+      );
+      circles.add(
+        Circle(
+          circleId: const CircleId('selected-location'),
+          center: randomLocation,
+          radius: radius,
+          fillColor: Colors.blue.withValues(alpha: 0.5),
+          strokeColor: Colors.blue,
+          strokeWidth: 1,
+        ),
+      );
+    }
 
     // _getAddressFromLatLng(cameraPosition.target);
   }
 
-  // Future<void> _getAddressFromLatLng(LatLng position) async {
-  //   try {
-  //     List<Placemark> placemarks = await placemarkFromCoordinates(
-  //       position.latitude,
-  //       position.longitude,
-  //     );
-  //     if (placemarks.isNotEmpty) {
-  //       Placemark place = placemarks.first;
-  //       _address.value =
-  //           '${place.street}, ${place.locality}, ${place.isoCountryCode}';
-  //     } else {
-  //       _address.value = "No address found";
-  //     }
-  //   } catch (e, st) {
-  //     _address.value = 'No address found';
-  //     LNDLogger.e(e.toString(), error: e, stackTrace: st);
-  //   }
-  // }
+  /// Generates a random LatLng within the specified radius (in meters) from the center point
+  LatLng _getRandomLocationWithinRadius(LatLng center, double radius) {
+    // Generate a random distance from center (0 to radius)
+    final random = math.Random();
+    final randomRadius = radius * math.sqrt(random.nextDouble());
+
+    // Generate random angle
+    final randomAngle = random.nextDouble() * 2 * math.pi;
+
+    // Calculate offset in meters
+    final xOffset = randomRadius * math.cos(randomAngle);
+    final yOffset = randomRadius * math.sin(randomAngle);
+
+    // Convert meter offsets to latitude/longitude offsets
+    // 111,111 meters is approximately 1 degree of latitude
+    // Longitude degrees vary based on latitude
+    final latOffset = yOffset / 111111;
+    final lngOffset =
+        xOffset / (111111 * math.cos(center.latitude * math.pi / 180));
+
+    return LatLng(center.latitude + latOffset, center.longitude + lngOffset);
+  }
 
   void _getUser() async {
     try {
@@ -356,4 +389,23 @@ class AssetController extends GetxController {
       args: ProductShowcaseArguments(showcase: asset?.showcase ?? []),
     );
   }
+
+  // Future<void> _getAddressFromLatLng(LatLng position) async {
+  //   try {
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(
+  //       position.latitude,
+  //       position.longitude,
+  //     );
+  //     if (placemarks.isNotEmpty) {
+  //       Placemark place = placemarks.first;
+  //       _address.value =
+  //           '${place.street}, ${place.locality}, ${place.isoCountryCode}';
+  //     } else {
+  //       _address.value = "No address found";
+  //     }
+  //   } catch (e, st) {
+  //     _address.value = 'No address found';
+  //     LNDLogger.e(e.toString(), error: e, stackTrace: st);
+  //   }
+  // }
 }

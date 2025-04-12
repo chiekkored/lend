@@ -13,6 +13,25 @@ import 'package:shimmer/shimmer.dart';
 class AssetUserDetails extends GetWidget<AssetController> {
   const AssetUserDetails({super.key});
 
+  // Helper method to conditionally show address based on useSpecificLocation
+  String _getAddressText() {
+    final location = controller.asset?.location;
+    final address = location?.description;
+
+    // Return full address if useSpecificLocation is true
+    if (location?.useSpecificLocation == true ||
+        address == null ||
+        address.isEmpty) {
+      return address ?? '';
+    }
+
+    // Otherwise show only last two components
+    final components = address.split(', ');
+    if (components.length <= 2) return address;
+
+    return components.sublist(components.length - 2).join(', ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -84,11 +103,7 @@ class AssetUserDetails extends GetWidget<AssetController> {
                           const SizedBox(width: 8.0),
                           Expanded(
                             child: Obx(
-                              () => LNDText.regular(
-                                text:
-                                    controller.asset?.location?.description ??
-                                    '',
-                              ),
+                              () => LNDText.regular(text: _getAddressText()),
                             ),
                           ),
                         ],
@@ -111,7 +126,8 @@ class AssetUserDetails extends GetWidget<AssetController> {
                         buildingsEnabled: false,
                         initialCameraPosition: controller.cameraPosition,
                         onMapCreated: controller.onMapCreated,
-                        circles: controller.markers.toSet(),
+                        circles: controller.circles.toSet(),
+                        markers: controller.markers.toSet(),
                         myLocationButtonEnabled: false,
                         zoomGesturesEnabled: false,
                         scrollGesturesEnabled: false,
