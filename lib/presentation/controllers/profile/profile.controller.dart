@@ -15,13 +15,12 @@ class ProfileController extends GetxController with AuthMixin {
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
-  void getUserData({required String? userId}) async {
-    if (userId == null) return;
+  void getUserData() async {
     _isLoading.value = true;
 
     final userCollection = FirebaseFirestore.instance
         .collection(LNDCollections.users.name)
-        .doc(userId);
+        .doc(AuthController.instance.uid);
 
     final userDoc = await userCollection.get();
 

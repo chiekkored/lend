@@ -174,3 +174,71 @@ class Asset {
         status.hashCode;
   }
 }
+
+class AddAsset {
+  String id;
+  String ownerId;
+  String title;
+  String description;
+  String category;
+  Rates rates;
+  Location? location;
+  List<String> images;
+  List<String> showcase;
+  List<String> inclusions;
+  Timestamp createdAt;
+  String status;
+  AddAsset({
+    required this.id,
+    required this.ownerId,
+    required this.title,
+    required this.description,
+    required this.category,
+    required this.rates,
+    required this.location,
+    required this.images,
+    required this.showcase,
+    required this.inclusions,
+    required this.createdAt,
+    required this.status,
+  });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'ownerId': ownerId,
+      'title': title,
+      'description': description,
+      'category': category,
+      'rates': rates.toMap(),
+      'location': location?.toMap(),
+      'images': images,
+      'showcase': showcase,
+      'inclusions': inclusions,
+      'createdAt': createdAt,
+      'status': status,
+    };
+  }
+
+  factory AddAsset.fromMap(Map<String, dynamic> map) {
+    return AddAsset(
+      id: map['id'] as String,
+      ownerId: map['ownerId'] as String,
+      title: map['title'] as String,
+      description: map['description'] as String,
+      category: map['category'] as String,
+      rates: Rates.fromMap(map['rates'] as Map<String, dynamic>),
+      location: Location.fromMap(map['location'] as Map<String, dynamic>),
+      images: List<String>.from((map['images'] as List<String>)),
+      showcase: List<String>.from((map['showcase'] as List<String>)),
+      inclusions: List<String>.from((map['inclusions'] as List<String>)),
+      createdAt: map['createdAt'] as Timestamp,
+      status: map['status'] as String,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory AddAsset.fromJson(String source) =>
+      AddAsset.fromMap(json.decode(source) as Map<String, dynamic>);
+}

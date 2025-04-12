@@ -30,14 +30,17 @@ class PostCoverPhotosW extends GetWidget<PostListingController> {
               child: Stack(
                 children: [
                   SizedBox.expand(
-                    child: DottedBorder(
-                      color: LNDColors.hint,
-                      borderType: BorderType.RRect,
-                      radius: const Radius.circular(16),
-                      strokeWidth: 2,
-                      dashPattern: const [6, 6],
-                      child: Obx(
-                        () =>
+                    child: Obx(
+                      () => DottedBorder(
+                        color:
+                            controller.showCoverPhotosError.value
+                                ? LNDColors.danger
+                                : LNDColors.hint,
+                        borderType: BorderType.RRect,
+                        radius: const Radius.circular(16),
+                        strokeWidth: 2,
+                        dashPattern: const [6, 6],
+                        child:
                             controller.coverPhotos.isNotEmpty
                                 ? ListView.builder(
                                   itemCount: controller.coverPhotos.length,

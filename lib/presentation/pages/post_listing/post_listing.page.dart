@@ -158,18 +158,18 @@ class PostListingPage extends GetView<PostListingController> {
                     PostSwitchFieldW(
                       label: 'Use Registered Address',
                       icon: Icons.location_searching_rounded,
-                      value: controller.isCustomLocation,
+                      value: controller.useRegisteredAddress,
                       subtitle:
                           'Toggle to enter a custom address or use your registered '
                           'home/business address.',
                     ),
                     Obx(() {
-                      return controller.isCustomLocation.isFalse
+                      return controller.useRegisteredAddress.isFalse
                           ? Padding(
                             padding: const EdgeInsets.only(top: 0.0),
                             child: PostTextFieldW(
                               textController: controller.locationController,
-                              required: controller.isCustomLocation.isFalse,
+                              required: controller.useRegisteredAddress.isFalse,
                               readOnly: true,
                               onTap:
                                   () => controller.showLocationPicker(context),

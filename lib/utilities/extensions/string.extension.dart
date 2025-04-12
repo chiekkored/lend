@@ -71,4 +71,15 @@ extension StringFormatter on String {
             : formattedNumber;
     return formattedText;
   }
+
+  String toNumber() {
+    // Check if the string is a number
+    if (double.tryParse(this) != null) {
+      return this;
+    }
+
+    // Remove commas from the string
+    final number = replaceAll(',', '');
+    return number;
+  }
 }

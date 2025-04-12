@@ -40,14 +40,17 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
-  Future<void> getAssets([Categories category = Categories.all]) async {
+  Future<void> getAssets() async {
     _isLoading.value = true;
 
     try {
       Query query = assetsCollection;
 
-      if (category != Categories.all) {
-        query = query.where('category', isEqualTo: category.label);
+      if (_selectedCategory.value != Categories.all) {
+        query = query.where(
+          'category',
+          isEqualTo: _selectedCategory.value.label,
+        );
       }
 
       final result = await query.get();
@@ -68,7 +71,7 @@ class HomeController extends GetxController {
   void setSelectedCategory(Categories category) {
     _selectedCategory.value = category;
 
-    getAssets(category);
+    getAssets();
   }
 
   void postAssets() async {

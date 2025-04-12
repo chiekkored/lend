@@ -43,8 +43,8 @@ class AuthController extends GetxController {
 
   void _handleAuthChanged(User? user) {
     if (user != null) {
-      ProfileController.instance.getUserData(userId: user.uid);
-      MyRentalsController.instance.getMyRentals(userId: user.uid);
+      ProfileController.instance.getUserData();
+      MyRentalsController.instance.getMyRentals();
     }
   }
 

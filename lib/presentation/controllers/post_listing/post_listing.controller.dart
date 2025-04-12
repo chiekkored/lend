@@ -7,10 +7,17 @@ import 'package:gal/gal.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/file.model.dart';
 import 'package:lend/core/models/location.model.dart';
+import 'package:lend/core/models/rates.model.dart';
+import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
+import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
+import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
+import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
@@ -42,7 +49,8 @@ class PostListingController extends GetxController with TextFieldsMixin {
   final RxString monthlyPrice = ''.obs;
   final RxString annualPrice = ''.obs;
 
-  final RxBool isCustomLocation = true.obs;
+  final RxBool showCoverPhotosError = false.obs;
+  final RxBool useRegisteredAddress = true.obs;
   final RxBool isCustomPrice = true.obs;
   final RxBool isShowcaseUploading = false.obs;
 
@@ -91,7 +99,7 @@ class PostListingController extends GetxController with TextFieldsMixin {
   void onClose() {
     availability.close();
     isCustomPrice.close();
-    isCustomLocation.close();
+    useRegisteredAddress.close();
     inclusions.close();
     for (var photoFile in coverPhotos) {
       photoFile.close();
@@ -102,6 +110,8 @@ class PostListingController extends GetxController with TextFieldsMixin {
     showcasePhotos.close();
     isShowcaseUploading.close();
     coverPhotos.close();
+    showCoverPhotosError.close();
+
     inclusionController.dispose();
     titleController.dispose();
     descriptionController.dispose();
@@ -379,13 +389,20 @@ class PostListingController extends GetxController with TextFieldsMixin {
     availability.value = value;
   }
 
-  void next() {
+  void next() async {
+    // Check all validations together
+    bool hasValidationErrors = false;
+
     if (formKey.currentState?.validate() == false) {
-      return;
+      hasValidationErrors = true;
     }
 
-    // Check if all photos are uploaded
-    if (coverPhotos.isNotEmpty) {
+    // Check cover photos - required and must be fully uploaded
+    if (coverPhotos.isEmpty) {
+      showCoverPhotosError.value = true;
+      hasValidationErrors = true;
+    } else {
+      showCoverPhotosError.value = false;
       final allCoverPhotosUploaded = coverPhotos.every(
         (photoFile) =>
             photoFile.value.storagePath != null &&
@@ -394,10 +411,11 @@ class PostListingController extends GetxController with TextFieldsMixin {
 
       if (!allCoverPhotosUploaded) {
         LNDSnackbar.showWarning('Please wait for all cover photos to upload.');
-        return;
+        hasValidationErrors = true;
       }
     }
 
+    // Check showcase photos (if any) - must be fully uploaded
     if (showcasePhotos.isNotEmpty) {
       final allShowcasePhotosUploaded = showcasePhotos.every(
         (photoFile) =>
@@ -409,14 +427,47 @@ class PostListingController extends GetxController with TextFieldsMixin {
         LNDSnackbar.showWarning(
           'Please wait for all showcase photos to upload.',
         );
-        return;
+        hasValidationErrors = true;
       }
     }
 
-    debugPrint('dailyPriceController: ${dailyPriceController.text}');
-    debugPrint('weeklyPriceController: ${weeklyPriceController.text}');
-    debugPrint('monthlyPriceController: ${monthlyPriceController.text}');
-    debugPrint('annualPriceController: ${annualPriceController.text}');
-    // debugPrint('location: ${_location}');
+    // Stop if any validation errors were found
+    if (hasValidationErrors) {
+      return;
+    }
+
+    final doc =
+        FirebaseFirestore.instance.collection(LNDCollections.assets.name).doc();
+
+    LNDLoading.show();
+
+    final args =
+        AddAsset(
+          id: doc.id,
+          ownerId: AuthController.instance.uid ?? '',
+          title: titleController.text.trim(),
+          description: descriptionController.text,
+          category: categoryController.text,
+          rates: Rates(
+            daily: int.tryParse(dailyPriceController.text.toNumber()),
+          ),
+          location: useRegisteredAddress.value ? null : _location,
+          images: coverPhotos.map((e) => e.value.storagePath ?? '').toList(),
+          showcase:
+              showcasePhotos.map((e) => e.value.storagePath ?? '').toList(),
+          inclusions: inclusions.toList(),
+          createdAt: Timestamp.now(),
+          status: availability.value.label,
+        ).toMap();
+
+    await FirebaseFirestore.instance
+        .collection(LNDCollections.assets.name)
+        .doc(doc.id)
+        .set(args);
+
+    LNDLoading.hide();
+    HomeController.instance.getAssets();
+    MyRentalsController.instance.getMyRentals();
+    Get.back();
   }
 }
