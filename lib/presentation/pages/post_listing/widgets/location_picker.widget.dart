@@ -7,6 +7,7 @@ import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/textfields.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
+import 'package:lend/presentation/pages/post_listing/widgets/fields/post_switch_field.widget.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
 class LocationPickerW extends StatelessWidget {
@@ -86,6 +87,7 @@ class LocationPickerW extends StatelessWidget {
                                 controller.cameraPosition.value,
                             onMapCreated: controller.onMapCreated,
                             markers: controller.marker.toSet(),
+                            circles: controller.circle.toSet(),
                             myLocationEnabled: true,
                             myLocationButtonEnabled: false,
                             zoomGesturesEnabled: true,
@@ -104,7 +106,7 @@ class LocationPickerW extends StatelessWidget {
                               FocusManager.instance.primaryFocus?.unfocus();
                             },
                             child: const Icon(
-                              Icons.near_me_rounded,
+                              Icons.near_me_outlined,
                               color: LNDColors.black,
                             ),
                           ),
@@ -113,18 +115,29 @@ class LocationPickerW extends StatelessWidget {
                     ),
                   ),
                   SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 24.0,
-                        right: 24.0,
-                        top: 8.0,
-                      ),
-                      child: LNDButton.primary(
-                        text: 'Apply',
-                        enabled: true,
-                        onPressed: controller.applyLocation,
-                        hasPadding: false,
-                      ),
+                    child: Column(
+                      children: [
+                        PostSwitchFieldW(
+                          label: 'Use specific location',
+                          subtitle:
+                              'The exact location will be displayed on the map',
+                          icon: Icons.location_searching_rounded,
+                          value: controller.useSpecificLocation,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 24.0,
+                            right: 24.0,
+                            top: 8.0,
+                          ),
+                          child: LNDButton.primary(
+                            text: 'Apply',
+                            enabled: true,
+                            onPressed: controller.applyLocation,
+                            hasPadding: false,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

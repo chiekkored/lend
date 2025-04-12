@@ -188,6 +188,7 @@ class PostListingController extends GetxController with TextFieldsMixin {
       context: context,
       location: LocationCallbackModel(
         address: locationController.text,
+        useSpecificLocation: _location?.useSpecificLocation ?? true,
         latLng:
             _location?.latLng == null
                 ? null
@@ -199,10 +200,10 @@ class PostListingController extends GetxController with TextFieldsMixin {
     );
 
     if (result != null) {
-      debugPrint('result.latLng: ${result.latLng}');
-      locationController.text = result.address ?? '';
+      locationController.text = result.address;
       _location = Location(
         description: result.address,
+        useSpecificLocation: result.useSpecificLocation,
         latLng:
             result.latLng == null
                 ? null

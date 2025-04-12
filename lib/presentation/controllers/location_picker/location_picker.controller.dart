@@ -8,10 +8,15 @@ import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LocationCallbackModel {
-  final String? address;
+  final String address;
   final LatLng? latLng;
+  final bool useSpecificLocation;
 
-  LocationCallbackModel({this.address, this.latLng});
+  LocationCallbackModel({
+    required this.address,
+    required this.latLng,
+    required this.useSpecificLocation,
+  });
 }
 
 class LocationPickerController extends GetxController {
@@ -33,6 +38,9 @@ class LocationPickerController extends GetxController {
   final Rx<LatLng?> _pinnedPosition = Rx(null);
 
   final marker = <Marker>{}.obs;
+  final circle = <Circle>{}.obs;
+
+  final RxBool useSpecificLocation = true.obs;
 
   GoogleMapController? mapController;
 
@@ -44,8 +52,17 @@ class LocationPickerController extends GetxController {
     _currentPosition.close();
     _pinnedPosition.close();
     marker.close();
+    circle.close();
+    useSpecificLocation.close();
 
     super.onClose();
+  }
+
+  @override
+  void onInit() {
+    ever(useSpecificLocation, (_) => _toggleLocationUsage());
+
+    super.onInit();
   }
 
   @override
@@ -61,6 +78,7 @@ class LocationPickerController extends GetxController {
   void _setInitialValues() {
     if (locationCallback != null) {
       locationController.text = locationCallback?.address ?? '';
+      useSpecificLocation.value = locationCallback?.useSpecificLocation ?? true;
 
       if (locationCallback?.latLng != null) {
         updateCameraWithMarker(
@@ -125,12 +143,7 @@ class LocationPickerController extends GetxController {
   }
 
   void updateCameraWithMarker(LatLng latLng) {
-    // Clear previous markers
-    marker.clear();
-    // Add new marker
-    marker.add(
-      Marker(markerId: const MarkerId('selected-location'), position: latLng),
-    );
+    _addMarker(latLng);
 
     // Update camera position
     cameraPosition.value = CameraPosition(target: latLng, zoom: _zoomLevel);
@@ -141,6 +154,32 @@ class LocationPickerController extends GetxController {
     );
 
     _pinnedPosition.value = latLng;
+  }
+
+  void _addMarker(LatLng latLng) {
+    // Clear previous markers
+    marker.clear();
+    circle.clear();
+
+    // Add new marker or circle based on the useSpecificLocation value
+    if (useSpecificLocation.isTrue) {
+      // Add new marker
+      marker.add(
+        Marker(markerId: const MarkerId('selected-location'), position: latLng),
+      );
+    } else {
+      // Add new circle
+      circle.add(
+        Circle(
+          circleId: const CircleId('selected-location'),
+          center: latLng,
+          radius: 500,
+          fillColor: Colors.blue.withValues(alpha: 0.5),
+          strokeColor: Colors.blue,
+          strokeWidth: 1,
+        ),
+      );
+    }
   }
 
   void _showPermissionDeniedMessage() {
@@ -167,30 +206,31 @@ class LocationPickerController extends GetxController {
   void clearLocation() {
     locationController.clear();
     marker.clear();
-    mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: _currentPosition.value, zoom: _zoomLevel),
-      ),
-    );
+    circle.clear();
+    _pinnedPosition.value = null;
+  }
+
+  void _toggleLocationUsage() {
+    if (_pinnedPosition.value != null) {
+      _addMarker(_pinnedPosition.value!);
+    }
   }
 
   void applyLocation() {
     // Logic to apply the selected location
     // For example, you might want to save the location or update the UI
     Get.back<LocationCallbackModel>(
-      result:
-          locationController.text.isNotEmpty
-              ? LocationCallbackModel(
-                address: locationController.text,
-                latLng:
-                    _pinnedPosition.value == null
-                        ? null
-                        : LatLng(
-                          _pinnedPosition.value?.latitude ?? 0.0,
-                          _pinnedPosition.value?.longitude ?? 0.0,
-                        ),
-              )
-              : null,
+      result: LocationCallbackModel(
+        address: locationController.text,
+        useSpecificLocation: useSpecificLocation.value,
+        latLng:
+            _pinnedPosition.value == null
+                ? null
+                : LatLng(
+                  _pinnedPosition.value?.latitude ?? 0.0,
+                  _pinnedPosition.value?.longitude ?? 0.0,
+                ),
+      ),
     );
   }
 }
