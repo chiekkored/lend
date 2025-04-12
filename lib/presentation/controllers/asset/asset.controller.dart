@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -134,27 +133,27 @@ class AssetController extends GetxController {
       ),
     );
 
-    _getAddressFromLatLng(cameraPosition.target);
+    // _getAddressFromLatLng(cameraPosition.target);
   }
 
-  Future<void> _getAddressFromLatLng(LatLng position) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks.first;
-        _address.value =
-            '${place.street}, ${place.locality}, ${place.isoCountryCode}';
-      } else {
-        _address.value = "No address found";
-      }
-    } catch (e, st) {
-      _address.value = 'No address found';
-      LNDLogger.e(e.toString(), error: e, stackTrace: st);
-    }
-  }
+  // Future<void> _getAddressFromLatLng(LatLng position) async {
+  //   try {
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(
+  //       position.latitude,
+  //       position.longitude,
+  //     );
+  //     if (placemarks.isNotEmpty) {
+  //       Placemark place = placemarks.first;
+  //       _address.value =
+  //           '${place.street}, ${place.locality}, ${place.isoCountryCode}';
+  //     } else {
+  //       _address.value = "No address found";
+  //     }
+  //   } catch (e, st) {
+  //     _address.value = 'No address found';
+  //     LNDLogger.e(e.toString(), error: e, stackTrace: st);
+  //   }
+  // }
 
   void _getUser() async {
     try {

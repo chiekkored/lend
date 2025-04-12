@@ -73,16 +73,26 @@ class AssetUserDetails extends GetWidget<AssetController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        const FaIcon(
-                          FontAwesomeIcons.locationDot,
-                          color: LNDColors.hint,
-                          size: 20.0,
-                        ),
-                        const SizedBox(width: 8.0),
-                        Obx(() => LNDText.regular(text: controller.address)),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const FaIcon(
+                            FontAwesomeIcons.locationDot,
+                            color: LNDColors.hint,
+                            size: 20.0,
+                          ),
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: Obx(
+                              () => LNDText.regular(
+                                text:
+                                    controller.asset?.location?.description ??
+                                    '',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     LNDButton.icon(
                       icon: FontAwesomeIcons.angleRight,

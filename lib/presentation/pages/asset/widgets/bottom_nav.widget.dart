@@ -24,37 +24,24 @@ class AssetBottomNav extends GetWidget<AssetController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Obx(
-                    () =>
-                        controller.isAssetLoading
-                            ? const LNDShimmer(
-                              child: LNDShimmerBox(height: 25.0, width: 100.0),
-                            )
-                            : LNDText.bold(
-                              text:
-                                  '₱${controller.asset?.rates?.daily.toMoney() ?? ''}',
-                              fontSize: 18.0,
-                              textParts: [
-                                LNDText.regular(
-                                  text: ' daily',
-                                  color: LNDColors.hint,
-                                  fontSize: 16.0,
-                                ),
-                              ],
+              Obx(
+                () =>
+                    controller.isAssetLoading
+                        ? const LNDShimmer(
+                          child: LNDShimmerBox(height: 25.0, width: 100.0),
+                        )
+                        : LNDText.bold(
+                          text:
+                              '₱${controller.asset?.rates?.daily.toMoney() ?? ''}',
+                          fontSize: 18.0,
+                          textParts: [
+                            LNDText.regular(
+                              text: ' daily',
+                              color: LNDColors.hint,
+                              fontSize: 16.0,
                             ),
-                  ),
-                  GestureDetector(
-                    onTap: controller.openAllPrices,
-                    child: LNDText.regular(
-                      text: 'View all prices',
-                      fontSize: 12.0,
-                      textDecoration: TextDecoration.underline,
-                    ),
-                  ),
-                ],
+                          ],
+                        ),
               ),
               Obx(
                 () => LNDButton.primary(
