@@ -12,6 +12,7 @@ import 'package:lend/core/models/simple_user.model.dart';
 class Asset {
   String id;
   String? ownerId;
+  SimpleUserModel? owner;
   String? title;
   String? description;
   String? category;
@@ -26,6 +27,7 @@ class Asset {
   Asset({
     required this.id,
     this.ownerId,
+    this.owner,
     this.title,
     this.description,
     this.category,
@@ -42,6 +44,7 @@ class Asset {
   Asset copyWith({
     String? id,
     String? ownerId,
+    SimpleUserModel? owner,
     String? title,
     String? description,
     String? category,
@@ -57,6 +60,7 @@ class Asset {
     return Asset(
       id: id ?? this.id,
       ownerId: ownerId ?? this.ownerId,
+      owner: owner ?? this.owner,
       title: title ?? this.title,
       description: description ?? this.description,
       category: category ?? this.category,
@@ -75,6 +79,7 @@ class Asset {
     return <String, dynamic>{
       'id': id,
       'ownerId': ownerId,
+      'owner': owner?.toMap(),
       'title': title,
       'description': description,
       'category': category,
@@ -96,6 +101,10 @@ class Asset {
     return Asset(
       id: map['id'],
       ownerId: map['ownerId'] != null ? map['ownerId'] as String : null,
+      owner:
+          map['owner'] != null
+              ? SimpleUserModel.fromMap(map['owner'] as Map<String, dynamic>)
+              : null,
       title: map['title'] != null ? map['title'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
@@ -136,7 +145,7 @@ class Asset {
 
   @override
   String toString() {
-    return 'Asset(id: $id, ownerId: $ownerId, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, showcase: $showcase, inclusions: $inclusions, createdAt: $createdAt, status: $status)';
+    return 'Asset(id: $id, ownerId: $ownerId, owner: $owner, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, showcase: $showcase, inclusions: $inclusions, createdAt: $createdAt, status: $status)';
   }
 
   @override
@@ -145,6 +154,7 @@ class Asset {
 
     return other.id == id &&
         other.ownerId == ownerId &&
+        other.owner == owner &&
         other.title == title &&
         other.description == description &&
         other.category == category &&
@@ -162,6 +172,7 @@ class Asset {
   int get hashCode {
     return id.hashCode ^
         ownerId.hashCode ^
+        owner.hashCode ^
         title.hashCode ^
         description.hashCode ^
         category.hashCode ^

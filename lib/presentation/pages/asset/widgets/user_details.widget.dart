@@ -69,15 +69,16 @@ class AssetUserDetails extends GetWidget<AssetController> {
                         : Row(
                           children: [
                             LNDImage.circle(
-                              imageUrl: controller.user?.photoUrl,
+                              imageUrl: controller.asset?.owner?.photoUrl,
                               size: 40.0,
                             ),
                             const SizedBox(width: 8.0),
                             LNDText.bold(
-                              text: controller.user?.firstName ?? '',
+                              text: controller.asset?.owner?.firstName ?? '',
                               textParts: [
                                 LNDText.bold(
-                                  text: ' ${controller.user?.lastName ?? ''}',
+                                  text:
+                                      ' ${controller.asset?.owner?.lastName ?? ''}',
                                 ),
                               ],
                             ),

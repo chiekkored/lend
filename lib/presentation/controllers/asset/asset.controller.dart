@@ -8,7 +8,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/booking.model.dart';
-import 'package:lend/core/models/user.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
@@ -35,9 +34,6 @@ class AssetController extends GetxController {
   final RxBool _isUserLoading = false.obs;
   bool get isUserLoading => _isUserLoading.value;
 
-  final Rxn<UserModel> _user = Rxn();
-  UserModel? get user => _user.value;
-
   final _mapController = Rxn<GoogleMapController>();
   GoogleMapController? get mapController => _mapController.value;
 
@@ -63,7 +59,6 @@ class AssetController extends GetxController {
     if (asset?.description == null) {
       getAsset();
     }
-    _getUser();
 
     super.onInit();
   }
@@ -77,7 +72,6 @@ class AssetController extends GetxController {
     _mapController.close();
     _isUserLoading.close();
     _address.close();
-    _user.close();
     _selectedDates.close();
 
     super.onClose();
@@ -191,25 +185,6 @@ class AssetController extends GetxController {
         xOffset / (111111 * math.cos(center.latitude * math.pi / 180));
 
     return LatLng(center.latitude + latOffset, center.longitude + lngOffset);
-  }
-
-  void _getUser() async {
-    try {
-      _isUserLoading.value = true;
-
-      final usersCollection = FirebaseFirestore.instance.collection(
-        LNDCollections.users.name,
-      );
-
-      final result = await usersCollection.doc(asset?.ownerId ?? '').get();
-
-      if (result.data() != null) {
-        _user.value = UserModel.fromMap(result.data()!);
-        _isUserLoading.value = false;
-      }
-    } catch (e, st) {
-      LNDLogger.e(e.toString(), error: e, stackTrace: st);
-    }
   }
 
   void openAllPrices() async {
