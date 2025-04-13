@@ -15,9 +15,7 @@ class CalendarBottomNav extends GetWidget<AssetController> {
       height: 105.0,
       decoration: const BoxDecoration(
         color: LNDColors.white,
-        border: Border(
-          top: BorderSide(color: LNDColors.hint, width: 0.5),
-        ),
+        border: Border(top: BorderSide(color: LNDColors.hint, width: 0.5)),
       ),
       child: SafeArea(
         child: Padding(
@@ -25,24 +23,11 @@ class CalendarBottomNav extends GetWidget<AssetController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Obx(
-                    () => LNDText.bold(
-                      text: '₱${controller.totalPrice.toMoney()}',
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: controller.openAllPrices,
-                    child: LNDText.regular(
-                      text: 'View all prices',
-                      fontSize: 12.0,
-                      textDecoration: TextDecoration.underline,
-                    ),
-                  )
-                ],
+              Obx(
+                () => LNDText.bold(
+                  text: '₱${controller.totalPrice.toMoney()}',
+                  fontSize: 18.0,
+                ),
               ),
               Obx(
                 () => LNDButton.primary(

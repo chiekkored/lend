@@ -193,6 +193,7 @@ class AssetController extends GetxController {
 
   void goToReservation() async {
     await LNDNavigate.toCalendarPage();
+    _totalPrice.value = 0;
     _selectedDates.clear();
   }
 
@@ -343,7 +344,7 @@ class AssetController extends GetxController {
   }
 
   bool checkAvailability(DateTime date) =>
-      !(asset?.availability?.any((av) => av.date.toDate() == date) ?? true);
+      !(asset?.availability?.any((av) => av.date.toDate() == date) ?? false);
 
   void addBookmark() async {
     if (AuthController.instance.isAuthenticated) return;
