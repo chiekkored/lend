@@ -13,6 +13,8 @@ import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/home/home.controller.dart';
+import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
+import 'package:lend/presentation/controllers/navigation/navigation.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/asset/widgets/all_prices.widget.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
@@ -283,7 +285,7 @@ class AssetController extends GetxController {
       final end = selectedDates.last;
       DateTime currentDate = start;
 
-      while (currentDate.isBefore(end)) {
+      while (!currentDate.isAfter(end)) {
         dates.add(
           Availability(
             date: Timestamp.fromDate(currentDate),
@@ -334,8 +336,10 @@ class AssetController extends GetxController {
       await batch.commit();
 
       await refreshAsset();
+      await MyRentalsController.instance.getMyRentals();
 
       LNDLoading.hide();
+      NavigationController.instance.changeTab(1);
       Get.until((page) => page.isFirst);
     } catch (e, st) {
       LNDLoading.hide();
@@ -343,8 +347,16 @@ class AssetController extends GetxController {
     }
   }
 
-  bool checkAvailability(DateTime date) =>
-      !(asset?.availability?.any((av) => av.date.toDate() == date) ?? false);
+  bool checkAvailability(DateTime date) {
+    // Make last day available
+    if ((asset?.availability?.isNotEmpty ?? false) &&
+        date == asset?.availability?.last.date.toDate()) {
+      return true;
+    }
+
+    return !(asset?.availability?.any((av) => av.date.toDate() == date) ??
+        false);
+  }
 
   void addBookmark() async {
     if (AuthController.instance.isAuthenticated) return;
