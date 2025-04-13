@@ -75,6 +75,11 @@ class AssetUserDetails extends GetWidget<AssetController> {
                             const SizedBox(width: 8.0),
                             LNDText.bold(
                               text: controller.user?.firstName ?? '',
+                              textParts: [
+                                LNDText.bold(
+                                  text: ' ${controller.user?.lastName ?? ''}',
+                                ),
+                              ],
                             ),
                             const SizedBox(width: 2.0),
                             const Icon(

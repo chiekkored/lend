@@ -15,6 +15,7 @@ import 'package:lend/presentation/pages/signup/components/setup.page.dart';
 import 'package:lend/presentation/pages/signup/widgets/dob.widget.dart';
 import 'package:lend/utilities/enums/eligibility.enum.dart';
 import 'package:lend/utilities/enums/user_types.enum.dart';
+import 'package:lend/utilities/extensions/datetime.extension.dart';
 
 class SignUpController extends GetxController with TextFieldsMixin {
   static final instance = Get.find<SignUpController>();
@@ -89,10 +90,8 @@ class SignUpController extends GetxController with TextFieldsMixin {
           uid: userCredential.user?.uid,
           firstName: firstNameController.text.trim(),
           lastName: lastNameController.text.trim(),
-          dateOfBirth: DateFormat(
-            'MMMM dd, yyyy',
-          ).parse(dobController.text.trim()),
-          address: '',
+          dateOfBirth: dobController.text.trim().toFormattedDateTime(),
+          location: null,
           photoUrl: '',
           createdAt: Timestamp.now(),
           email: email,

@@ -221,7 +221,7 @@ class SigninController extends GetxController {
         firstName: userCredential.user?.displayName?.split(' ')[0] ?? '',
         lastName: userCredential.user?.displayName?.split(' ')[1] ?? '',
         dateOfBirth: null,
-        address: '',
+        location: null,
         photoUrl: userCredential.user?.photoURL ?? '',
         createdAt: Timestamp.now(),
         email: userCredential.user?.email ?? '',

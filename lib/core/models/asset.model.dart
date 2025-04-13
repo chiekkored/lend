@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
+import 'package:lend/core/models/simple_user.model.dart';
 
 class Asset {
   String id;
@@ -178,6 +179,7 @@ class Asset {
 class AddAsset {
   String id;
   String ownerId;
+  SimpleUserModel? owner;
   String title;
   String description;
   String category;
@@ -191,6 +193,7 @@ class AddAsset {
   AddAsset({
     required this.id,
     required this.ownerId,
+    required this.owner,
     required this.title,
     required this.description,
     required this.category,
@@ -207,6 +210,7 @@ class AddAsset {
     return <String, dynamic>{
       'id': id,
       'ownerId': ownerId,
+      'owner': owner?.toMap(),
       'title': title,
       'description': description,
       'category': category,
@@ -224,6 +228,7 @@ class AddAsset {
     return AddAsset(
       id: map['id'] as String,
       ownerId: map['ownerId'] as String,
+      owner: map['owner'] as SimpleUserModel,
       title: map['title'] as String,
       description: map['description'] as String,
       category: map['category'] as String,

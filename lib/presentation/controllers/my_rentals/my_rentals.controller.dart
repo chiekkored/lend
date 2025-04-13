@@ -5,6 +5,7 @@ import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
 
 class MyRentalsController extends GetxController with AuthMixin {
@@ -17,20 +18,24 @@ class MyRentalsController extends GetxController with AuthMixin {
   List<Booking> get myRentals => _myRentals;
 
   Future<void> getMyRentals() async {
-    _isLoading.value = true;
-    final bookingsDocs =
-        await FirebaseFirestore.instance
-            .collection(LNDCollections.users.name)
-            .doc(AuthController.instance.uid)
-            .collection(LNDCollections.bookings.name)
-            .get();
+    try {
+      _isLoading.value = true;
+      final bookingsDocs =
+          await FirebaseFirestore.instance
+              .collection(LNDCollections.users.name)
+              .doc(AuthController.instance.uid)
+              .collection(LNDCollections.bookings.name)
+              .get();
 
-    if (bookingsDocs.docs.isNotEmpty) {
-      final rentalsList =
-          bookingsDocs.docs.map((e) => Booking.fromMap(e.data())).toList();
+      if (bookingsDocs.docs.isNotEmpty) {
+        final rentalsList =
+            bookingsDocs.docs.map((e) => Booking.fromMap(e.data())).toList();
 
-      _myRentals.assignAll(rentalsList);
-      _isLoading.value = false;
+        _myRentals.assignAll(rentalsList);
+        _isLoading.value = false;
+      }
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
   }
 

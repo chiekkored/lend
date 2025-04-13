@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lend/core/models/location.model.dart';
 
 import 'package:lend/utilities/enums/eligibility.enum.dart';
 
@@ -10,7 +11,7 @@ class UserModel {
   String? firstName;
   String? lastName;
   DateTime? dateOfBirth;
-  String? address;
+  Location? location;
   String? photoUrl;
   Timestamp? createdAt;
   String? email;
@@ -23,7 +24,7 @@ class UserModel {
     required this.firstName,
     required this.lastName,
     required this.dateOfBirth,
-    required this.address,
+    required this.location,
     required this.photoUrl,
     required this.createdAt,
     required this.email,
@@ -38,7 +39,7 @@ class UserModel {
     String? firstName,
     String? lastName,
     DateTime? dateOfBirth,
-    String? address,
+    Location? location,
     String? photoUrl,
     Timestamp? createdAt,
     String? email,
@@ -52,7 +53,7 @@ class UserModel {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-      address: address ?? this.address,
+      location: location ?? this.location,
       photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
       email: email ?? this.email,
@@ -69,7 +70,7 @@ class UserModel {
       'firstName': firstName,
       'lastName': lastName,
       'dateOfBirth': dateOfBirth?.millisecondsSinceEpoch,
-      'address': address,
+      'location': location,
       'photoUrl': photoUrl,
       'createdAt':
           createdAt != null
@@ -92,7 +93,10 @@ class UserModel {
           map['dateOfBirth'] != null
               ? DateTime.fromMillisecondsSinceEpoch(map['dateOfBirth'] as int)
               : null,
-      address: map['address'] != null ? map['address'] as String : null,
+      location:
+          map['location'] != null
+              ? Location.fromMap(map['location'] as Map<String, dynamic>)
+              : null,
       photoUrl: map['photoUrl'] != null ? map['photoUrl'] as String : null,
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
@@ -117,7 +121,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, address: $address, photoUrl: $photoUrl, createdAt: $createdAt, email: $email, phone: $phone, type: $type, isListingEligible: $isListingEligible, isRentingEligible: $isRentingEligible)';
+    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, location: $location, photoUrl: $photoUrl, createdAt: $createdAt, email: $email, phone: $phone, type: $type, isListingEligible: $isListingEligible, isRentingEligible: $isRentingEligible)';
   }
 
   @override
@@ -128,7 +132,7 @@ class UserModel {
         other.firstName == firstName &&
         other.lastName == lastName &&
         other.dateOfBirth == dateOfBirth &&
-        other.address == address &&
+        other.location == location &&
         other.photoUrl == photoUrl &&
         other.createdAt == createdAt &&
         other.email == email &&
@@ -144,7 +148,7 @@ class UserModel {
         firstName.hashCode ^
         lastName.hashCode ^
         dateOfBirth.hashCode ^
-        address.hashCode ^
+        location.hashCode ^
         photoUrl.hashCode ^
         createdAt.hashCode ^
         email.hashCode ^

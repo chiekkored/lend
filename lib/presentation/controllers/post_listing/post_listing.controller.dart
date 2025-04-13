@@ -17,6 +17,7 @@ import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
+import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -395,84 +396,95 @@ class PostListingController extends GetxController with TextFieldsMixin {
   }
 
   void next() async {
-    // Check all validations together
-    bool hasValidationErrors = false;
+    try {
+      // Check all validations together
+      bool hasValidationErrors = false;
 
-    if (formKey.currentState?.validate() == false) {
-      hasValidationErrors = true;
-    }
-
-    // Check cover photos - required and must be fully uploaded
-    if (coverPhotos.isEmpty) {
-      showCoverPhotosError.value = true;
-      hasValidationErrors = true;
-    } else {
-      showCoverPhotosError.value = false;
-      final allCoverPhotosUploaded = coverPhotos.every(
-        (photoFile) =>
-            photoFile.value.storagePath != null &&
-            photoFile.value.storagePath!.isNotEmpty,
-      );
-
-      if (!allCoverPhotosUploaded) {
-        LNDSnackbar.showWarning('Please wait for all cover photos to upload.');
+      if (formKey.currentState?.validate() == false) {
         hasValidationErrors = true;
       }
-    }
 
-    // Check showcase photos (if any) - must be fully uploaded
-    if (showcasePhotos.isNotEmpty) {
-      final allShowcasePhotosUploaded = showcasePhotos.every(
-        (photoFile) =>
-            photoFile.value.storagePath != null &&
-            photoFile.value.storagePath!.isNotEmpty,
-      );
-
-      if (!allShowcasePhotosUploaded) {
-        LNDSnackbar.showWarning(
-          'Please wait for all showcase photos to upload.',
+      // Check cover photos - required and must be fully uploaded
+      if (coverPhotos.isEmpty) {
+        showCoverPhotosError.value = true;
+        hasValidationErrors = true;
+      } else {
+        showCoverPhotosError.value = false;
+        final allCoverPhotosUploaded = coverPhotos.every(
+          (photoFile) =>
+              photoFile.value.storagePath != null &&
+              photoFile.value.storagePath!.isNotEmpty,
         );
-        hasValidationErrors = true;
+
+        if (!allCoverPhotosUploaded) {
+          LNDSnackbar.showWarning(
+            'Please wait for all cover photos to upload.',
+          );
+          hasValidationErrors = true;
+        }
       }
+
+      // Check showcase photos (if any) - must be fully uploaded
+      if (showcasePhotos.isNotEmpty) {
+        final allShowcasePhotosUploaded = showcasePhotos.every(
+          (photoFile) =>
+              photoFile.value.storagePath != null &&
+              photoFile.value.storagePath!.isNotEmpty,
+        );
+
+        if (!allShowcasePhotosUploaded) {
+          LNDSnackbar.showWarning(
+            'Please wait for all showcase photos to upload.',
+          );
+          hasValidationErrors = true;
+        }
+      }
+
+      // Stop if any validation errors were found
+      if (hasValidationErrors) {
+        return;
+      }
+
+      final doc =
+          FirebaseFirestore.instance
+              .collection(LNDCollections.assets.name)
+              .doc();
+
+      LNDLoading.show();
+      final args =
+          AddAsset(
+            id: doc.id,
+            ownerId: AuthController.instance.uid ?? '',
+            owner: ProfileController.instance.simpleUser,
+            title: titleController.text.trim(),
+            description: descriptionController.text,
+            category: categoryController.text,
+            rates: Rates(
+              daily: int.tryParse(dailyPriceController.text.toNumber()),
+            ),
+            location:
+                useRegisteredAddress.value
+                    ? ProfileController.instance.user?.location
+                    : _location,
+            images: coverPhotos.map((e) => e.value.storagePath ?? '').toList(),
+            showcase:
+                showcasePhotos.map((e) => e.value.storagePath ?? '').toList(),
+            inclusions: inclusions.toList(),
+            createdAt: Timestamp.now(),
+            status: availability.value.label,
+          ).toMap();
+
+      await FirebaseFirestore.instance
+          .collection(LNDCollections.assets.name)
+          .doc(doc.id)
+          .set(args);
+
+      LNDLoading.hide();
+      HomeController.instance.getAssets();
+      MyRentalsController.instance.getMyRentals();
+      Get.back();
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
-
-    // Stop if any validation errors were found
-    if (hasValidationErrors) {
-      return;
-    }
-
-    final doc =
-        FirebaseFirestore.instance.collection(LNDCollections.assets.name).doc();
-
-    LNDLoading.show();
-
-    final args =
-        AddAsset(
-          id: doc.id,
-          ownerId: AuthController.instance.uid ?? '',
-          title: titleController.text.trim(),
-          description: descriptionController.text,
-          category: categoryController.text,
-          rates: Rates(
-            daily: int.tryParse(dailyPriceController.text.toNumber()),
-          ),
-          location: useRegisteredAddress.value ? null : _location,
-          images: coverPhotos.map((e) => e.value.storagePath ?? '').toList(),
-          showcase:
-              showcasePhotos.map((e) => e.value.storagePath ?? '').toList(),
-          inclusions: inclusions.toList(),
-          createdAt: Timestamp.now(),
-          status: availability.value.label,
-        ).toMap();
-
-    await FirebaseFirestore.instance
-        .collection(LNDCollections.assets.name)
-        .doc(doc.id)
-        .set(args);
-
-    LNDLoading.hide();
-    HomeController.instance.getAssets();
-    MyRentalsController.instance.getMyRentals();
-    Get.back();
   }
 }

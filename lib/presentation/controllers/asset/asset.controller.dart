@@ -83,6 +83,10 @@ class AssetController extends GetxController {
     super.onClose();
   }
 
+  /// Refreshes a single asset from Firestore
+  /// and updates the HomeController with the new asset data.
+  /// This method is useful for updating the asset details
+  /// after a booking is made or any other changes.
   Future<void> refreshAsset() async {
     try {
       final assetsCollection = FirebaseFirestore.instance.collection(
@@ -99,6 +103,7 @@ class AssetController extends GetxController {
     }
   }
 
+  /// Fetches the asset details from Firestore
   Future<void> getAsset() async {
     try {
       _isAssetLoading.value = true;
