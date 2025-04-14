@@ -69,7 +69,7 @@ class UserModel {
       'uid': uid,
       'firstName': firstName,
       'lastName': lastName,
-      'dateOfBirth': dateOfBirth?.millisecondsSinceEpoch,
+      'dateOfBirth': dateOfBirth,
       'location': location,
       'photoUrl': photoUrl,
       'createdAt':
@@ -91,7 +91,7 @@ class UserModel {
       lastName: map['lastName'] != null ? map['lastName'] as String : null,
       dateOfBirth:
           map['dateOfBirth'] != null
-              ? DateTime.fromMillisecondsSinceEpoch(map['dateOfBirth'] as int)
+              ? (map['dateOfBirth'] as Timestamp).toDate()
               : null,
       location:
           map['location'] != null

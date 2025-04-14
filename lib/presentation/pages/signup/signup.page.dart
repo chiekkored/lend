@@ -44,6 +44,7 @@ class SignUpPage extends GetView<SignUpController> {
                             labelText: 'Email',
                             autofocus: true,
                             controller: controller.emailController,
+                            textCapitalization: TextCapitalization.none,
                             keyboardType: TextInputType.emailAddress,
                             prefixIcon: FontAwesomeIcons.solidEnvelope,
                             textInputAction: TextInputAction.done,

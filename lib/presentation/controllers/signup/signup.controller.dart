@@ -139,6 +139,7 @@ class SignUpController extends GetxController with TextFieldsMixin {
     if (Platform.isIOS) {
       await LNDShow.bottomSheet(
         const DateOfBirth(),
+        expand: false,
         enableDrag: false,
         isDismissible: false,
       );

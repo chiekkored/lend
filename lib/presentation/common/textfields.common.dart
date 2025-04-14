@@ -141,7 +141,7 @@ class LNDTextField extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 26.0, left: 12.0),
                 child: LNDButton.icon(
                   icon: suffixIcon,
-                  size: 25.0,
+                  size: suffixIconSize ?? 16.0,
                   onPressed: () {
                     onTapSuffix?.call();
                   },

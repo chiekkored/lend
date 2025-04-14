@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -141,11 +142,14 @@ class SetupPage extends GetView<SignUpController> {
                               suffixIconSize: 16.0,
                               onTapSuffix:
                                   controller.toggleConfirmPasswordVisibility,
-                              // validator:
-                              //     (value) => controller.validateConfirmPassword(
-                              //       controller.passwordController.text,
-                              //       value,
-                              //     ),
+                              validator:
+                                  kDebugMode
+                                      ? null
+                                      : (value) =>
+                                          controller.validateConfirmPassword(
+                                            controller.passwordController.text,
+                                            value,
+                                          ),
                             ),
                           ),
                         ],
@@ -158,7 +162,7 @@ class SetupPage extends GetView<SignUpController> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-          height: kBottomNavigationBarHeight + 75.0,
+          height: kBottomNavigationBarHeight + 90.0,
           color: LNDColors.white,
           child: Column(
             children: [

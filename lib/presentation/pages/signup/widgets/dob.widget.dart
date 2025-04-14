@@ -20,18 +20,22 @@ class DateOfBirth extends GetWidget<SignUpController> {
     return Container(
       color: Colors.white,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Align(
             alignment: AlignmentDirectional.centerEnd,
-            child: LNDButton.text(
-              text: 'Done',
-              onPressed: () {
-                final formattedDate = selectedDate.toMonthDayYear();
-                controller.dobController.text = formattedDate;
-                Get.back();
-              },
-              enabled: true,
-              color: LNDColors.primary,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0, top: 8.0),
+              child: LNDButton.text(
+                text: 'Done',
+                onPressed: () {
+                  final formattedDate = selectedDate.toMonthDayYear();
+                  controller.dobController.text = formattedDate;
+                  Get.back();
+                },
+                enabled: true,
+                color: LNDColors.primary,
+              ),
             ),
           ),
           Container(
