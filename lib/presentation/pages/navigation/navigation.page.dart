@@ -20,6 +20,7 @@ class NavigationPage extends GetView<NavigationController> {
     return PersistentTabView(
       backgroundColor: LNDColors.white,
       controller: controller.navigationController,
+      navBarOverlap: const NavBarOverlap.none(),
       tabs: [
         PersistentTabConfig(
           item: ItemConfig(

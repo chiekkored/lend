@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
+import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/core/models/simple_user.model.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
@@ -15,6 +16,7 @@ class AssetDummyData {
     final batch = FirebaseFirestore.instance.batch();
     final firestore = FirebaseFirestore.instance;
     final assetCollection = firestore.collection(LNDCollections.assets.name);
+    final userAssetCollection = firestore.collection(LNDCollections.users.name);
 
     // Create a simple user as the owner for all assets
     final SimpleUserModel dummyOwner = ProfileController.instance.simpleUser;
@@ -47,6 +49,22 @@ class AssetDummyData {
       ).toMap(),
     );
 
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc1.id),
+      SimpleAsset(
+        id: doc1.id,
+        title: 'Professional DSLR Camera',
+        images: [
+          'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1000',
+        ],
+        category: Categories.electronics.label,
+        ownerId: dummyOwner.uid ?? '',
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
     // Asset 2
     final doc2 = assetCollection.doc();
     batch.set(
@@ -70,6 +88,22 @@ class AssetDummyData {
         ],
         showcase: [],
         inclusions: ['Bike', 'Helmet', 'Bike lock', 'Repair kit'],
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc2.id),
+      SimpleAsset(
+        id: doc2.id,
+        title: 'Mountain Bike - Trek Fuel EX',
+        images: [
+          'https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?q=80&w=1000',
+        ],
+        category: Categories.outdoorGears.label,
+        ownerId: dummyOwner.uid ?? '',
         createdAt: Timestamp.now(),
         status: Availability.available.label,
       ).toMap(),
@@ -105,6 +139,22 @@ class AssetDummyData {
       ).toMap(),
     );
 
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc3.id),
+      SimpleAsset(
+        id: doc3.id,
+        title: 'DJ Equipment Set',
+        images: [
+          'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1000',
+        ],
+        category: Categories.audioEquipment.label,
+        ownerId: dummyOwner.uid ?? '',
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
     // Asset 4
     final doc4 = assetCollection.doc();
     batch.set(
@@ -133,6 +183,22 @@ class AssetDummyData {
       ).toMap(),
     );
 
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc4.id),
+      SimpleAsset(
+        id: doc4.id,
+        title: 'Camping Tent - 6 Person',
+        images: [
+          'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000',
+        ],
+        category: Categories.outdoorGears.label,
+        ownerId: dummyOwner.uid ?? '',
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
     // Asset 5
     final doc5 = assetCollection.doc();
     batch.set(
@@ -152,6 +218,22 @@ class AssetDummyData {
         ],
         showcase: [],
         inclusions: ['Projector', 'Remote control', 'HDMI cable', 'Power cord'],
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc5.id),
+      SimpleAsset(
+        id: doc5.id,
+        title: 'Projector for Home Theater',
+        images: [
+          'https://images.unsplash.com/photo-1601944179066-29786cb9d32a?q=80&w=1000',
+        ],
+        category: Categories.electronics.label,
+        ownerId: dummyOwner.uid ?? '',
         createdAt: Timestamp.now(),
         status: Availability.available.label,
       ).toMap(),

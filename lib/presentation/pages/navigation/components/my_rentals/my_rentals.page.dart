@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
@@ -164,7 +165,10 @@ class MyRentalsPage extends GetView<MyRentalsController> {
             text: 'View details',
             hasPadding: false,
             enabled: true,
-            onPressed: () => controller.goToAsset(rentals.asset),
+            onPressed:
+                () => controller.goToAsset(
+                  Asset.fromMap(rentals.asset?.toMap() ?? {}),
+                ),
           ),
         ],
       ).withSpacing(12.0),

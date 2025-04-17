@@ -17,6 +17,7 @@ class LNDTextField extends StatelessWidget {
   final bool readOnly;
   final TextCapitalization textCapitalization;
   final int maxLines;
+  final int maxLength;
   final String? Function(String?)? validator;
 
   const LNDTextField._(
@@ -33,6 +34,7 @@ class LNDTextField extends StatelessWidget {
     this.textCapitalization,
     this.maxLines,
     this.validator,
+    this.maxLength,
   );
 
   // static InputDecoration inputDecoration({
@@ -89,6 +91,7 @@ class LNDTextField extends StatelessWidget {
                 ],
               )
               : null,
+      counterText: '',
       helper:
           helperText == null
               ? null
@@ -196,6 +199,7 @@ class LNDTextField extends StatelessWidget {
     TextCapitalization textCapitalization = TextCapitalization.sentences,
     String? Function(String?)? validator,
     int maxLines = 3,
+    int maxLength = 1000,
     String? helperText,
     bool? required,
   }) {
@@ -232,6 +236,7 @@ class LNDTextField extends StatelessWidget {
       textCapitalization,
       maxLines,
       validator,
+      maxLength,
     );
   }
 
@@ -264,6 +269,7 @@ class LNDTextField extends StatelessWidget {
     TextCapitalization textCapitalization = TextCapitalization.sentences,
     String? Function(String?)? validator,
     int maxLines = 1,
+    int maxLength = 100,
     String? helperText,
     bool? required,
   }) {
@@ -300,6 +306,7 @@ class LNDTextField extends StatelessWidget {
       textCapitalization,
       maxLines,
       validator,
+      maxLength,
     );
   }
 
@@ -334,6 +341,7 @@ class LNDTextField extends StatelessWidget {
     int maxLines = 1,
     String? helperText,
     bool? required,
+    int maxLength = 100,
   }) {
     return LNDTextField._(
       controller,
@@ -368,6 +376,7 @@ class LNDTextField extends StatelessWidget {
       textCapitalization,
       maxLines,
       validator,
+      maxLength,
     );
   }
 
@@ -402,6 +411,7 @@ class LNDTextField extends StatelessWidget {
     int maxLines = 1,
     String? helperText,
     bool? required,
+    int maxLength = 9,
   }) {
     return LNDTextField._(
       controller,
@@ -439,6 +449,7 @@ class LNDTextField extends StatelessWidget {
       textCapitalization,
       maxLines,
       validator,
+      maxLength,
     );
   }
 
@@ -450,6 +461,7 @@ class LNDTextField extends StatelessWidget {
       ),
       minLines: 1,
       maxLines: maxLines,
+      maxLength: maxLength,
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
@@ -461,6 +473,7 @@ class LNDTextField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       onTap: onTap,
       readOnly: readOnly,
+      canRequestFocus: !readOnly,
       validator: validator,
       inputFormatters: [
         if (maxLines == 1) FilteringTextInputFormatter.singleLineFormatter,

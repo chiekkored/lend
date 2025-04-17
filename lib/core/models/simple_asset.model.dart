@@ -1,0 +1,106 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+class SimpleAsset {
+  final String id;
+  final String? ownerId;
+  final String? title;
+  final List<String>? images;
+  final String? category;
+  final Timestamp? createdAt;
+  final String? status;
+  SimpleAsset({
+    required this.id,
+    required this.ownerId,
+    required this.title,
+    required this.images,
+    required this.category,
+    required this.createdAt,
+    required this.status,
+  });
+
+  SimpleAsset copyWith({
+    String? id,
+    String? ownerId,
+    String? title,
+    List<String>? images,
+    String? category,
+    Timestamp? createdAt,
+    String? status,
+  }) {
+    return SimpleAsset(
+      id: id ?? this.id,
+      ownerId: ownerId ?? this.ownerId,
+      title: title ?? this.title,
+      images: images ?? this.images,
+      category: category ?? this.category,
+      createdAt: createdAt ?? this.createdAt,
+      status: status ?? this.status,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'ownerId': ownerId,
+      'title': title,
+      'images': images,
+      'category': category,
+      'createdAt':
+          createdAt != null
+              ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
+              : null,
+      'status': status,
+    };
+  }
+
+  factory SimpleAsset.fromMap(Map<String, dynamic> map) {
+    return SimpleAsset(
+      id: map['id'] as String,
+      ownerId: map['ownerId'] != null ? map['ownerId'] as String : null,
+      title: map['title'] != null ? map['title'] as String : null,
+      images: map['images'] != null ? List<String>.from((map['images'])) : null,
+      category: map['category'] != null ? map['category'] as String : null,
+      createdAt:
+          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+      status: map['status'] != null ? map['status'] as String : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory SimpleAsset.fromJson(String source) =>
+      SimpleAsset.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'SimpleAsset(id: $id, ownerId: $ownerId, title: $title, images: $images, category: $category, createdAt: $createdAt, status: $status)';
+  }
+
+  @override
+  bool operator ==(covariant SimpleAsset other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.ownerId == ownerId &&
+        other.title == title &&
+        listEquals(other.images, images) &&
+        other.category == category &&
+        other.createdAt == createdAt &&
+        other.status == status;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        ownerId.hashCode ^
+        title.hashCode ^
+        images.hashCode ^
+        category.hashCode ^
+        createdAt.hashCode ^
+        status.hashCode;
+  }
+}

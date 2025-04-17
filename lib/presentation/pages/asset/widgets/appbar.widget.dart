@@ -46,33 +46,52 @@ class AssetAppBar extends GetWidget<AssetController> {
             //   ),
             // ),
             centerTitle: false,
-            background: FlutterCarousel(
-              items:
-                  controller.asset?.images
-                      ?.asMap()
-                      .entries
-                      .map(
-                        (entry) => GestureDetector(
-                          onTap: () => controller.openPhotoAsset(entry.key),
-                          child: LNDImage.custom(
-                            imageUrl: entry.value,
-                            height: double.infinity,
-                            width: double.infinity,
-                            borderRadius: 0.0,
-                          ),
-                        ),
-                      )
-                      .toList() ??
-                  [],
-              options: FlutterCarouselOptions(
-                height: double.infinity,
-                viewportFraction: 1.0,
-                enableInfiniteScroll:
-                    (controller.asset?.images?.length ?? 0) > 1,
-                autoPlay: (controller.asset?.images?.length ?? 0) > 1,
-                autoPlayInterval: const Duration(seconds: 4),
-                indicatorMargin: 12.0,
-              ),
+            background: Stack(
+              children: [
+                FlutterCarousel(
+                  items:
+                      controller.asset?.images
+                          ?.asMap()
+                          .entries
+                          .map(
+                            (entry) => GestureDetector(
+                              onTap: () => controller.openPhotoAsset(entry.key),
+                              child: LNDImage.custom(
+                                imageUrl: entry.value,
+                                height: double.infinity,
+                                width: double.infinity,
+                                borderRadius: 0.0,
+                              ),
+                            ),
+                          )
+                          .toList() ??
+                      [],
+                  options: FlutterCarouselOptions(
+                    height: double.infinity,
+                    viewportFraction: 1.0,
+                    enableInfiniteScroll:
+                        (controller.asset?.images?.length ?? 0) > 1,
+                    autoPlay: (controller.asset?.images?.length ?? 0) > 1,
+                    autoPlayInterval: const Duration(seconds: 4),
+                    indicatorMargin: 12.0,
+                  ),
+                ),
+                Positioned(
+                  top: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Container(
+                    height: 100.0,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [LNDColors.white, Colors.transparent],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             stretchModes: const [
               StretchMode.fadeTitle,

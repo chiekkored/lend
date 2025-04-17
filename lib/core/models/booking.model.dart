@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/core/models/simple_asset.model.dart';
 
 class Booking {
-  Asset? asset;
+  SimpleAsset? asset;
   Timestamp? createdAt;
   Payment? payment;
   String? renterId;
@@ -25,7 +25,7 @@ class Booking {
   });
 
   Booking copyWith({
-    Asset? asset,
+    SimpleAsset? asset,
     Timestamp? createdAt,
     Payment? payment,
     String? renterId,
@@ -63,7 +63,7 @@ class Booking {
     return Booking(
       asset:
           map['asset'] != null
-              ? Asset.fromMap(map['asset'] as Map<String, dynamic>)
+              ? SimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
               : null,
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,

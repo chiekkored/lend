@@ -11,6 +11,7 @@ import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/file.model.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
+import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
@@ -445,15 +446,33 @@ class PostListingController extends GetxController with TextFieldsMixin {
         return;
       }
 
-      final doc =
+      LNDLoading.show();
+
+      final batch = FirebaseFirestore.instance.batch();
+      final assetDoc =
           FirebaseFirestore.instance
               .collection(LNDCollections.assets.name)
               .doc();
+      final userAssetDoc = FirebaseFirestore.instance
+          .collection(LNDCollections.users.name)
+          .doc(AuthController.instance.uid)
+          .collection(LNDCollections.assets.name)
+          .doc(assetDoc.id);
 
-      LNDLoading.show();
-      final args =
+      final userAssetArgs =
+          SimpleAsset(
+            id: assetDoc.id,
+            title: titleController.text.trim(),
+            images: coverPhotos.map((e) => e.value.storagePath ?? '').toList(),
+            category: categoryController.text,
+            ownerId: AuthController.instance.uid ?? '',
+            createdAt: Timestamp.now(),
+            status: availability.value.label,
+          ).toMap();
+
+      final assetArgs =
           AddAsset(
-            id: doc.id,
+            id: assetDoc.id,
             ownerId: AuthController.instance.uid ?? '',
             owner: ProfileController.instance.simpleUser,
             title: titleController.text.trim(),
@@ -474,10 +493,13 @@ class PostListingController extends GetxController with TextFieldsMixin {
             status: availability.value.label,
           ).toMap();
 
-      await FirebaseFirestore.instance
-          .collection(LNDCollections.assets.name)
-          .doc(doc.id)
-          .set(args);
+      // Add asset to assets collection
+      batch.set(assetDoc, assetArgs);
+
+      // Add asset to user's assets collection
+      batch.set(userAssetDoc, userAssetArgs);
+
+      await batch.commit();
 
       LNDLoading.hide();
       HomeController.instance.getAssets();

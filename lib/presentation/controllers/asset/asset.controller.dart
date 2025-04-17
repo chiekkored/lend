@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/booking.model.dart';
+import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
@@ -317,12 +318,14 @@ class AssetController extends GetxController {
       batch.set(
         bookingsCollection.doc(),
         Booking(
-          asset: Asset(
+          asset: SimpleAsset(
             id: asset?.id ?? '',
             ownerId: asset?.ownerId,
             title: asset?.title,
             images: asset?.images,
             category: asset?.category,
+            createdAt: Timestamp.now(),
+            status: asset?.status,
           ),
           dates: dates.map((d) => d.date).toList(),
           createdAt: Timestamp.now(),

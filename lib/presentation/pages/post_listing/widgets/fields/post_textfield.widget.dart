@@ -16,6 +16,7 @@ class PostTextFieldW extends GetWidget<PostListingController> {
   final String? example;
   final TextInputType? keyboardType;
   final VoidCallback? onTap;
+  final int? maxLength;
 
   const PostTextFieldW({
     super.key,
@@ -29,6 +30,7 @@ class PostTextFieldW extends GetWidget<PostListingController> {
     this.example,
     this.keyboardType,
     this.onTap,
+    this.maxLength,
   });
 
   @override
@@ -42,6 +44,7 @@ class PostTextFieldW extends GetWidget<PostListingController> {
             controller: textController,
             labelText: text,
             prefixText: prefixText,
+            maxLength: maxLength ?? 100,
             keyboardType: keyboardType ?? TextInputType.text,
             required: required,
             prefixStyle:

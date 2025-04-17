@@ -5,6 +5,7 @@ import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
+import 'package:lend/presentation/pages/my_assets/my_assets.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/add_inclusions.widget.dart';
@@ -15,6 +16,7 @@ import 'package:lend/presentation/pages/product_showcase/product_showcase.page.d
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/signup/signup.page.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
 class LNDNavigate {
   LNDNavigate._();
@@ -49,6 +51,24 @@ class LNDNavigate {
 
   static Future<T?>? toCalendarPage<T>() async {
     return await Get.toNamed(CalendarPage.routeName);
+  }
+
+  static Future<T?>? toMyAssetPage<T>(
+    BuildContext context, {
+    required bool withNavbar,
+  }) async {
+    if (withNavbar) {
+      return await pushScreen(
+        context,
+        screen: const MyAssetsPage(),
+        withNavBar: true,
+        settings: RouteSettings(
+          name: MyAssetsPage.routeName,
+          arguments: withNavbar,
+        ),
+      );
+    }
+    return await Get.toNamed(MyAssetsPage.routeName, arguments: withNavbar);
   }
 
   static Future<T?>? toPostListing<T>({

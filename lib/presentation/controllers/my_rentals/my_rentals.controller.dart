@@ -11,15 +11,23 @@ import 'package:lend/utilities/helpers/navigator.helper.dart';
 class MyRentalsController extends GetxController with AuthMixin {
   static MyRentalsController get instance => Get.find<MyRentalsController>();
 
-  final RxBool _isLoading = false.obs;
-  bool get isLoading => _isLoading.value;
+  final RxBool _isMyRentalsLoading = false.obs;
+  bool get isMyRentalsLoading => _isMyRentalsLoading.value;
 
   final RxList<Booking> _myRentals = <Booking>[].obs;
   List<Booking> get myRentals => _myRentals;
 
+  @override
+  void onClose() {
+    _isMyRentalsLoading.close();
+    _myRentals.close();
+
+    super.onClose();
+  }
+
   Future<void> getMyRentals() async {
     try {
-      _isLoading.value = true;
+      _isMyRentalsLoading.value = true;
       final bookingsDocs =
           await FirebaseFirestore.instance
               .collection(LNDCollections.users.name)
@@ -32,7 +40,7 @@ class MyRentalsController extends GetxController with AuthMixin {
             bookingsDocs.docs.map((e) => Booking.fromMap(e.data())).toList();
 
         _myRentals.assignAll(rentalsList);
-        _isLoading.value = false;
+        _isMyRentalsLoading.value = false;
       }
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);

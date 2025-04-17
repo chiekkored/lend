@@ -68,6 +68,7 @@ class PostListingPage extends GetView<PostListingController> {
                       'represents your product.',
                   example: 'DJI Osmo Pocket 3',
                   required: true,
+                  maxLength: 50,
                 ),
                 PostTextBoxW(
                   textController: controller.descriptionController,

@@ -197,12 +197,14 @@ class LNDButton extends StatelessWidget {
     Color? color,
     bool isLoading = false,
     bool hasPadding = true,
+    bool closeOverlays = false,
+    VoidCallback? onPressed,
     double size = 40,
   }) {
     return LNDButton._(
       text: '',
       enabled: true,
-      onPressed: () => Get.back(closeOverlays: true),
+      onPressed: onPressed ?? () => Get.back(closeOverlays: closeOverlays),
       color: color ?? LNDColors.black,
       isLoading: isLoading,
       hasPadding: hasPadding,
