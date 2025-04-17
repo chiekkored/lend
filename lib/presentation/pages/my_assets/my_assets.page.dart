@@ -22,7 +22,7 @@ class MyAssetsPage extends GetView<MyAssetsController> {
         leading: LNDButton.back(
           onPressed: withNavbar ? () => Navigator.of(context).pop() : null,
         ),
-        title: LNDText.bold(text: 'My Assets', fontSize: 18.0),
+        title: LNDText.bold(text: 'Your listing', fontSize: 18.0),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -63,6 +63,7 @@ class MyAssetsPage extends GetView<MyAssetsController> {
               ),
             ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
@@ -70,19 +71,7 @@ class MyAssetsPage extends GetView<MyAssetsController> {
                     right: 24.0,
                     bottom: 8.0,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      LNDText.bold(text: 'All', color: LNDColors.hint),
-                      LNDButton.text(
-                        text: 'See all',
-                        onPressed: () {},
-                        enabled: true,
-                        color: LNDColors.black,
-                        size: 12.0,
-                      ),
-                    ],
-                  ).withSpacing(24.0),
+                  child: LNDText.bold(text: 'All', color: LNDColors.hint),
                 ),
                 Obx(
                   () =>
