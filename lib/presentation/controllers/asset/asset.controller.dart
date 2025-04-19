@@ -8,6 +8,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/booking.model.dart';
+import 'package:lend/core/models/group_chat.model.dart';
+import 'package:lend/core/models/message.model.dart';
 import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
@@ -279,6 +281,11 @@ class AssetController extends GetxController {
       return;
     }
     try {
+      if (asset?.owner == null) {
+        LNDSnackbar.showError('Something went wrong. Please try again later.');
+        return;
+      }
+
       LNDLoading.show();
 
       final List<Availability> dates = [];
@@ -306,6 +313,12 @@ class AssetController extends GetxController {
           .collection(LNDCollections.users.name)
           .doc(AuthController.instance.uid)
           .collection(LNDCollections.bookings.name);
+      final userChatsCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.userChats.name,
+      );
+      final chatsCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.chats.name,
+      );
 
       final newAvailability = {
         'availability': FieldValue.arrayUnion(
@@ -313,8 +326,10 @@ class AssetController extends GetxController {
         ),
       };
 
+      // Update the asset's availability
       batch.update(assetsCollection.doc(asset?.id), newAvailability);
 
+      // Create a new booking
       batch.set(
         bookingsCollection.doc(),
         Booking(
@@ -333,6 +348,38 @@ class AssetController extends GetxController {
           renterId: AuthController.instance.uid,
           status: BookingStatus.confirmed.label,
           totalPrice: totalPrice,
+        ).toMap(),
+      );
+
+      // Create a new chat
+      final userChatsDoc =
+          userChatsCollection
+              .doc(AuthController.instance.uid)
+              .collection(LNDCollections.chats.name)
+              .doc();
+      batch.set(
+        userChatsDoc,
+        UserChats(
+          id: userChatsDoc.id,
+          assetId: asset?.id,
+          participants: [asset!.owner!, ProfileController.instance.simpleUser],
+          createdAt: Timestamp.now(),
+        ).toMap(),
+      );
+
+      // Create a new message
+      final chatCollection = chatsCollection
+          .doc(userChatsDoc.id)
+          .collection(LNDCollections.messages.name);
+      final messageDoc = chatCollection.doc();
+      batch.set(
+        messageDoc,
+        Message(
+          id: messageDoc.id,
+          text: 'Booking Confirmed',
+          senderId: asset!.ownerId,
+          createdAt: Timestamp.now(),
+          type: 'text',
         ).toMap(),
       );
 
