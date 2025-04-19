@@ -24,6 +24,8 @@ import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
+import 'package:lend/utilities/enums/chat_type.enum.dart';
+import 'package:lend/utilities/enums/message_type.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
 
@@ -352,15 +354,17 @@ class AssetController extends GetxController {
       );
 
       // Create a new chat
-      final userChatsDoc =
-          userChatsCollection
-              .doc(AuthController.instance.uid)
-              .collection(LNDCollections.chats.name)
-              .doc();
+      final userChatsDoc = userChatsCollection.doc(AuthController.instance.uid);
+
+      batch.set(userChatsDoc, {'isOnline': true});
+
+      final userChatsSubChatDoc = userChatsDoc
+          .collection(LNDCollections.chats.name)
+          .doc(userChatsDoc.id);
       batch.set(
-        userChatsDoc,
+        userChatsSubChatDoc,
         UserChats(
-          id: userChatsDoc.id,
+          id: userChatsSubChatDoc.id,
           assetId: asset?.id,
           participants: [asset!.owner!, ProfileController.instance.simpleUser],
           createdAt: Timestamp.now(),
@@ -368,18 +372,20 @@ class AssetController extends GetxController {
       );
 
       // Create a new message
-      final chatCollection = chatsCollection
-          .doc(userChatsDoc.id)
-          .collection(LNDCollections.messages.name);
-      final messageDoc = chatCollection.doc();
+      final chatsDoc = chatsCollection.doc(userChatsSubChatDoc.id);
+      batch.set(chatsDoc, {'chatType': ChatType.private.label});
+
+      final chatMessagesDoc = chatsDoc
+          .collection(LNDCollections.messages.name)
+          .doc(chatsDoc.id);
       batch.set(
-        messageDoc,
+        chatMessagesDoc,
         Message(
-          id: messageDoc.id,
+          id: chatMessagesDoc.id,
           text: 'Booking Confirmed',
           senderId: asset!.ownerId,
           createdAt: Timestamp.now(),
-          type: 'text',
+          type: MessageType.text.label,
         ).toMap(),
       );
 
