@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:lend/core/models/user.model.dart';
 import 'package:lend/core/services/get_storage.service.dart';
 import 'package:lend/presentation/common/loading.common.dart';
+import 'package:lend/presentation/controllers/messages/messages.controller.dart';
 import 'package:lend/presentation/controllers/your_listing/you_listing.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
@@ -47,6 +48,9 @@ class AuthController extends GetxController {
       ProfileController.instance.getUserData();
       MyRentalsController.instance.getMyRentals();
       YourListingController.instance.getMyAssets();
+      MessagesController.instance.listenToChats();
+    } else {
+      MessagesController.instance.cancelSubscriptions();
     }
   }
 

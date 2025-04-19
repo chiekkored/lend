@@ -398,6 +398,9 @@ class PostListingController extends GetxController with TextFieldsMixin {
 
   void next() async {
     try {
+      // await AssetDummyData.uploadDummyAssets();
+      // return;
+
       // Check all validations together
       bool hasValidationErrors = false;
 

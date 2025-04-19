@@ -15,10 +15,10 @@ class ProfileController extends GetxController with AuthMixin {
 
   // Simple user data model getter (only firstName, lastName, photoUrl, and email) using SimpleUserModel
   SimpleUserModel get simpleUser => SimpleUserModel(
-    uid: user?.uid,
-    firstName: user?.firstName,
-    lastName: user?.lastName,
-    photoUrl: user?.photoUrl,
+    uid: _user.value?.uid,
+    firstName: _user.value?.firstName,
+    lastName: _user.value?.lastName,
+    photoUrl: _user.value?.photoUrl,
   );
 
   final RxBool _isLoading = false.obs;

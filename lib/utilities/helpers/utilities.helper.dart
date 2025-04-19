@@ -5,7 +5,7 @@ class LNDUtils {
     required String? firstName,
     required String? lastName,
   }) {
-    if (firstName == null || lastName == null) return 'Setup your name';
+    if (firstName == null || lastName == null) return 'No name';
     return '$firstName $lastName';
   }
 

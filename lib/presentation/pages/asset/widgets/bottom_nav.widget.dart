@@ -4,6 +4,7 @@ import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/shimmer.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/asset/asset.controller.dart';
+import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 
@@ -43,13 +44,14 @@ class AssetBottomNav extends GetWidget<AssetController> {
                           ],
                         ),
               ),
-              Obx(
-                () => LNDButton.primary(
-                  text: 'Reserve now',
-                  enabled: !controller.isAssetLoading,
-                  onPressed: controller.goToReservation,
+              if (AuthController.instance.uid != controller.asset?.ownerId)
+                Obx(
+                  () => LNDButton.primary(
+                    text: 'Reserve now',
+                    enabled: !controller.isAssetLoading,
+                    onPressed: controller.goToReservation,
+                  ),
                 ),
-              ),
             ],
           ),
         ),

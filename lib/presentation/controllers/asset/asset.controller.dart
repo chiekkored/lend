@@ -8,9 +8,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/booking.model.dart';
-import 'package:lend/core/models/group_chat.model.dart';
+import 'package:lend/core/models/chat_root.model.dart';
+import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/core/models/message.model.dart';
 import 'package:lend/core/models/simple_asset.model.dart';
+import 'package:lend/core/models/user_chat.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
@@ -315,12 +317,6 @@ class AssetController extends GetxController {
           .collection(LNDCollections.users.name)
           .doc(AuthController.instance.uid)
           .collection(LNDCollections.bookings.name);
-      final userChatsCollection = FirebaseFirestore.instance.collection(
-        LNDCollections.userChats.name,
-      );
-      final chatsCollection = FirebaseFirestore.instance.collection(
-        LNDCollections.chats.name,
-      );
 
       final newAvailability = {
         'availability': FieldValue.arrayUnion(
@@ -354,40 +350,7 @@ class AssetController extends GetxController {
       );
 
       // Create a new chat
-      final userChatsDoc = userChatsCollection.doc(AuthController.instance.uid);
-
-      batch.set(userChatsDoc, {'isOnline': true});
-
-      final userChatsSubChatDoc = userChatsDoc
-          .collection(LNDCollections.chats.name)
-          .doc(userChatsDoc.id);
-      batch.set(
-        userChatsSubChatDoc,
-        UserChats(
-          id: userChatsSubChatDoc.id,
-          assetId: asset?.id,
-          participants: [asset!.owner!, ProfileController.instance.simpleUser],
-          createdAt: Timestamp.now(),
-        ).toMap(),
-      );
-
-      // Create a new message
-      final chatsDoc = chatsCollection.doc(userChatsSubChatDoc.id);
-      batch.set(chatsDoc, {'chatType': ChatType.private.label});
-
-      final chatMessagesDoc = chatsDoc
-          .collection(LNDCollections.messages.name)
-          .doc(chatsDoc.id);
-      batch.set(
-        chatMessagesDoc,
-        Message(
-          id: chatMessagesDoc.id,
-          text: 'Booking Confirmed',
-          senderId: asset!.ownerId,
-          createdAt: Timestamp.now(),
-          type: MessageType.text.label,
-        ).toMap(),
-      );
+      await _createMessage();
 
       await batch.commit();
 
@@ -401,6 +364,58 @@ class AssetController extends GetxController {
       LNDLoading.hide();
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
+  }
+
+  Future<void> _createMessage() async {
+    final batch = FirebaseFirestore.instance.batch();
+    final userChatsCollection = FirebaseFirestore.instance.collection(
+      LNDCollections.userChats.name,
+    );
+    final chatsCollection = FirebaseFirestore.instance.collection(
+      LNDCollections.chats.name,
+    );
+
+    // Create a new chat
+    const bookingString = 'Booking Confirmed';
+    final userChatsDoc = userChatsCollection.doc(AuthController.instance.uid);
+
+    batch.set(userChatsDoc, UserChatRoot(isOnline: true).toMap());
+
+    final userChatsSubChatDoc =
+        userChatsDoc.collection(LNDCollections.chats.name).doc();
+    batch.set(
+      userChatsSubChatDoc,
+      Chat(
+        id: userChatsSubChatDoc.id,
+        asset: SimpleAsset.fromMap(asset!.toMap()),
+        participants: [asset!.owner!, ProfileController.instance.simpleUser],
+        lastMessage: bookingString,
+        lastMessageDate: Timestamp.now(),
+        lastMessageSenderId: asset!.ownerId,
+        createdAt: Timestamp.now(),
+        hasRead: false,
+      ).toMap(),
+    );
+
+    // Create a new message
+    final chatsDoc = chatsCollection.doc(userChatsSubChatDoc.id);
+    batch.set(chatsDoc, ChatRoot(chatType: ChatType.private.label).toMap());
+
+    final chatMessagesDoc = chatsDoc
+        .collection(LNDCollections.messages.name)
+        .doc(chatsDoc.id);
+    batch.set(
+      chatMessagesDoc,
+      Message(
+        id: chatMessagesDoc.id,
+        text: bookingString,
+        senderId: asset!.ownerId,
+        createdAt: Timestamp.now(),
+        type: MessageType.text.label,
+      ).toMap(),
+    );
+
+    await batch.commit();
   }
 
   bool checkAvailability(DateTime date) {

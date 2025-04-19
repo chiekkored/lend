@@ -71,10 +71,12 @@ class ProfilePage extends GetView<ProfileController> {
                                         ),
                                       ),
                                     )
-                                    : LNDText.regular(
-                                      text: LNDUtils.formatFullName(
-                                        firstName: user?.firstName,
-                                        lastName: user?.lastName,
+                                    : Obx(
+                                      () => LNDText.regular(
+                                        text: LNDUtils.formatFullName(
+                                          firstName: controller.user?.firstName,
+                                          lastName: controller.user?.lastName,
+                                        ),
                                       ),
                                     ),
                             subtitle: LNDText.regular(
