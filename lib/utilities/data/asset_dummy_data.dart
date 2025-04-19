@@ -11,7 +11,7 @@ import 'package:lend/utilities/enums/availability.enum.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
 
 class AssetDummyData {
-  /// Creates and uploads 5 dummy assets to Firestore
+  /// Creates and uploads 10 dummy assets to Firestore
   static Future<void> uploadDummyAssets() async {
     final batch = FirebaseFirestore.instance.batch();
     final firestore = FirebaseFirestore.instance;
@@ -239,8 +239,246 @@ class AssetDummyData {
       ).toMap(),
     );
 
+    // Asset 6
+    final doc6 = assetCollection.doc();
+    batch.set(
+      doc6,
+      AddAsset(
+        id: doc6.id,
+        ownerId: dummyOwner.uid ?? '',
+        owner: dummyOwner,
+        title: 'Stand Mixer - Kitchen Aid Professional',
+        description:
+            'Professional 5-quart stand mixer, perfect for baking enthusiasts. Includes multiple attachments for various functions.',
+        category: Categories.appliances.label,
+        rates: Rates(daily: 1200),
+        location: null, // Using registered address
+        images: [
+          'https://images.unsplash.com/photo-1558180077-09f158c76707?q=80&w=1000',
+        ],
+        showcase: [],
+        inclusions: ['Mixer', 'Whisk attachment', 'Dough hook', 'Flat beater'],
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc6.id),
+      SimpleAsset(
+        id: doc6.id,
+        title: 'Stand Mixer - Kitchen Aid Professional',
+        images: [
+          'https://images.unsplash.com/photo-1558180077-09f158c76707?q=80&w=1000',
+        ],
+        category: Categories.appliances.label,
+        ownerId: dummyOwner.uid ?? '',
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Asset 7
+    final doc7 = assetCollection.doc();
+    batch.set(
+      doc7,
+      AddAsset(
+        id: doc7.id,
+        ownerId: dummyOwner.uid ?? '',
+        owner: dummyOwner,
+        title: 'Drone - DJI Mavic Air 2',
+        description:
+            'High-performance drone with 4K camera and intelligent flight modes. Perfect for aerial photography and videography.',
+        category: Categories.electronics.label,
+        rates: Rates(daily: 3000),
+        location: Location(
+          description: '321 Sky View Dr, Los Angeles, CA 90001',
+          useSpecificLocation: true,
+          latLng: const GeoPoint(34.0522, -118.2437),
+        ),
+        images: [
+          'https://images.unsplash.com/photo-1508444845599-5c89863b1c44?q=80&w=1000',
+        ],
+        showcase: [],
+        inclusions: [
+          'Drone',
+          'Remote controller',
+          '3 batteries',
+          'Carrying case',
+          'Spare propellers',
+        ],
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc7.id),
+      SimpleAsset(
+        id: doc7.id,
+        title: 'Drone - DJI Mavic Air 2',
+        images: [
+          'https://images.unsplash.com/photo-1508444845599-5c89863b1c44?q=80&w=1000',
+        ],
+        category: Categories.electronics.label,
+        ownerId: dummyOwner.uid ?? '',
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Asset 8
+    final doc8 = assetCollection.doc();
+    batch.set(
+      doc8,
+      AddAsset(
+        id: doc8.id,
+        ownerId: dummyOwner.uid ?? '',
+        owner: dummyOwner,
+        title: 'Paddleboard Set',
+        description:
+            'Inflatable stand-up paddleboard with pump, paddle, and carrying bag. Great for lake or ocean activities.',
+        category: Categories.outdoorGears.label,
+        rates: Rates(daily: 1000),
+        location: Location(
+          description: '555 Beach Road, Santa Monica, CA 90402',
+          useSpecificLocation: true,
+          latLng: const GeoPoint(34.0195, -118.4912),
+        ),
+        images: [
+          'https://plus.unsplash.com/premium_photo-1681256187382-73ca06ed8d0c?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        ],
+        showcase: [],
+        inclusions: [
+          'Inflatable paddleboard',
+          'Paddle',
+          'Pump',
+          'Carry bag',
+          'Repair kit',
+        ],
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc8.id),
+      SimpleAsset(
+        id: doc8.id,
+        title: 'Paddleboard Set',
+        images: [
+          'https://plus.unsplash.com/premium_photo-1681256187382-73ca06ed8d0c?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        ],
+        category: Categories.outdoorGears.label,
+        ownerId: dummyOwner.uid ?? '',
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Asset 9
+    final doc9 = assetCollection.doc();
+    batch.set(
+      doc9,
+      AddAsset(
+        id: doc9.id,
+        ownerId: dummyOwner.uid ?? '',
+        owner: dummyOwner,
+        title: 'Gaming Console - PlayStation 5',
+        description:
+            'Latest PlayStation console with two controllers and a selection of popular games. Perfect for gaming nights.',
+        category: Categories.electronics.label,
+        rates: Rates(daily: 1500),
+        location: null, // Using registered address
+        images: [
+          'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?q=80&w=1000',
+        ],
+        showcase: [],
+        inclusions: [
+          'PlayStation 5 console',
+          '2 controllers',
+          '5 games',
+          'HDMI cable',
+        ],
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection.doc(dummyOwner.uid).collection('assets').doc(doc9.id),
+      SimpleAsset(
+        id: doc9.id,
+        title: 'Gaming Console - PlayStation 5',
+        images: [
+          'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?q=80&w=1000',
+        ],
+        category: Categories.electronics.label,
+        ownerId: dummyOwner.uid ?? '',
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Asset 10
+    final doc10 = assetCollection.doc();
+    batch.set(
+      doc10,
+      AddAsset(
+        id: doc10.id,
+        ownerId: dummyOwner.uid ?? '',
+        owner: dummyOwner,
+        title: 'Pneumatic Power Tool Set',
+        description:
+            'Complete set of professional-grade pneumatic tools including nail gun, impact wrench, and air compressor.',
+        category: Categories.outdoorGears.label,
+        rates: Rates(daily: 2200),
+        location: Location(
+          description: '888 Construction Blvd, Portland, OR 97205',
+          useSpecificLocation: false,
+          latLng: const GeoPoint(45.5051, -122.6750),
+        ),
+        images: [
+          'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?q=80&w=1000',
+        ],
+        showcase: [],
+        inclusions: [
+          'Air compressor',
+          'Nail gun',
+          'Impact wrench',
+          'Air hoses',
+          'Safety goggles',
+        ],
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
+    // Add SimpleAsset to user's assets collection
+    batch.set(
+      userAssetCollection
+          .doc(dummyOwner.uid)
+          .collection('assets')
+          .doc(doc10.id),
+      SimpleAsset(
+        id: doc10.id,
+        title: 'Pneumatic Power Tool Set',
+        images: [
+          'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?q=80&w=1000',
+        ],
+        category: Categories.outdoorGears.label,
+        ownerId: dummyOwner.uid ?? '',
+        createdAt: Timestamp.now(),
+        status: Availability.available.label,
+      ).toMap(),
+    );
+
     // Commit the batch
     await batch.commit();
-    debugPrint('Successfully uploaded 5 dummy assets to Firestore');
+    debugPrint('Successfully uploaded 10 dummy assets to Firestore');
   }
 }

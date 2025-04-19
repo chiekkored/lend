@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:lend/core/models/user.model.dart';
 import 'package:lend/core/services/get_storage.service.dart';
 import 'package:lend/presentation/common/loading.common.dart';
-import 'package:lend/presentation/controllers/my_assets/my_assets.controller.dart';
+import 'package:lend/presentation/controllers/your_listing/you_listing.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
@@ -46,7 +46,7 @@ class AuthController extends GetxController {
     if (user != null) {
       ProfileController.instance.getUserData();
       MyRentalsController.instance.getMyRentals();
-      MyAssetsController.instance.getMyAssets();
+      YourListingController.instance.getMyAssets();
     }
   }
 

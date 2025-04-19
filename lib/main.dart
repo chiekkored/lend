@@ -11,7 +11,7 @@ import 'package:lend/core/middlewares/auth.middleware.dart';
 import 'package:lend/core/services/main.service.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
-import 'package:lend/presentation/pages/my_assets/my_assets.page.dart';
+import 'package:lend/presentation/pages/your_listing/you_listing.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
@@ -96,7 +96,10 @@ class Root extends StatelessWidget {
           name: AddShowcasePage.routeName,
           page: () => const AddShowcasePage(),
         ),
-        GetPage(name: MyAssetsPage.routeName, page: () => const MyAssetsPage()),
+        GetPage(
+          name: YourListingPage.routeName,
+          page: () => const YourListingPage(),
+        ),
       ],
       initialRoute: NavigationPage.routeName,
     );

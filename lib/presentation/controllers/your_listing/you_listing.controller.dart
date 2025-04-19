@@ -10,8 +10,9 @@ import 'package:lend/utilities/enums/availability.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
 
-class MyAssetsController extends GetxController with AuthMixin {
-  static MyAssetsController get instance => Get.find<MyAssetsController>();
+class YourListingController extends GetxController with AuthMixin {
+  static YourListingController get instance =>
+      Get.find<YourListingController>();
 
   final RxBool _isMyAssetsLoading = false.obs;
   bool get isMyAssetsLoading => _isMyAssetsLoading.value;

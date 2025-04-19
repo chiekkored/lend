@@ -5,7 +5,7 @@ import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
-import 'package:lend/presentation/pages/my_assets/my_assets.page.dart';
+import 'package:lend/presentation/pages/your_listing/you_listing.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
 import 'package:lend/presentation/pages/post_listing/widgets/add_inclusions.widget.dart';
@@ -60,15 +60,15 @@ class LNDNavigate {
     if (withNavbar) {
       return await pushScreen(
         context,
-        screen: const MyAssetsPage(),
+        screen: const YourListingPage(),
         withNavBar: true,
         settings: RouteSettings(
-          name: MyAssetsPage.routeName,
+          name: YourListingPage.routeName,
           arguments: withNavbar,
         ),
       );
     }
-    return await Get.toNamed(MyAssetsPage.routeName, arguments: withNavbar);
+    return await Get.toNamed(YourListingPage.routeName, arguments: withNavbar);
   }
 
   static Future<T?>? toPostListing<T>({

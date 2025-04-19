@@ -56,10 +56,7 @@ class HomePage extends GetView<HomeController> {
                             itemCount: controller.assets.length,
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            padding: const EdgeInsets.only(
-                              bottom: kBottomNavigationBarHeight + 24.0,
-                              top: 12.0,
-                            ),
+                            padding: const EdgeInsets.only(top: 12.0),
                             itemBuilder:
                                 (context, index) =>
                                     _buildPostWidget(controller.assets[index]),

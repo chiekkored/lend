@@ -4,14 +4,14 @@ import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/spinner.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
-import 'package:lend/presentation/controllers/my_assets/my_assets.controller.dart';
+import 'package:lend/presentation/controllers/your_listing/you_listing.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 
-class MyAssetsPage extends GetView<MyAssetsController> {
-  static const String routeName = '/my-assets';
-  const MyAssetsPage({super.key});
+class YourListingPage extends GetView<YourListingController> {
+  static const String routeName = '/your-listing';
+  const YourListingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,8 @@ class MyAssetsPage extends GetView<MyAssetsController> {
         ModalRoute.of(context)?.settings.arguments as bool? ?? false;
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: LNDColors.white,
+        backgroundColor: LNDColors.white,
         leading: LNDButton.back(
           onPressed: withNavbar ? () => Navigator.of(context).pop() : null,
         ),
