@@ -65,6 +65,7 @@ class MessagesPage extends GetView<MessagesController> {
           (user) => user.uid != AuthController.instance.uid,
         );
         return ListTile(
+          onTap: () => controller.goToChatPage(chat),
           leading: SizedBox(
             height: 50.0,
             width: 50.0,

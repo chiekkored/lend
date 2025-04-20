@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
+import 'package:lend/presentation/pages/chat/chat.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
@@ -51,6 +53,10 @@ class LNDNavigate {
 
   static Future<T?>? toCalendarPage<T>() async {
     return await Get.toNamed(CalendarPage.routeName);
+  }
+
+  static Future<T?>? toChatPage<T>({required Chat chat}) async {
+    return await Get.toNamed(ChatPage.routeName, arguments: chat);
   }
 
   static Future<T?>? toMyAssetPage<T>(

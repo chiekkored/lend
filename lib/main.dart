@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
+import 'package:lend/core/bindings/chat/chat.binding.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
 import 'package:lend/core/bindings/post_listing/post_listing.binding.dart';
 import 'package:lend/core/bindings/root.binding.dart';
@@ -11,6 +12,7 @@ import 'package:lend/core/middlewares/auth.middleware.dart';
 import 'package:lend/core/services/main.service.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
+import 'package:lend/presentation/pages/chat/chat.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
@@ -99,6 +101,11 @@ class Root extends StatelessWidget {
         GetPage(
           name: YourListingPage.routeName,
           page: () => const YourListingPage(),
+        ),
+        GetPage(
+          name: ChatPage.routeName,
+          page: () => const ChatPage(),
+          binding: ChatBinding(),
         ),
       ],
       initialRoute: NavigationPage.routeName,

@@ -8,6 +8,7 @@ import 'package:lend/core/models/message.model.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
+import 'package:lend/utilities/helpers/navigator.helper.dart';
 
 class MessagesController extends GetxController with AuthMixin {
   static MessagesController get instance => Get.find<MessagesController>();
@@ -26,12 +27,10 @@ class MessagesController extends GetxController with AuthMixin {
   bool get isMessagesLoading => _isMessagesLoading.value;
 
   StreamSubscription? _chatsSubscription;
-  StreamSubscription? _messagesSubscription;
 
   @override
   void onClose() {
     _chatsSubscription?.cancel();
-    _messagesSubscription?.cancel();
     _chats.close();
     _messages.close();
     _isChatsLoading.close();
@@ -41,7 +40,6 @@ class MessagesController extends GetxController with AuthMixin {
 
   void cancelSubscriptions() {
     _chatsSubscription?.cancel();
-    _messagesSubscription?.cancel();
   }
 
   // Listen to user's chats
@@ -79,5 +77,9 @@ class MessagesController extends GetxController with AuthMixin {
       LNDLogger.e('Error setting up chat listener', error: e, stackTrace: st);
       _isChatsLoading.value = false;
     }
+  }
+
+  void goToChatPage(Chat chat) {
+    LNDNavigate.toChatPage(chat: chat);
   }
 }
