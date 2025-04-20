@@ -57,6 +57,14 @@ class ChatPage extends GetView<ChatController> {
             fontSize: 18.0,
             color: LNDColors.black,
           ),
+          actionsPadding: const EdgeInsets.only(right: 24.0),
+          actions: [
+            LNDButton.icon(
+              icon: Icons.info_outline_rounded,
+              size: 25.0,
+              onPressed: controller.goToAsset,
+            ).withSpacing(8.0),
+          ],
         ),
         body: SafeArea(
           child: Column(
