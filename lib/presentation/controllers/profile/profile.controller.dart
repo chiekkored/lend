@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:lend/core/mixins/auth.mixin.dart';
 import 'package:lend/core/models/simple_user.model.dart';
 import 'package:lend/core/models/user.model.dart';
+import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
 class ProfileController extends GetxController with AuthMixin {
@@ -47,6 +49,14 @@ class ProfileController extends GetxController with AuthMixin {
   }
 
   void signOut() {
-    AuthController.instance.signOut();
+    LNDShow.alertDialog(
+      title: 'Logout?',
+      content: 'Are you sure you want to logout?',
+      confirmColor: LNDColors.danger,
+      confirmText: 'Logout',
+      onConfirm: () {
+        AuthController.instance.signOut();
+      },
+    );
   }
 }

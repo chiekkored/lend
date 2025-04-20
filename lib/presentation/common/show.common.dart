@@ -71,7 +71,10 @@ class LNDShow {
                     onCancel?.call();
                     Get.back();
                   },
-                  child: Text(cancelText, style: TextStyle(color: cancelColor)),
+                  child: Text(
+                    cancelText,
+                    style: TextStyle(color: cancelColor ?? LNDColors.black),
+                  ),
                 ),
                 CupertinoDialogAction(
                   onPressed: () {
@@ -100,7 +103,10 @@ class LNDShow {
                     onCancel?.call();
                     Navigator.pop(context);
                   },
-                  child: Text(cancelText, style: TextStyle(color: cancelColor)),
+                  child: Text(
+                    cancelText,
+                    style: TextStyle(color: cancelColor ?? LNDColors.black),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
