@@ -56,7 +56,7 @@ class MessagesController extends GetxController with AuthMixin {
           .collection(LNDCollections.userChats.name)
           .doc(userId)
           .collection(LNDCollections.chats.name)
-          // .orderBy('lastMessageDate', descending: true)
+          .orderBy('lastMessageDate', descending: true)
           .snapshots()
           .listen(
             (snapshot) {
