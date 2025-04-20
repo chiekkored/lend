@@ -46,6 +46,7 @@ class YourListingController extends GetxController with AuthMixin {
 
   Future<void> getMyAssets() async {
     try {
+      _myAssets.clear();
       _isMyAssetsLoading.value = true;
       final assetsDocs =
           await FirebaseFirestore.instance

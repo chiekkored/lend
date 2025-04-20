@@ -9,6 +9,7 @@ import 'package:lend/core/models/simple_user.model.dart';
 
 class Chat {
   String? id;
+  String? chatId;
   SimpleAsset? asset;
   List<SimpleUserModel>? participants;
   String? lastMessage;
@@ -18,6 +19,7 @@ class Chat {
   bool? hasRead;
   Chat({
     this.id,
+    this.chatId,
     this.asset,
     this.participants,
     this.lastMessage,
@@ -29,6 +31,7 @@ class Chat {
 
   Chat copyWith({
     String? id,
+    String? chatId,
     SimpleAsset? asset,
     List<SimpleUserModel>? participants,
     String? lastMessage,
@@ -39,6 +42,7 @@ class Chat {
   }) {
     return Chat(
       id: id ?? this.id,
+      chatId: chatId ?? this.chatId,
       asset: asset ?? this.asset,
       participants: participants ?? this.participants,
       lastMessage: lastMessage ?? this.lastMessage,
@@ -52,6 +56,7 @@ class Chat {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
+      'chatId': chatId,
       'asset': asset?.toMap(),
       'participants': participants?.map((x) => x.toMap()).toList(),
       'lastMessage': lastMessage,
@@ -74,6 +79,7 @@ class Chat {
   factory Chat.fromMap(Map<String, dynamic> map) {
     return Chat(
       id: map['id'] != null ? map['id'] as String : null,
+      chatId: map['chatId'] != null ? map['chatId'] as String : null,
       asset:
           map['asset'] != null
               ? SimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
@@ -109,7 +115,7 @@ class Chat {
 
   @override
   String toString() {
-    return 'Chat(id: $id, asset: $asset, participants: $participants, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
+    return 'Chat(id: $id, chatId: $chatId, asset: $asset, participants: $participants, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
   }
 
   @override
@@ -117,6 +123,7 @@ class Chat {
     if (identical(this, other)) return true;
 
     return other.id == id &&
+        other.chatId == chatId &&
         other.asset == asset &&
         listEquals(other.participants, participants) &&
         other.lastMessage == lastMessage &&
@@ -129,6 +136,7 @@ class Chat {
   @override
   int get hashCode {
     return id.hashCode ^
+        chatId.hashCode ^
         asset.hashCode ^
         participants.hashCode ^
         lastMessage.hashCode ^

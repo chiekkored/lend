@@ -374,19 +374,37 @@ class AssetController extends GetxController {
     final chatsCollection = FirebaseFirestore.instance.collection(
       LNDCollections.chats.name,
     );
+    const bookingString = 'Booking Confirmed';
+
+    // Create a new message
+    final chatsDoc = chatsCollection.doc();
+    batch.set(chatsDoc, ChatRoot(chatType: ChatType.private.label).toMap());
+
+    final chatMessagesDoc =
+        chatsDoc.collection(LNDCollections.messages.name).doc();
+
+    batch.set(
+      chatMessagesDoc,
+      Message(
+        id: chatMessagesDoc.id,
+        text: bookingString,
+        senderId: asset!.ownerId,
+        createdAt: Timestamp.now(),
+        type: MessageType.text.label,
+      ).toMap(),
+    );
 
     // Create a new chat
-    const bookingString = 'Booking Confirmed';
+    // For current user
     final userChatsDoc = userChatsCollection.doc(AuthController.instance.uid);
-
     batch.set(userChatsDoc, UserChatRoot(isOnline: true).toMap());
-
     final userChatsSubChatDoc =
         userChatsDoc.collection(LNDCollections.chats.name).doc();
     batch.set(
       userChatsSubChatDoc,
       Chat(
         id: userChatsSubChatDoc.id,
+        chatId: chatsDoc.id,
         asset: SimpleAsset.fromMap(asset!.toMap()),
         participants: [asset!.owner!, ProfileController.instance.simpleUser],
         lastMessage: bookingString,
@@ -397,21 +415,23 @@ class AssetController extends GetxController {
       ).toMap(),
     );
 
-    // Create a new message
-    final chatsDoc = chatsCollection.doc(userChatsSubChatDoc.id);
-    batch.set(chatsDoc, ChatRoot(chatType: ChatType.private.label).toMap());
-
-    final chatMessagesDoc = chatsDoc
-        .collection(LNDCollections.messages.name)
-        .doc(chatsDoc.id);
+    // For asset owner
+    final assetOwnerDoc = userChatsCollection.doc(asset!.ownerId);
+    batch.set(assetOwnerDoc, UserChatRoot(isOnline: true).toMap());
+    final assetOwnerSubChatDoc =
+        assetOwnerDoc.collection(LNDCollections.chats.name).doc();
     batch.set(
-      chatMessagesDoc,
-      Message(
-        id: chatMessagesDoc.id,
-        text: bookingString,
-        senderId: asset!.ownerId,
+      assetOwnerSubChatDoc,
+      Chat(
+        id: userChatsSubChatDoc.id,
+        chatId: chatsDoc.id,
+        asset: SimpleAsset.fromMap(asset!.toMap()),
+        participants: [asset!.owner!, ProfileController.instance.simpleUser],
+        lastMessage: bookingString,
+        lastMessageDate: Timestamp.now(),
+        lastMessageSenderId: asset!.ownerId,
         createdAt: Timestamp.now(),
-        type: MessageType.text.label,
+        hasRead: true,
       ).toMap(),
     );
 

@@ -105,8 +105,16 @@ class MessagesPage extends GetView<MessagesController> {
                     ),
                   ),
           subtitle: LNDText.regular(
-            text: chat.lastMessage ?? '',
-            fontSize: 12.0,
+            text: '',
+            textParts: [
+              if (chat.lastMessageSenderId == AuthController.instance.uid)
+                LNDText.regular(
+                  text: 'You: ',
+                  fontSize: 12.0,
+                  color: LNDColors.hint,
+                ),
+              LNDText.regular(text: chat.lastMessage ?? '', fontSize: 12.0),
+            ],
           ),
         );
       },

@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/messages/messages.controller.dart';
-import 'package:lend/presentation/controllers/your_listing/you_listing.controller.dart';
+import 'package:lend/presentation/controllers/your_listing/your_listing.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 
