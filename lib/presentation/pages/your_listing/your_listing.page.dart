@@ -65,15 +65,25 @@ class YourListingPage extends GetView<YourListingController> {
               ),
             ),
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 24.0,
-                    right: 24.0,
-                    bottom: 8.0,
-                  ),
-                  child: LNDText.bold(text: 'All', color: LNDColors.hint),
+                Obx(
+                  () =>
+                      controller.myAssets.isEmpty
+                          ? const SizedBox.shrink()
+                          : Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 24.0,
+                                right: 24.0,
+                                bottom: 8.0,
+                              ),
+                              child: LNDText.bold(
+                                text: 'All',
+                                color: LNDColors.hint,
+                              ),
+                            ),
+                          ),
                 ),
                 Obx(
                   () =>

@@ -15,7 +15,6 @@ class MyRentalsAppbar extends GetView<YourListingController> {
     return SliverAppBar(
       backgroundColor: LNDColors.white,
       centerTitle: false,
-      pinned: true,
       surfaceTintColor: LNDColors.white,
       title: LNDText.bold(text: 'My Rentals', fontSize: 32.0),
       actions: [

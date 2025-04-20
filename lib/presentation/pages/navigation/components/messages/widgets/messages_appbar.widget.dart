@@ -10,7 +10,6 @@ class MessagesAppbar extends StatelessWidget {
     return SliverAppBar(
       backgroundColor: LNDColors.white,
       centerTitle: false,
-      pinned: true,
       surfaceTintColor: LNDColors.white,
       title: LNDText.bold(text: 'Messages', fontSize: 32.0),
     );

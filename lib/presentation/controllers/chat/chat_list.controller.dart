@@ -8,14 +8,14 @@ import 'package:lend/core/models/message.model.dart';
 import 'package:lend/core/models/simple_user.model.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
-import 'package:lend/utilities/enums/message_type.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
-class ChatController extends GetxController {
-  static ChatController get instance => Get.find<ChatController>();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class ChatListController extends GetxController {
+  final Chat chat;
+  ChatListController({required this.chat});
 
-  final chat = Get.arguments as Chat;
+  static ChatListController get instance => Get.find<ChatListController>();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final TextEditingController textController = TextEditingController();
   final RxList<Message> _messages = <Message>[].obs;
@@ -73,6 +73,7 @@ class ChatController extends GetxController {
               }
 
               _messages.value = chatsList;
+              update();
               _isLoading.value = false;
             },
             onError: (e, st) {
@@ -83,41 +84,6 @@ class ChatController extends GetxController {
     } catch (e, st) {
       LNDLogger.e('Error setting up chat listener', error: e, stackTrace: st);
       _isLoading.value = false;
-    }
-  }
-
-  void sendMessage() {
-    try {
-      if (textController.text.isNotEmpty) {
-        final textMessage = textController.text.trim();
-        textController.clear();
-
-        final messageCollection = _firestore
-            .collection(LNDCollections.chats.name)
-            .doc(chat.chatId)
-            .collection(LNDCollections.messages.name);
-
-        final message = Message(
-          id: messageCollection.doc().id,
-          text: textMessage,
-          senderId: AuthController.instance.uid,
-          createdAt: Timestamp.now(),
-          type: MessageType.text.label,
-        );
-
-        messageCollection.doc(message.id).set(message.toMap()).catchError((
-          e,
-          st,
-        ) {
-          LNDLogger.e('Error sending message', error: e, stackTrace: st);
-        });
-      }
-    } catch (e, st) {
-      LNDLogger.e(
-        'Something wrong while sending a message',
-        error: e,
-        stackTrace: st,
-      );
     }
   }
 }
