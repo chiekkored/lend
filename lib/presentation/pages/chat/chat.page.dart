@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
+import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/textfields.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/chat/chat.controller.dart';
@@ -65,6 +66,46 @@ class ChatPage extends GetView<ChatController> {
               onPressed: controller.goToAsset,
             ).withSpacing(8.0),
           ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(55.0),
+            child: GestureDetector(
+              onTap: controller.goToAsset,
+              child: ColoredBox(
+                color: LNDColors.outline,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 8.0,
+                  ),
+                  child: Row(
+                    children: [
+                      LNDImage.square(
+                        imageUrl: controller.chat.asset?.images?.first,
+                        size: 40.0,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LNDText.medium(
+                            text: controller.chat.asset?.title ?? '',
+                          ),
+                          LNDText.regular(
+                            text: LNDUtils.getDateRange(
+                              start:
+                                  controller.chat.bookings?.first.date.toDate(),
+                              end: controller.chat.bookings?.last.date.toDate(),
+                            ),
+                            fontSize: 12.0,
+                            color: LNDColors.gray,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ).withSpacing(8.0),
+                ),
+              ),
+            ),
+          ),
         ),
         body: SafeArea(
           child: Column(

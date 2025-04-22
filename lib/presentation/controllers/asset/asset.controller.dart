@@ -336,6 +336,7 @@ class AssetController extends GetxController {
             ownerId: asset?.ownerId,
             title: asset?.title,
             images: asset?.images,
+            bookings: dates,
             category: asset?.category,
             createdAt: Timestamp.now(),
             status: asset?.status,
@@ -350,7 +351,7 @@ class AssetController extends GetxController {
       );
 
       // Create a new chat
-      await _createMessage();
+      await _createMessage(dates);
 
       await batch.commit();
 
@@ -366,7 +367,7 @@ class AssetController extends GetxController {
     }
   }
 
-  Future<void> _createMessage() async {
+  Future<void> _createMessage(List<Availability> bookedDates) async {
     final batch = FirebaseFirestore.instance.batch();
     final userChatsCollection = FirebaseFirestore.instance.collection(
       LNDCollections.userChats.name,
@@ -416,6 +417,7 @@ class AssetController extends GetxController {
         lastMessage: bookingString,
         lastMessageDate: Timestamp.now(),
         lastMessageSenderId: asset!.ownerId,
+        bookings: bookedDates,
         createdAt: Timestamp.now(),
         hasRead: false,
       ).toMap(),
@@ -439,6 +441,7 @@ class AssetController extends GetxController {
         lastMessage: bookingString,
         lastMessageDate: Timestamp.now(),
         lastMessageSenderId: asset!.ownerId,
+        bookings: bookedDates,
         createdAt: Timestamp.now(),
         hasRead: false,
       ).toMap(),

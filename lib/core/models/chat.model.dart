@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/simple_asset.model.dart';
 
 import 'package:lend/core/models/simple_user.model.dart';
@@ -12,6 +13,7 @@ class Chat {
   String? chatId;
   SimpleAsset? asset;
   List<SimpleUserModel>? participants;
+  List<Availability>? bookings;
   String? lastMessage;
   Timestamp? lastMessageDate;
   String? lastMessageSenderId;
@@ -22,6 +24,7 @@ class Chat {
     this.chatId,
     this.asset,
     this.participants,
+    this.bookings,
     this.lastMessage,
     this.lastMessageDate,
     this.lastMessageSenderId,
@@ -34,6 +37,7 @@ class Chat {
     String? chatId,
     SimpleAsset? asset,
     List<SimpleUserModel>? participants,
+    List<Availability>? bookings,
     String? lastMessage,
     Timestamp? lastMessageDate,
     String? lastMessageSenderId,
@@ -45,6 +49,7 @@ class Chat {
       chatId: chatId ?? this.chatId,
       asset: asset ?? this.asset,
       participants: participants ?? this.participants,
+      bookings: bookings ?? this.bookings,
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageDate: lastMessageDate ?? this.lastMessageDate,
       lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
@@ -59,6 +64,7 @@ class Chat {
       'chatId': chatId,
       'asset': asset?.toMap(),
       'participants': participants?.map((x) => x.toMap()).toList(),
+      'bookings': bookings?.map((x) => x.toMap()).toList(),
       'lastMessage': lastMessage,
       'lastMessageDate':
           lastMessageDate != null
@@ -92,6 +98,14 @@ class Chat {
                 ),
               )
               : null,
+      bookings:
+          map['bookings'] != null
+              ? List<Availability>.from(
+                (map['bookings']).map<Availability?>(
+                  (x) => Availability.fromMap(x as Map<String, dynamic>),
+                ),
+              )
+              : null,
       lastMessage:
           map['lastMessage'] != null ? map['lastMessage'] as String : null,
       lastMessageDate:
@@ -115,7 +129,7 @@ class Chat {
 
   @override
   String toString() {
-    return 'Chat(id: $id, chatId: $chatId, asset: $asset, participants: $participants, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
+    return 'Chat(id: $id, chatId: $chatId, asset: $asset, participants: $participants, bookings: $bookings, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
   }
 
   @override
@@ -126,6 +140,7 @@ class Chat {
         other.chatId == chatId &&
         other.asset == asset &&
         listEquals(other.participants, participants) &&
+        listEquals(other.bookings, bookings) &&
         other.lastMessage == lastMessage &&
         other.lastMessageDate == lastMessageDate &&
         other.lastMessageSenderId == lastMessageSenderId &&
@@ -139,6 +154,7 @@ class Chat {
         chatId.hashCode ^
         asset.hashCode ^
         participants.hashCode ^
+        bookings.hashCode ^
         lastMessage.hashCode ^
         lastMessageDate.hashCode ^
         lastMessageSenderId.hashCode ^

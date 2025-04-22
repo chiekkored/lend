@@ -3,12 +3,14 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:lend/core/models/availability.model.dart';
 
 class SimpleAsset {
   final String id;
   final String? ownerId;
   final String? title;
   final List<String>? images;
+  final List<Availability>? bookings;
   final String? category;
   final Timestamp? createdAt;
   final String? status;
@@ -17,6 +19,7 @@ class SimpleAsset {
     required this.ownerId,
     required this.title,
     required this.images,
+    this.bookings,
     required this.category,
     required this.createdAt,
     required this.status,
@@ -27,6 +30,7 @@ class SimpleAsset {
     String? ownerId,
     String? title,
     List<String>? images,
+    List<Availability>? bookings,
     String? category,
     Timestamp? createdAt,
     String? status,
@@ -36,6 +40,7 @@ class SimpleAsset {
       ownerId: ownerId ?? this.ownerId,
       title: title ?? this.title,
       images: images ?? this.images,
+      bookings: bookings ?? this.bookings,
       category: category ?? this.category,
       createdAt: createdAt ?? this.createdAt,
       status: status ?? this.status,
@@ -48,6 +53,8 @@ class SimpleAsset {
       'ownerId': ownerId,
       'title': title,
       'images': images,
+
+      'bookings': bookings?.map((x) => x.toMap()).toList(),
       'category': category,
       'createdAt':
           createdAt != null
@@ -63,6 +70,14 @@ class SimpleAsset {
       ownerId: map['ownerId'] != null ? map['ownerId'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
+      bookings:
+          map['bookings'] != null
+              ? List<Availability>.from(
+                (map['bookings']).map<Availability?>(
+                  (x) => Availability.fromMap(x as Map<String, dynamic>),
+                ),
+              )
+              : null,
       category: map['category'] != null ? map['category'] as String : null,
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
@@ -77,7 +92,7 @@ class SimpleAsset {
 
   @override
   String toString() {
-    return 'SimpleAsset(id: $id, ownerId: $ownerId, title: $title, images: $images, category: $category, createdAt: $createdAt, status: $status)';
+    return 'SimpleAsset(id: $id, ownerId: $ownerId, title: $title, images: $images, bookings: $bookings, category: $category, createdAt: $createdAt, status: $status)';
   }
 
   @override
@@ -88,6 +103,7 @@ class SimpleAsset {
         other.ownerId == ownerId &&
         other.title == title &&
         listEquals(other.images, images) &&
+        listEquals(other.bookings, bookings) &&
         other.category == category &&
         other.createdAt == createdAt &&
         other.status == status;
@@ -99,6 +115,7 @@ class SimpleAsset {
         ownerId.hashCode ^
         title.hashCode ^
         images.hashCode ^
+        bookings.hashCode ^
         category.hashCode ^
         createdAt.hashCode ^
         status.hashCode;
