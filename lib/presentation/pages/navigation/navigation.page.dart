@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/texts.common.dart';
+import 'package:lend/presentation/controllers/home/home.controller.dart';
+import 'package:lend/presentation/controllers/messages/messages.controller.dart';
+import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/navigation/navigation.controller.dart';
 import 'package:lend/presentation/pages/navigation/components/home/home.page.dart';
 import 'package:lend/presentation/pages/navigation/components/messages/messages.page.dart';
@@ -33,6 +36,8 @@ class NavigationPage extends GetView<NavigationController> {
             activeForegroundColor: LNDColors.primary,
             inactiveForegroundColor: LNDColors.unselected,
           ),
+          onSelectedTabPressWhenNoScreensPushed:
+              () => HomeController.instance.scrollToTop(),
           screen: const HomePage(),
         ),
         PersistentTabConfig(
@@ -46,6 +51,8 @@ class NavigationPage extends GetView<NavigationController> {
             activeForegroundColor: LNDColors.primary,
             inactiveForegroundColor: LNDColors.unselected,
           ),
+          onSelectedTabPressWhenNoScreensPushed:
+              () => MyRentalsController.instance.scrollToTop(),
           screen: const MyRentalsPage(),
         ),
         PersistentTabConfig(
@@ -59,6 +66,8 @@ class NavigationPage extends GetView<NavigationController> {
             activeForegroundColor: LNDColors.primary,
             inactiveForegroundColor: LNDColors.unselected,
           ),
+          onSelectedTabPressWhenNoScreensPushed:
+              () => MessagesController.instance.scrollToTop(),
           screen: const MessagesPage(),
         ),
         PersistentTabConfig(

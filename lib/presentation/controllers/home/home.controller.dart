@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:lend/core/mixins/scroll.mixin.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
@@ -8,7 +9,7 @@ import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
-class HomeController extends GetxController {
+class HomeController extends GetxController with LNDScrollMixin {
   static final instance = Get.find<HomeController>();
 
   final assetsCollection = FirebaseFirestore.instance.collection(

@@ -19,21 +19,19 @@ class MessagesPage extends GetView<MessagesController> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: LNDColors.white,
-      child: SafeArea(
-        child: Obx(
-          () => NestedScrollView(
-            physics:
-                !controller.isAuthenticated
-                    ? const NeverScrollableScrollPhysics()
-                    : null,
-            floatHeaderSlivers: true,
-            headerSliverBuilder: (_, __) {
-              return [const MessagesAppbar()];
-            },
-            body: _buildBody(),
-          ),
+    return SafeArea(
+      child: Obx(
+        () => NestedScrollView(
+          controller: controller.scrollController,
+          physics:
+              !controller.isAuthenticated
+                  ? const NeverScrollableScrollPhysics()
+                  : null,
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (_, __) {
+            return [const MessagesAppbar()];
+          },
+          body: _buildBody(),
         ),
       ),
     );

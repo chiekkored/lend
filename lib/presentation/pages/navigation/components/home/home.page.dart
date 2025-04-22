@@ -18,6 +18,7 @@ class HomePage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
+        controller: controller.scrollController,
         floatHeaderSlivers: true,
         headerSliverBuilder: (_, __) {
           return [const HomeAppbarWidget()];

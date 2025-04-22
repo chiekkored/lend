@@ -24,6 +24,7 @@ class MyRentalsPage extends GetView<MyRentalsController> {
       child: Scaffold(
         body: Obx(
           () => NestedScrollView(
+            controller: controller.scrollController,
             physics:
                 !controller.isAuthenticated
                     ? const NeverScrollableScrollPhysics()
