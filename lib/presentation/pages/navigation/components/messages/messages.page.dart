@@ -150,18 +150,32 @@ class MessagesPage extends GetView<MessagesController> {
                   subtitle: Expanded(
                     child: Align(
                       alignment: Alignment.topLeft,
-                      child: LNDText.regular(
-                        text: '',
-                        textParts: [
-                          if (chat.lastMessageSenderId ==
-                              AuthController.instance.uid)
-                            LNDText.regular(
-                              text: 'You: ',
-                              color: LNDColors.hint,
-                            ),
-                          LNDText.regular(text: chat.lastMessage ?? ''),
-                        ],
-                      ),
+                      child:
+                          (chat.hasRead ?? false)
+                              ? LNDText.regular(
+                                text: '',
+                                textParts: [
+                                  if (chat.lastMessageSenderId ==
+                                      AuthController.instance.uid)
+                                    LNDText.regular(
+                                      text: 'You: ',
+                                      color: LNDColors.hint,
+                                    ),
+                                  LNDText.regular(text: chat.lastMessage ?? ''),
+                                ],
+                              )
+                              : LNDText.bold(
+                                text: '',
+                                textParts: [
+                                  if (chat.lastMessageSenderId ==
+                                      AuthController.instance.uid)
+                                    LNDText.regular(
+                                      text: 'You: ',
+                                      color: LNDColors.hint,
+                                    ),
+                                  LNDText.bold(text: chat.lastMessage ?? ''),
+                                ],
+                              ),
                     ),
                   ),
                 ),

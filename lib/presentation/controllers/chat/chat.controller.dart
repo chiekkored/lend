@@ -38,8 +38,38 @@ class ChatController extends GetxController {
     super.onClose();
   }
 
+  @override
+  void onReady() {
+    updateHasRead();
+
+    super.onReady();
+  }
+
   void cancelSubscriptions() {
     _messagesSubscription?.cancel();
+  }
+
+  void updateHasRead() {
+    try {
+      final userChatsCollection = _firestore
+          .collection(LNDCollections.userChats.name)
+          .doc(AuthController.instance.uid)
+          .collection(LNDCollections.chats.name)
+          .doc(chat.id);
+
+      userChatsCollection.update(Chat(hasRead: true).toMap()).catchError((
+        e,
+        st,
+      ) {
+        LNDLogger.e(
+          'Error updating hasRead',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+      });
+    } catch (e, st) {
+      LNDLogger.e('Error updating hasRead', error: e, stackTrace: st);
+    }
   }
 
   void sendMessage() {
@@ -48,10 +78,25 @@ class ChatController extends GetxController {
         final textMessage = textController.text.trim();
         textController.clear();
 
+        final batch = _firestore.batch();
+
         final messageCollection = _firestore
             .collection(LNDCollections.chats.name)
             .doc(chat.chatId)
             .collection(LNDCollections.messages.name);
+
+        // Update the sender's chat root
+        final userChatsCollection = _firestore
+            .collection(LNDCollections.userChats.name)
+            .doc(AuthController.instance.uid)
+            .collection(LNDCollections.chats.name)
+            .doc(chat.id);
+        // Update the recepient's chat root
+        final recepientChatsCollection = _firestore
+            .collection(LNDCollections.userChats.name)
+            .doc(recepientUser?.uid)
+            .collection(LNDCollections.chats.name)
+            .doc(chat.id);
 
         final message = Message(
           id: messageCollection.doc().id,
@@ -61,11 +106,22 @@ class ChatController extends GetxController {
           type: MessageType.text.label,
         );
 
-        messageCollection.doc(message.id).set(message.toMap()).catchError((
-          e,
-          st,
-        ) {
-          LNDLogger.e('Error sending message', error: e, stackTrace: st);
+        final chatDoc = Chat(
+          lastMessage: textMessage,
+          lastMessageDate: Timestamp.now(),
+          lastMessageSenderId: AuthController.instance.uid,
+        );
+
+        batch.set(messageCollection.doc(message.id), message.toMap());
+        batch.update(userChatsCollection, chatDoc.toMap());
+        batch.update(recepientChatsCollection, chatDoc.toMap());
+
+        batch.commit().catchError((e, st) {
+          LNDLogger.e(
+            'Error sending message',
+            error: e,
+            stackTrace: StackTrace.current,
+          );
         });
       }
     } catch (e, st) {

@@ -377,12 +377,14 @@ class AssetController extends GetxController {
     const bookingString = 'Booking Confirmed';
 
     // Create a new message
+
+    // Collection: chats/{randomId}
     final chatsDoc = chatsCollection.doc();
     batch.set(chatsDoc, ChatRoot(chatType: ChatType.private.label).toMap());
 
+    // Collection: chats/{randomId}/messages
     final chatMessagesDoc =
         chatsDoc.collection(LNDCollections.messages.name).doc();
-
     batch.set(
       chatMessagesDoc,
       Message(
@@ -396,14 +398,18 @@ class AssetController extends GetxController {
 
     // Create a new chat
     // For current user
+    // Collection: userChats/{userId}
     final userChatsDoc = userChatsCollection.doc(AuthController.instance.uid);
     batch.set(userChatsDoc, UserChatRoot(isOnline: true).toMap());
-    final userChatsSubChatDoc =
-        userChatsDoc.collection(LNDCollections.chats.name).doc();
+
+    // Collection: userChats/{userId}/chats
+    final userChatsSubChatDoc = userChatsDoc
+        .collection(LNDCollections.chats.name)
+        .doc(chatsDoc.id);
     batch.set(
       userChatsSubChatDoc,
       Chat(
-        id: userChatsSubChatDoc.id,
+        id: chatsDoc.id,
         chatId: chatsDoc.id,
         asset: SimpleAsset.fromMap(asset!.toMap()),
         participants: [asset!.owner!, ProfileController.instance.simpleUser],
@@ -416,14 +422,17 @@ class AssetController extends GetxController {
     );
 
     // For asset owner
+    // Collection: userChats/{userId}
     final assetOwnerDoc = userChatsCollection.doc(asset!.ownerId);
     batch.set(assetOwnerDoc, UserChatRoot(isOnline: true).toMap());
-    final assetOwnerSubChatDoc =
-        assetOwnerDoc.collection(LNDCollections.chats.name).doc();
+    // Collection: userChats/{userId}/chats
+    final assetOwnerSubChatDoc = assetOwnerDoc
+        .collection(LNDCollections.chats.name)
+        .doc(chatsDoc.id);
     batch.set(
       assetOwnerSubChatDoc,
       Chat(
-        id: userChatsSubChatDoc.id,
+        id: chatsDoc.id,
         chatId: chatsDoc.id,
         asset: SimpleAsset.fromMap(asset!.toMap()),
         participants: [asset!.owner!, ProfileController.instance.simpleUser],
@@ -431,7 +440,7 @@ class AssetController extends GetxController {
         lastMessageDate: Timestamp.now(),
         lastMessageSenderId: asset!.ownerId,
         createdAt: Timestamp.now(),
-        hasRead: true,
+        hasRead: false,
       ).toMap(),
     );
 
