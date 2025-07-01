@@ -143,7 +143,9 @@ class PostCoverPhotosW extends GetWidget<PostListingController> {
                       icon: FontAwesomeIcons.xmark,
                       size: 15.0,
                       color: LNDColors.black,
-                      onPressed: () => controller.removeCoverPhoto(index),
+                      onPressed: () {
+                        controller.removeCoverPhoto(index);
+                      },
                     ),
                   ),
                 ),

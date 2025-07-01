@@ -11,9 +11,11 @@ import 'package:lend/core/models/simple_user.model.dart';
 class Chat {
   String? id;
   String? chatId;
+  String? bookingId;
+  String? renterId;
   SimpleAsset? asset;
   List<SimpleUserModel>? participants;
-  List<Availability>? bookings;
+  List<Availability>? availabilities;
   String? lastMessage;
   Timestamp? lastMessageDate;
   String? lastMessageSenderId;
@@ -22,9 +24,11 @@ class Chat {
   Chat({
     this.id,
     this.chatId,
+    this.bookingId,
+    this.renterId,
     this.asset,
     this.participants,
-    this.bookings,
+    this.availabilities,
     this.lastMessage,
     this.lastMessageDate,
     this.lastMessageSenderId,
@@ -35,9 +39,11 @@ class Chat {
   Chat copyWith({
     String? id,
     String? chatId,
+    String? bookingId,
+    String? renterId,
     SimpleAsset? asset,
     List<SimpleUserModel>? participants,
-    List<Availability>? bookings,
+    List<Availability>? availabilities,
     String? lastMessage,
     Timestamp? lastMessageDate,
     String? lastMessageSenderId,
@@ -47,9 +53,11 @@ class Chat {
     return Chat(
       id: id ?? this.id,
       chatId: chatId ?? this.chatId,
+      bookingId: bookingId ?? this.bookingId,
+      renterId: renterId ?? this.renterId,
       asset: asset ?? this.asset,
       participants: participants ?? this.participants,
-      bookings: bookings ?? this.bookings,
+      availabilities: availabilities ?? this.availabilities,
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageDate: lastMessageDate ?? this.lastMessageDate,
       lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
@@ -62,9 +70,11 @@ class Chat {
     return <String, dynamic>{
       'id': id,
       'chatId': chatId,
+      'bookingId': bookingId,
+      'renterId': renterId,
       'asset': asset?.toMap(),
       'participants': participants?.map((x) => x.toMap()).toList(),
-      'bookings': bookings?.map((x) => x.toMap()).toList(),
+      'availabilities': availabilities?.map((x) => x.toMap()).toList(),
       'lastMessage': lastMessage,
       'lastMessageDate':
           lastMessageDate != null
@@ -86,6 +96,8 @@ class Chat {
     return Chat(
       id: map['id'] != null ? map['id'] as String : null,
       chatId: map['chatId'] != null ? map['chatId'] as String : null,
+      bookingId: map['bookingId'] != null ? map['bookingId'] as String : null,
+      renterId: map['renterId'] != null ? map['renterId'] as String : null,
       asset:
           map['asset'] != null
               ? SimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
@@ -98,10 +110,10 @@ class Chat {
                 ),
               )
               : null,
-      bookings:
-          map['bookings'] != null
+      availabilities:
+          map['availabilities'] != null
               ? List<Availability>.from(
-                (map['bookings']).map<Availability?>(
+                (map['availabilities']).map<Availability?>(
                   (x) => Availability.fromMap(x as Map<String, dynamic>),
                 ),
               )
@@ -129,7 +141,7 @@ class Chat {
 
   @override
   String toString() {
-    return 'Chat(id: $id, chatId: $chatId, asset: $asset, participants: $participants, bookings: $bookings, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
+    return 'Chat(id: $id, chatId: $chatId, bookingId: $bookingId, renterId: $renterId, asset: $asset, participants: $participants, availabilities: $availabilities, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
   }
 
   @override
@@ -138,9 +150,11 @@ class Chat {
 
     return other.id == id &&
         other.chatId == chatId &&
+        other.bookingId == bookingId &&
+        other.renterId == renterId &&
         other.asset == asset &&
         listEquals(other.participants, participants) &&
-        listEquals(other.bookings, bookings) &&
+        listEquals(other.availabilities, availabilities) &&
         other.lastMessage == lastMessage &&
         other.lastMessageDate == lastMessageDate &&
         other.lastMessageSenderId == lastMessageSenderId &&
@@ -152,9 +166,11 @@ class Chat {
   int get hashCode {
     return id.hashCode ^
         chatId.hashCode ^
+        bookingId.hashCode ^
+        renterId.hashCode ^
         asset.hashCode ^
         participants.hashCode ^
-        bookings.hashCode ^
+        availabilities.hashCode ^
         lastMessage.hashCode ^
         lastMessageDate.hashCode ^
         lastMessageSenderId.hashCode ^

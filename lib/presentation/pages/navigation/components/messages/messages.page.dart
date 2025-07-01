@@ -11,6 +11,7 @@ import 'package:lend/presentation/pages/navigation/components/messages/widgets/m
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/chat/widgets/chat_list.widget.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/extensions/timestamp.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
 
@@ -94,7 +95,8 @@ class MessagesPage extends GetView<MessagesController> {
               );
             } else {
               // Otherwise show the regular ListTile
-              return SizedBox(
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8.0),
                 width: Get.width,
                 height: 50.0,
                 child: CupertinoListTile(
@@ -133,13 +135,13 @@ class MessagesPage extends GetView<MessagesController> {
                       alignment: Alignment.bottomLeft,
                       child:
                           (chat.hasRead ?? false)
-                              ? LNDText.regular(
+                              ? LNDText.medium(
                                 text: LNDUtils.formatFullName(
                                   firstName: participant?.firstName,
                                   lastName: participant?.lastName,
                                 ),
                               )
-                              : LNDText.semibold(
+                              : LNDText.bold(
                                 text: LNDUtils.formatFullName(
                                   firstName: participant?.firstName,
                                   lastName: participant?.lastName,
@@ -161,7 +163,10 @@ class MessagesPage extends GetView<MessagesController> {
                                       text: 'You: ',
                                       color: LNDColors.hint,
                                     ),
-                                  LNDText.regular(text: chat.lastMessage ?? ''),
+                                  LNDText.regular(
+                                    text: chat.lastMessage ?? '',
+                                    color: LNDColors.disabled,
+                                  ),
                                 ],
                               )
                               : LNDText.bold(
@@ -173,10 +178,18 @@ class MessagesPage extends GetView<MessagesController> {
                                       text: 'You: ',
                                       color: LNDColors.hint,
                                     ),
-                                  LNDText.bold(text: chat.lastMessage ?? ''),
+                                  LNDText.semibold(
+                                    text: chat.lastMessage ?? '',
+                                  ),
                                 ],
                               ),
                     ),
+                  ),
+                  additionalInfo: LNDText.regular(
+                    text:
+                        chat.lastMessageDate?.toFormattedStringTimeOnly() ?? '',
+                    fontSize: 12.0,
+                    color: LNDColors.hint,
                   ),
                 ),
               );

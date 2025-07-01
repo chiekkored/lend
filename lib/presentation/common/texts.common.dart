@@ -24,7 +24,7 @@ class LNDText extends StatelessWidget {
 
   static TextStyle get regularStyle => const TextStyle(
     fontFamily: 'Inter',
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.normal,
     letterSpacing: 0.5,
     fontStyle: FontStyle.normal,
     color: LNDColors.black,

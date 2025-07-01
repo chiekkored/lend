@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/core/models/message.model.dart';
 import 'package:lend/core/models/simple_user.model.dart';
@@ -21,6 +22,8 @@ class ChatController extends GetxController {
 
   final TextEditingController textController = TextEditingController();
 
+  final Rx<Booking?> booking = Rx<Booking?>(null);
+
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
@@ -32,6 +35,7 @@ class ChatController extends GetxController {
 
   @override
   void onClose() {
+    booking.close();
     textController.dispose();
     _messagesSubscription?.cancel();
     _isLoading.close();
@@ -41,12 +45,31 @@ class ChatController extends GetxController {
   @override
   void onReady() {
     updateHasRead();
+    _getBooking();
 
     super.onReady();
   }
 
   void cancelSubscriptions() {
     _messagesSubscription?.cancel();
+  }
+
+  void _getBooking() async {
+    final bookingDoc =
+        await _firestore
+            .collection(LNDCollections.users.name)
+            .doc(chat.renterId)
+            .collection(LNDCollections.bookings.name)
+            .doc(chat.bookingId)
+            .get();
+
+    if (bookingDoc.exists) {
+      final bookingData = bookingDoc.data();
+
+      if (bookingData != null) {
+        booking.value = Booking.fromMap(bookingData);
+      }
+    }
   }
 
   void updateHasRead() {

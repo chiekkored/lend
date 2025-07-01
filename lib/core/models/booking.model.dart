@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:lend/core/models/simple_asset.model.dart';
 
 class Booking {
+  String? id;
   SimpleAsset? asset;
   Timestamp? createdAt;
   Payment? payment;
@@ -15,6 +16,7 @@ class Booking {
   int? totalPrice;
   List<Timestamp>? dates;
   Booking({
+    required this.id,
     required this.asset,
     required this.createdAt,
     required this.payment,
@@ -25,6 +27,7 @@ class Booking {
   });
 
   Booking copyWith({
+    String? id,
     SimpleAsset? asset,
     Timestamp? createdAt,
     Payment? payment,
@@ -34,6 +37,7 @@ class Booking {
     List<Timestamp>? dates,
   }) {
     return Booking(
+      id: id ?? this.id,
       asset: asset ?? this.asset,
       createdAt: createdAt ?? this.createdAt,
       payment: payment ?? this.payment,
@@ -46,6 +50,7 @@ class Booking {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'asset': asset?.toMap(),
       'createdAt':
           createdAt != null
@@ -61,6 +66,7 @@ class Booking {
 
   factory Booking.fromMap(Map<String, dynamic> map) {
     return Booking(
+      id: map['id'] != null ? map['id'] as String : null,
       asset:
           map['asset'] != null
               ? SimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
@@ -85,14 +91,15 @@ class Booking {
 
   @override
   String toString() {
-    return 'Booking(asset: $asset, createdAt: $createdAt, payment: $payment, renterId: $renterId, status: $status, totalPrice: $totalPrice, dates: $dates)';
+    return 'Booking(id: $id, asset: $asset, createdAt: $createdAt, payment: $payment, renterId: $renterId, status: $status, totalPrice: $totalPrice, dates: $dates)';
   }
 
   @override
   bool operator ==(covariant Booking other) {
     if (identical(this, other)) return true;
 
-    return other.asset == asset &&
+    return other.id == id &&
+        other.asset == asset &&
         other.createdAt == createdAt &&
         other.payment == payment &&
         other.renterId == renterId &&
@@ -103,7 +110,8 @@ class Booking {
 
   @override
   int get hashCode {
-    return asset.hashCode ^
+    return id.hashCode ^
+        asset.hashCode ^
         createdAt.hashCode ^
         payment.hashCode ^
         renterId.hashCode ^

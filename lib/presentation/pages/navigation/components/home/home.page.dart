@@ -145,7 +145,7 @@ class HomePage extends GetView<HomeController> {
                       color: LNDColors.hint,
                     ),
                     LNDText.bold(
-                      text: 'P${asset.rates?.daily.toMoney()} / day',
+                      text: '₱${asset.rates?.daily.toMoney()} / day',
                     ),
                   ],
                 ),

@@ -310,27 +310,29 @@ class AssetController extends GetxController {
       }
 
       final batch = FirebaseFirestore.instance.batch();
-      final assetsCollection = FirebaseFirestore.instance.collection(
-        LNDCollections.assets.name,
-      );
+      // final assetsCollection = FirebaseFirestore.instance.collection(
+      //   LNDCollections.assets.name,
+      // );
       final bookingsCollection = FirebaseFirestore.instance
           .collection(LNDCollections.users.name)
           .doc(AuthController.instance.uid)
           .collection(LNDCollections.bookings.name);
 
-      final newAvailability = {
-        'availability': FieldValue.arrayUnion(
-          dates.map((d) => d.toMap()).toList(),
-        ),
-      };
+      // final newAvailability = {
+      //   'availability': FieldValue.arrayUnion(
+      //     dates.map((d) => d.toMap()).toList(),
+      //   ),
+      // };
 
       // Update the asset's availability
-      batch.update(assetsCollection.doc(asset?.id), newAvailability);
+      // batch.update(assetsCollection.doc(asset?.id), newAvailability);
 
       // Create a new booking
+      final bookingDoc = bookingsCollection.doc();
       batch.set(
-        bookingsCollection.doc(),
+        bookingDoc,
         Booking(
+          id: bookingDoc.id,
           asset: SimpleAsset(
             id: asset?.id ?? '',
             ownerId: asset?.ownerId,
@@ -345,13 +347,19 @@ class AssetController extends GetxController {
           createdAt: Timestamp.now(),
           payment: Payment(method: 'debit', transactionId: '123456'),
           renterId: AuthController.instance.uid,
-          status: BookingStatus.confirmed.label,
+          status: BookingStatus.pending.label,
           totalPrice: totalPrice,
         ).toMap(),
       );
 
       // Create a new chat
-      await _createMessage(dates);
+      final messageResult = await _createMessage(bookingDoc.id, dates);
+
+      // If message creation fails, we don't want to proceed with the booking
+      if (!messageResult) {
+        LNDLoading.hide();
+        return;
+      }
 
       await batch.commit();
 
@@ -367,87 +375,120 @@ class AssetController extends GetxController {
     }
   }
 
-  Future<void> _createMessage(List<Availability> bookedDates) async {
-    final batch = FirebaseFirestore.instance.batch();
-    final userChatsCollection = FirebaseFirestore.instance.collection(
-      LNDCollections.userChats.name,
-    );
-    final chatsCollection = FirebaseFirestore.instance.collection(
-      LNDCollections.chats.name,
-    );
-    const bookingString = 'Booking Confirmed';
+  Future<bool> _createMessage(
+    String bookingDocId,
+    List<Availability> bookedDates,
+  ) async {
+    try {
+      final batch = FirebaseFirestore.instance.batch();
+      final userChatsCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.userChats.name,
+      );
+      final chatsCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.chats.name,
+      );
+      const bookingString = 'Booking Confirmed';
 
-    // Create a new message
+      // Create a new message
 
-    // Collection: chats/{randomId}
-    final chatsDoc = chatsCollection.doc();
-    batch.set(chatsDoc, ChatRoot(chatType: ChatType.private.label).toMap());
+      // Collection: chats/{randomId}
+      final chatsDoc = chatsCollection.doc();
+      batch.set(chatsDoc, ChatRoot(chatType: ChatType.private.label).toMap());
 
-    // Collection: chats/{randomId}/messages
-    final chatMessagesDoc =
-        chatsDoc.collection(LNDCollections.messages.name).doc();
-    batch.set(
-      chatMessagesDoc,
-      Message(
-        id: chatMessagesDoc.id,
-        text: bookingString,
-        senderId: asset!.ownerId,
-        createdAt: Timestamp.now(),
-        type: MessageType.text.label,
-      ).toMap(),
-    );
+      // Collection: chats/{randomId}/messages
+      final chatMessagesDoc =
+          chatsDoc.collection(LNDCollections.messages.name).doc();
+      batch.set(
+        chatMessagesDoc,
+        Message(
+          id: chatMessagesDoc.id,
+          text: bookingString,
+          senderId: asset!.ownerId,
+          createdAt: Timestamp.now(),
+          type: MessageType.text.label,
+        ).toMap(),
+      );
 
-    // Create a new chat
-    // For current user
-    // Collection: userChats/{userId}
-    final userChatsDoc = userChatsCollection.doc(AuthController.instance.uid);
-    batch.set(userChatsDoc, UserChatRoot(isOnline: true).toMap());
+      // Create a new chat
+      // For current user
+      // Collection: userChats/{userId}
+      final userChatsDoc = userChatsCollection.doc(AuthController.instance.uid);
+      batch.set(userChatsDoc, UserChatRoot(isOnline: true).toMap());
 
-    // Collection: userChats/{userId}/chats
-    final userChatsSubChatDoc = userChatsDoc
-        .collection(LNDCollections.chats.name)
-        .doc(chatsDoc.id);
-    batch.set(
-      userChatsSubChatDoc,
-      Chat(
-        id: chatsDoc.id,
-        chatId: chatsDoc.id,
-        asset: SimpleAsset.fromMap(asset!.toMap()),
-        participants: [asset!.owner!, ProfileController.instance.simpleUser],
-        lastMessage: bookingString,
-        lastMessageDate: Timestamp.now(),
-        lastMessageSenderId: asset!.ownerId,
-        bookings: bookedDates,
-        createdAt: Timestamp.now(),
-        hasRead: false,
-      ).toMap(),
-    );
+      // Collection: userChats/{userId}/chats
+      final userChatsSubChatDoc = userChatsDoc
+          .collection(LNDCollections.chats.name)
+          .doc(chatsDoc.id);
+      batch.set(
+        userChatsSubChatDoc,
+        Chat(
+          id: chatsDoc.id,
+          chatId: chatsDoc.id,
+          bookingId: bookingDocId,
+          renterId: AuthController.instance.uid,
+          asset: SimpleAsset.fromMap(asset!.toMap()),
+          participants: [asset!.owner!, ProfileController.instance.simpleUser],
+          lastMessage: bookingString,
+          lastMessageDate: Timestamp.now(),
+          lastMessageSenderId: asset!.ownerId,
+          availabilities: bookedDates,
+          createdAt: Timestamp.now(),
+          hasRead: false,
+        ).toMap(),
+      );
 
-    // For asset owner
-    // Collection: userChats/{userId}
-    final assetOwnerDoc = userChatsCollection.doc(asset!.ownerId);
-    batch.set(assetOwnerDoc, UserChatRoot(isOnline: true).toMap());
-    // Collection: userChats/{userId}/chats
-    final assetOwnerSubChatDoc = assetOwnerDoc
-        .collection(LNDCollections.chats.name)
-        .doc(chatsDoc.id);
-    batch.set(
-      assetOwnerSubChatDoc,
-      Chat(
-        id: chatsDoc.id,
-        chatId: chatsDoc.id,
-        asset: SimpleAsset.fromMap(asset!.toMap()),
-        participants: [asset!.owner!, ProfileController.instance.simpleUser],
-        lastMessage: bookingString,
-        lastMessageDate: Timestamp.now(),
-        lastMessageSenderId: asset!.ownerId,
-        bookings: bookedDates,
-        createdAt: Timestamp.now(),
-        hasRead: false,
-      ).toMap(),
-    );
+      // For asset owner
+      // Collection: userChats/{userId}
+      final assetOwnerDoc = userChatsCollection.doc(asset!.ownerId);
+      batch.set(assetOwnerDoc, UserChatRoot(isOnline: true).toMap());
+      // Collection: userChats/{userId}/chats
+      final assetOwnerSubChatDoc = assetOwnerDoc
+          .collection(LNDCollections.chats.name)
+          .doc(chatsDoc.id);
+      batch.set(
+        assetOwnerSubChatDoc,
+        Chat(
+          id: chatsDoc.id,
+          chatId: chatsDoc.id,
+          bookingId: bookingDocId,
+          renterId: AuthController.instance.uid,
+          asset: SimpleAsset.fromMap(asset!.toMap()),
+          participants: [asset!.owner!, ProfileController.instance.simpleUser],
+          lastMessage: bookingString,
+          lastMessageDate: Timestamp.now(),
+          lastMessageSenderId: asset!.ownerId,
+          availabilities: bookedDates,
+          createdAt: Timestamp.now(),
+          hasRead: false,
+        ).toMap(),
+      );
 
-    await batch.commit();
+      await batch.commit();
+      return true;
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
+      return false;
+    }
+  }
+
+  void onMapTap(LatLng position) {
+    if (mapController != null) {
+      mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: position, zoom: 13),
+        ),
+      );
+    }
+  }
+
+  void onMapLongPress(LatLng position) {
+    if (mapController != null) {
+      mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: position, zoom: 13),
+        ),
+      );
+    }
   }
 
   bool checkAvailability(DateTime date) {

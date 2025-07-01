@@ -51,18 +51,20 @@ class MyRentalsPage extends GetView<MyRentalsController> {
                                   ?.isListingEligible ==
                               Eligibility.no)
                             _buildNotEligible(),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: controller.myRentals.length,
-                            itemBuilder: (_, index) {
-                              final rentals = controller.myRentals[index];
-                              final dates = LNDUtils.getDateRange(
-                                start: rentals.dates?.first.toDate(),
-                                end: rentals.dates?.last.toDate(),
-                              );
-                              return _buildRentalItem(rentals, dates);
-                            },
+                          Obx(
+                            () => ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: controller.myRentals.length,
+                              itemBuilder: (_, index) {
+                                final rentals = controller.myRentals[index];
+                                final dates = LNDUtils.getDateRange(
+                                  start: rentals.dates?.first.toDate(),
+                                  end: rentals.dates?.last.toDate(),
+                                );
+                                return _buildRentalItem(rentals, dates);
+                              },
+                            ),
                           ),
                         ],
                       ),

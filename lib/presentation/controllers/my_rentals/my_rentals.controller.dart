@@ -30,6 +30,7 @@ class MyRentalsController extends GetxController
   Future<void> getMyRentals() async {
     try {
       _isMyRentalsLoading.value = true;
+
       final bookingsDocs =
           await FirebaseFirestore.instance
               .collection(LNDCollections.users.name)
@@ -37,13 +38,11 @@ class MyRentalsController extends GetxController
               .collection(LNDCollections.bookings.name)
               .get();
 
-      if (bookingsDocs.docs.isNotEmpty) {
-        final rentalsList =
-            bookingsDocs.docs.map((e) => Booking.fromMap(e.data())).toList();
+      final rentalsList =
+          bookingsDocs.docs.map((e) => Booking.fromMap(e.data())).toList();
 
-        _myRentals.assignAll(rentalsList);
-        _isMyRentalsLoading.value = false;
-      }
+      _myRentals.assignAll(rentalsList);
+      _isMyRentalsLoading.value = false;
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }

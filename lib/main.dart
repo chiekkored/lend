@@ -93,19 +93,23 @@ class Root extends StatelessWidget {
           page: () => const CupertinoScaffold(body: PostListingPage()),
           binding: PostListingBinding(),
           fullscreenDialog: true,
+          middlewares: [AuthMiddleware()],
         ),
         GetPage(
           name: AddShowcasePage.routeName,
           page: () => const AddShowcasePage(),
+          middlewares: [AuthMiddleware()],
         ),
         GetPage(
           name: YourListingPage.routeName,
           page: () => const YourListingPage(),
+          middlewares: [AuthMiddleware()],
         ),
         GetPage(
           name: ChatPage.routeName,
           page: () => const ChatPage(),
           binding: ChatBinding(),
+          middlewares: [AuthMiddleware()],
         ),
       ],
       initialRoute: NavigationPage.routeName,

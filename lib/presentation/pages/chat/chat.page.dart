@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/textfields.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
+import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/chat/chat.controller.dart';
 import 'package:lend/presentation/pages/chat/widgets/chat_list.widget.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/extensions/int.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
 
@@ -39,8 +42,117 @@ class ChatPage extends GetView<ChatController> {
     );
   }
 
+  Widget _buildBottomAppbar(Chat chat, bool isOwner, double extraHeight) {
+    return GestureDetector(
+      onTap: controller.goToAsset,
+      child: ColoredBox(
+        color: LNDColors.outline,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  LNDImage.square(
+                    imageUrl: chat.asset?.images?.first,
+                    size: 40.0,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LNDText.medium(text: chat.asset?.title ?? ''),
+                      Obx(
+                        () =>
+                            controller.booking.value == null
+                                ? LNDText.regular(
+                                  text: LNDUtils.getDateRange(
+                                    start:
+                                        chat.availabilities?.first.date
+                                            .toDate(),
+                                    end:
+                                        chat.availabilities?.last.date.toDate(),
+                                  ),
+                                  fontSize: 12.0,
+                                  color: LNDColors.gray,
+                                )
+                                : LNDText.regular(
+                                  text: LNDUtils.getDateRange(
+                                    start:
+                                        chat.availabilities?.first.date
+                                            .toDate(),
+                                    end:
+                                        chat.availabilities?.last.date.toDate(),
+                                  ),
+                                  fontSize: 12.0,
+                                  color: LNDColors.gray,
+                                  textParts: [
+                                    LNDText.regular(
+                                      text: ' • ',
+                                      color: LNDColors.gray,
+                                      fontSize: 12.0,
+                                    ),
+                                    isOwner
+                                        ? LNDText.bold(
+                                          text:
+                                              '₱${controller.booking.value?.totalPrice.toMoney()}',
+                                          fontSize: 12.0,
+                                        )
+                                        : LNDText.bold(
+                                          text:
+                                              controller
+                                                  .booking
+                                                  .value
+                                                  ?.status ??
+                                              '',
+                                          color: LNDColors.primary,
+                                          fontSize: 12.0,
+                                        ),
+                                  ],
+                                ),
+                      ),
+                    ],
+                  ),
+                ],
+              ).withSpacing(8.0),
+              if (isOwner)
+                Container(
+                  height: extraHeight,
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: LNDButton.secondary(
+                          text: 'Decline',
+                          enabled: true,
+                          textColor: LNDColors.danger,
+                          hasPadding: false,
+                          onPressed: () {},
+                        ),
+                      ),
+                      Expanded(
+                        child: LNDButton.primary(
+                          text: 'Accept',
+                          enabled: true,
+                          hasPadding: false,
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ).withSpacing(12.0),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final chat = controller.chat;
+    final isOwner = chat.renterId != AuthController.instance.uid;
+    final extraHeight = isOwner ? 45.0 : 0.0;
+
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -67,52 +179,13 @@ class ChatPage extends GetView<ChatController> {
             ).withSpacing(8.0),
           ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(55.0),
-            child: GestureDetector(
-              onTap: controller.goToAsset,
-              child: ColoredBox(
-                color: LNDColors.outline,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24.0,
-                    vertical: 8.0,
-                  ),
-                  child: Row(
-                    children: [
-                      LNDImage.square(
-                        imageUrl: controller.chat.asset?.images?.first,
-                        size: 40.0,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          LNDText.medium(
-                            text: controller.chat.asset?.title ?? '',
-                          ),
-                          LNDText.regular(
-                            text: LNDUtils.getDateRange(
-                              start:
-                                  controller.chat.bookings?.first.date.toDate(),
-                              end: controller.chat.bookings?.last.date.toDate(),
-                            ),
-                            fontSize: 12.0,
-                            color: LNDColors.gray,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ).withSpacing(8.0),
-                ),
-              ),
-            ),
+            preferredSize: Size.fromHeight(55.0 + extraHeight),
+            child: _buildBottomAppbar(chat, isOwner, extraHeight),
           ),
         ),
         body: SafeArea(
           child: Column(
-            children: [
-              Expanded(child: ChatListW(chat: controller.chat)),
-              _buildChatBox(),
-            ],
+            children: [Expanded(child: ChatListW(chat: chat)), _buildChatBox()],
           ),
         ),
       ),

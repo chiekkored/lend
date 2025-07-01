@@ -99,7 +99,7 @@ class YourListingPage extends GetView<YourListingController> {
                                 tileColor: LNDColors.white,
                                 onTap: () => controller.goToAssetPage(asset),
                                 leading: LNDImage.square(
-                                  imageUrl: asset.images?.first,
+                                  imageUrl: asset.images?.first ?? '',
                                 ),
                                 title: LNDText.regular(text: asset.title ?? ''),
                                 subtitle: Row(
