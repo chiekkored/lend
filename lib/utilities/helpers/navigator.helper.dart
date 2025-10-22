@@ -7,6 +7,7 @@ import 'package:lend/presentation/controllers/location_picker/location_picker.co
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
 import 'package:lend/presentation/pages/chat/chat.page.dart';
+import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
@@ -25,6 +26,10 @@ class LNDNavigate {
   static final LNDNavigate _instance = LNDNavigate._();
   factory LNDNavigate() {
     return _instance;
+  }
+
+  static Future<T?>? toHomePage<T>() async {
+    return await Get.offAllNamed(NavigationPage.routeName);
   }
 
   static Future<T?>? toSigninPage<T>() async {
