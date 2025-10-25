@@ -99,4 +99,8 @@ class YourListingController extends GetxController with AuthMixin {
   void goToAssetPage(SimpleAsset asset) {
     LNDNavigate.toAssetPage(args: Asset.fromMap(asset.toMap()));
   }
+
+  void goToPostListing() {
+    LNDNavigate.toPostListing(args: null);
+  }
 }

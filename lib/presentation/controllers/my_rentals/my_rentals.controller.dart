@@ -51,8 +51,4 @@ class MyRentalsController extends GetxController
   void goToAsset(Asset? asset) {
     LNDNavigate.toAssetPage(args: asset);
   }
-
-  void goToPostListing() {
-    LNDNavigate.toPostListing(args: null);
-  }
 }

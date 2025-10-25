@@ -36,39 +36,47 @@ class MyRentalsPage extends GetView<MyRentalsController> {
             body:
                 !controller.isAuthenticated
                     ? ColoredBox(color: LNDColors.white, child: _SigninView())
-                    : SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          if (ProfileController
-                                  .instance
-                                  .user
-                                  ?.isListingEligible ==
-                              Eligibility.yes) ...[
-                            _buildEligible(),
-                          ] else if (ProfileController
-                                  .instance
-                                  .user
-                                  ?.isListingEligible ==
-                              Eligibility.no)
-                            _buildNotEligible(),
-                          Obx(
-                            () => ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: controller.myRentals.length,
-                              itemBuilder: (_, index) {
-                                final rentals = controller.myRentals[index];
-                                final dates = LNDUtils.getDateRange(
-                                  start: rentals.dates?.first.toDate(),
-                                  end: rentals.dates?.last.toDate(),
-                                );
-                                return _buildRentalItem(rentals, dates);
-                              },
+                    : Obx(() {
+                      // ignore: prefer_is_empty
+                      if (controller.myRentals.length == 0) {
+                        return const Column(
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: Text('You have no rentals yet'),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
+                          ],
+                        );
+                      }
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            if (ProfileController
+                                    .instance
+                                    .user
+                                    ?.isListingEligible ==
+                                Eligibility.no)
+                              _buildNotEligible(),
+                            Obx(
+                              () => ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: controller.myRentals.length,
+                                itemBuilder: (_, index) {
+                                  final rentals = controller.myRentals[index];
+                                  final dates = LNDUtils.getDateRange(
+                                    start: rentals.dates?.first.toDate(),
+                                    end: rentals.dates?.last.toDate(),
+                                  );
+                                  return _buildRentalItem(rentals, dates);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
           ),
         ),
       ),
@@ -109,18 +117,6 @@ class MyRentalsPage extends GetView<MyRentalsController> {
     );
   }
 
-  Padding _buildEligible() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: LNDButton.primary(
-        text: '+ Create listing',
-        enabled: true,
-        hasPadding: false,
-        onPressed: controller.goToPostListing,
-      ),
-    );
-  }
-
   Container _buildRentalItem(Booking rentals, String dates) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
@@ -133,6 +129,23 @@ class MyRentalsPage extends GetView<MyRentalsController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 4.0,
+            children: [
+              CircleAvatar(
+                radius: 6.0,
+                backgroundColor:
+                    rentals.status == 'Pending'
+                        ? Colors.orangeAccent
+                        : LNDColors.success,
+              ),
+              LNDText.regular(
+                text: rentals.status?.capitalizeFirst ?? '',
+                fontSize: 12.0,
+              ),
+            ],
+          ),
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +178,7 @@ class MyRentalsPage extends GetView<MyRentalsController> {
             ).withSpacing(16.0),
           ),
           LNDButton.secondary(
-            text: 'View details',
+            text: 'Details',
             hasPadding: false,
             enabled: true,
             onPressed:

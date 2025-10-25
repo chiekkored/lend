@@ -30,6 +30,18 @@ class YourListingPage extends GetView<YourListingController> {
         child: Column(
           children: [
             Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
+              child: LNDButton.primary(
+                text: '+ Create listing',
+                enabled: true,
+                hasPadding: false,
+                onPressed: controller.goToPostListing,
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.all(24.0),
               child: SizedBox(
                 height: 100.0,

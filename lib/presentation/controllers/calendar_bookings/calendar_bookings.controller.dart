@@ -36,7 +36,7 @@ class CalendarBookingsController extends GetxController {
 
   final Map<String, Color> _bookingColorMap = {};
 
-  List<ColoredBookings> get coloredBookings {
+  List<ColoredBookings> get _coloredBookings {
     return args.bookings.map((booking) {
       final bookingId = booking.id ?? '';
       if (!_bookingColorMap.containsKey(bookingId)) {
@@ -52,7 +52,7 @@ class CalendarBookingsController extends GetxController {
   List<ColoredBookings> get selectedDayBookings {
     if (selectedDate == null) return [];
 
-    return coloredBookings.where((colored) {
+    return _coloredBookings.where((colored) {
       return colored.booking.dates?.any(
             (d) => d.toDate().isAtSameMomentAs(selectedDate!),
           ) ??
@@ -85,7 +85,7 @@ class CalendarBookingsController extends GetxController {
   List<Color> getBookingColors(DateTime date) {
     List<Color> colors = [];
 
-    for (var colored in coloredBookings) {
+    for (var colored in _coloredBookings) {
       final booking = colored.booking;
       final color = colored.color;
 

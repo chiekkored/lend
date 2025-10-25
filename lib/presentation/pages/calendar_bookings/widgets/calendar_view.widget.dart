@@ -125,8 +125,19 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                   ),
                 ),
               ),
-              Obx(
-                () => ListView.separated(
+              Obx(() {
+                // ignore: prefer_is_empty
+                if (controller.selectedDayBookings.length == 0) {
+                  return Expanded(
+                    child: Center(
+                      child: LNDText.regular(
+                        text: 'Select a date',
+                        color: LNDColors.gray,
+                      ),
+                    ),
+                  );
+                }
+                return ListView.separated(
                   shrinkWrap: true,
                   itemCount: controller.selectedDayBookings.length,
                   separatorBuilder:
@@ -198,8 +209,8 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                       ),
                     );
                   },
-                ),
-              ),
+                );
+              }),
             ],
           ),
         ),
