@@ -105,11 +105,11 @@ class HomeController extends GetxController with LNDScrollMixin {
       category: 'Electronics',
       inclusions: ["3 Batteries", "Hard Case", "128 gb SD Card", "Tripod"],
       rates: Rates(daily: 1500, monthly: 0, annually: 0, notes: 'Just a note'),
-      availability: [
-        // Timestamp.fromDate(DateTime(2025, 3, 20)),
-        // Timestamp.fromDate(DateTime(2025, 3, 21)),
-        // Timestamp.fromDate(DateTime(2025, 3, 22)),
-      ],
+      // availability: [
+      // Timestamp.fromDate(DateTime(2025, 3, 20)),
+      // Timestamp.fromDate(DateTime(2025, 3, 21)),
+      // Timestamp.fromDate(DateTime(2025, 3, 22)),
+      // ],
       location: Location(
         description: '123 Main St, Springfield, USA',
         latLng: const GeoPoint(37.7749, -122.4194),

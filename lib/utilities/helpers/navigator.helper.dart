@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/presentation/common/show.common.dart';
+import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar/calendar.page.dart';
@@ -56,8 +57,8 @@ class LNDNavigate {
     return await Get.toNamed(ProductShowcasePage.routeName, arguments: args);
   }
 
-  static Future<T?>? toCalendarPage<T>() async {
-    return await Get.toNamed(CalendarPage.routeName);
+  static Future<T?>? toCalendarPage<T>({required CalendarPageArgs args}) async {
+    return await Get.toNamed(CalendarPage.routeName, arguments: args);
   }
 
   static Future<T?>? toChatPage<T>({required Chat chat}) async {

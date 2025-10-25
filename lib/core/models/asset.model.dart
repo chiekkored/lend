@@ -17,7 +17,6 @@ class Asset {
   String? description;
   String? category;
   Rates? rates;
-  List<Availability>? availability;
   Location? location;
   List<String>? images;
   List<String>? showcase;
@@ -32,7 +31,6 @@ class Asset {
     this.description,
     this.category,
     this.rates,
-    this.availability,
     this.location,
     this.images,
     this.showcase,
@@ -65,7 +63,6 @@ class Asset {
       description: description ?? this.description,
       category: category ?? this.category,
       rates: rates ?? this.rates,
-      availability: availability ?? this.availability,
       location: location ?? this.location,
       images: images ?? this.images,
       showcase: showcase ?? this.showcase,
@@ -84,7 +81,6 @@ class Asset {
       'description': description,
       'category': category,
       'rates': rates?.toMap(),
-      'availability': availability?.map((x) => x.toMap()).toList(),
       'location': location?.toMap(),
       'images': images,
       'showcase': showcase,
@@ -113,14 +109,6 @@ class Asset {
           map['rates'] != null
               ? Rates.fromMap(map['rates'] as Map<String, dynamic>)
               : null,
-      availability:
-          map['availability'] != null
-              ? List<Availability>.from(
-                map['availability'].map(
-                  (x) => Availability.fromMap(x as Map<String, dynamic>),
-                ),
-              )
-              : null,
       location:
           map['location'] != null
               ? Location.fromMap(map['location'] as Map<String, dynamic>)
@@ -145,7 +133,7 @@ class Asset {
 
   @override
   String toString() {
-    return 'Asset(id: $id, ownerId: $ownerId, owner: $owner, title: $title, description: $description, category: $category, rates: $rates, availability: $availability, location: $location, images: $images, showcase: $showcase, inclusions: $inclusions, createdAt: $createdAt, status: $status)';
+    return 'Asset(id: $id, ownerId: $ownerId, owner: $owner, title: $title, description: $description, category: $category, rates: $rates, location: $location, images: $images, showcase: $showcase, inclusions: $inclusions, createdAt: $createdAt, status: $status)';
   }
 
   @override
@@ -159,7 +147,6 @@ class Asset {
         other.description == description &&
         other.category == category &&
         other.rates == rates &&
-        listEquals(other.availability, availability) &&
         other.location == location &&
         listEquals(other.images, images) &&
         listEquals(other.showcase, showcase) &&
@@ -177,7 +164,6 @@ class Asset {
         description.hashCode ^
         category.hashCode ^
         rates.hashCode ^
-        availability.hashCode ^
         location.hashCode ^
         images.hashCode ^
         showcase.hashCode ^

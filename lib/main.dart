@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
+import 'package:lend/core/bindings/calendar/calendar.binding.dart';
 import 'package:lend/core/bindings/chat/chat.binding.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
 import 'package:lend/core/bindings/post_listing/post_listing.binding.dart';
@@ -64,6 +65,7 @@ class Root extends StatelessWidget {
           name: CalendarPage.routeName,
           page: () => const CalendarPage(),
           preventDuplicates: false,
+          binding: CalendarBinding(),
           middlewares: [AuthMiddleware()],
         ),
         GetPage(

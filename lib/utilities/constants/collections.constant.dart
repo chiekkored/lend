@@ -4,6 +4,7 @@ enum LNDCollections {
   chats('chats'),
   messages('messages'),
   assets('assets'),
+  dates('dates'),
   bookings('bookings');
 
   final String name;

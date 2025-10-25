@@ -66,7 +66,7 @@ class AssetProductShowcase extends GetWidget<AssetController> {
                     return GestureDetector(
                       onTap: () => controller.openPhotoShowcase(index),
                       child: Hero(
-                        tag: '$showcase',
+                        tag: '$showcase $index',
                         child: LNDImage.square(imageUrl: showcase, size: 125.0),
                       ),
                     );

@@ -44,7 +44,7 @@ class ProductShowcasePage extends StatelessWidget {
                     ),
                   ),
               child: Hero(
-                tag: args.showcase[index],
+                tag: '${args.showcase[index]} $index',
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: _AspectRatioImage(imageUrl: args.showcase[index]),

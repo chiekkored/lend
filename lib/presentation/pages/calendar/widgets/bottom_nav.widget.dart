@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
-import 'package:lend/presentation/controllers/asset/asset.controller.dart';
+import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 
-class CalendarBottomNav extends GetWidget<AssetController> {
+class CalendarBottomNav extends GetWidget<CalendarController> {
   const CalendarBottomNav({super.key});
 
   @override
@@ -33,7 +33,7 @@ class CalendarBottomNav extends GetWidget<AssetController> {
                 () => LNDButton.primary(
                   text: 'Book',
                   enabled: controller.selectedDates.isNotEmpty,
-                  onPressed: controller.bookAsset,
+                  onPressed: controller.onTapSubmit,
                 ),
               ),
             ],

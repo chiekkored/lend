@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
-import 'package:lend/presentation/controllers/asset/asset.controller.dart';
+import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
 import 'package:lend/presentation/pages/calendar/widgets/bottom_nav.widget.dart';
 import 'package:lend/presentation/pages/calendar/widgets/calendar_view.widget.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
-class CalendarPage extends GetView<AssetController> {
+class CalendarPage extends GetView<CalendarController> {
   static const routeName = '/calendar';
   const CalendarPage({super.key});
 
@@ -19,7 +19,8 @@ class CalendarPage extends GetView<AssetController> {
         surfaceTintColor: LNDColors.white,
       ),
       body: const CalendarView(),
-      bottomNavigationBar: const CalendarBottomNav(),
+      bottomNavigationBar:
+          controller.args.isReadOnly ? null : const CalendarBottomNav(),
     );
   }
 }

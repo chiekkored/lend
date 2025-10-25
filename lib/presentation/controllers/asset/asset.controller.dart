@@ -11,12 +11,14 @@ import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/chat_root.model.dart';
 import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/core/models/message.model.dart';
+import 'package:lend/core/models/rates.model.dart';
 import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/core/models/user_chat.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
 import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/navigation/navigation.controller.dart';
@@ -37,6 +39,8 @@ class AssetController extends GetxController {
   final Rx<Asset?> _asset = Rx<Asset?>(Get.arguments as Asset?);
   Asset? get asset => _asset.value;
 
+  final RxList<Booking> _confirmedDates = <Booking>[].obs;
+
   final RxBool _isAssetLoading = false.obs;
   bool get isAssetLoading => _isAssetLoading.value;
 
@@ -52,24 +56,19 @@ class AssetController extends GetxController {
   final RxString _address = ''.obs;
   String get address => _address.value;
 
-  final RxList<DateTime> _selectedDates = <DateTime>[].obs;
-  List<DateTime> get selectedDates => _selectedDates;
-
-  final RxInt _totalPrice = 0.obs;
-  int get totalPrice => _totalPrice.value;
-
   CameraPosition cameraPosition = const CameraPosition(
     target: LatLng(0.0, 0.0),
     zoom: 13,
   );
 
   @override
-  void onInit() {
+  void onReady() async {
     if (asset?.description == null) {
-      getAsset();
+      await getAsset();
     }
+    getBookings();
 
-    super.onInit();
+    super.onReady();
   }
 
   @override
@@ -81,7 +80,6 @@ class AssetController extends GetxController {
     _mapController.close();
     _isUserLoading.close();
     _address.close();
-    _selectedDates.close();
 
     super.onClose();
   }
@@ -124,7 +122,30 @@ class AssetController extends GetxController {
         Get.back();
       }
     } catch (e, st) {
+      _isAssetLoading.value = false;
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
+      LNDSnackbar.showError('Product unavailable');
+      Get.back();
+    }
+  }
+
+  /// Fetches the asset details from Firestore
+  Future<void> getBookings() async {
+    try {
+      final bookingDocs = FirebaseFirestore.instance
+          .collection(LNDCollections.assets.name)
+          .doc(asset?.id)
+          .collection(LNDCollections.bookings.name);
+      // .where('status', isEqualTo: BookingStatus.confirmed.label);
+
+      final result = await bookingDocs.get();
+
+      _confirmedDates.value =
+          result.docs.map((doc) => Booking.fromMap(doc.data())).toList();
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
+      LNDSnackbar.showError('Something went wrong');
+      Get.back();
     }
   }
 
@@ -201,94 +222,56 @@ class AssetController extends GetxController {
   }
 
   void goToReservation() async {
-    await LNDNavigate.toCalendarPage();
-    _totalPrice.value = 0;
-    _selectedDates.clear();
+    final confirmedDates =
+        _confirmedDates
+            .where((date) => date.status == BookingStatus.confirmed.label)
+            .toList();
+    final datesOnly =
+        confirmedDates
+            .where((booking) => booking.dates?.isNotEmpty ?? false)
+            .expand((booking) => booking.dates!)
+            .map((timestamp) => timestamp.toDate())
+            .toSet()
+            .toList();
+    await LNDNavigate.toCalendarPage(
+      args: CalendarPageArgs(
+        isReadOnly: false,
+        dates: datesOnly,
+        rates: asset?.rates ?? Rates(),
+        onSubmit:
+            (selectedDates, totalPrice) => bookAsset(selectedDates, totalPrice),
+      ),
+    );
   }
 
-  void onCalendarChanged(List<DateTime> dates) async {
-    if (dates.first == dates.last) {
-      _selectedDates.value = [dates.last];
-      return;
-    }
-
-    if (asset?.availability?.any(
-          (av) =>
-              !av.date.toDate().isBefore(dates.first) &&
-              !av.date.toDate().isAfter(dates.last),
-        ) ??
-        false) {
-      _selectedDates.value = [dates.last];
-    } else {
-      _selectedDates.value = dates;
-    }
-    calculateTotalPrice();
+  void goToViewCalendar() async {
+    final datesOnly =
+        _confirmedDates
+            .where((booking) => booking.dates?.isNotEmpty ?? false)
+            .expand((booking) => booking.dates!)
+            .map((timestamp) => timestamp.toDate())
+            .toSet()
+            .toList();
+    await LNDNavigate.toCalendarPage(
+      args: CalendarPageArgs(
+        isReadOnly: true,
+        dates: datesOnly,
+        rates: Rates(),
+        onSubmit: (selectedDates, totalPrice) {},
+      ),
+    );
   }
 
-  void calculateTotalPrice() {
-    if (selectedDates.length < 2 || selectedDates.first == selectedDates.last) {
-      _totalPrice.value = 0;
-    }
-
-    int totalPrice = 0;
-    DateTime startDate = selectedDates.first;
-    DateTime endDate = selectedDates.last;
-    int totalDays = endDate.difference(startDate).inDays;
-
-    if (asset?.rates?.annually != null && totalDays >= 365) {
-      totalPrice += asset?.rates?.annually ?? 0;
-      int remainingDays = totalDays - 365;
-      if (remainingDays > 0) {
-        // For simplicity, we'll apply daily rate for extra days beyond a year
-        if (asset?.rates?.daily != null) {
-          totalPrice += remainingDays * (asset?.rates?.daily ?? 0);
-        }
-      }
-      _totalPrice.value = totalPrice;
-    }
-
-    DateTime currentDate = startDate;
-    while (currentDate.isBefore(endDate)) {
-      if (asset?.rates?.monthly != null) {
-        DateTime nextMonth = DateTime(
-          currentDate.year,
-          currentDate.month + 1,
-          currentDate.day,
-        );
-        if (!nextMonth.isAfter(endDate)) {
-          totalPrice += asset?.rates?.monthly ?? 0;
-          currentDate = nextMonth;
-          continue;
-        }
-      }
-
-      if (asset?.rates?.weekly != null) {
-        DateTime nextWeek = currentDate.add(const Duration(days: 7));
-        if (!nextWeek.isAfter(endDate)) {
-          totalPrice += asset?.rates?.weekly ?? 0;
-          currentDate = nextWeek;
-          continue;
-        }
-      }
-
-      if (asset?.rates?.daily != null) {
-        totalPrice += asset?.rates?.daily ?? 0;
-      }
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
-
-    _totalPrice.value = totalPrice;
-  }
-
-  void bookAsset() async {
+  void bookAsset(List<DateTime> selectedDates, int totalPrice) async {
     if (selectedDates.length < 2 || selectedDates.first == selectedDates.last) {
       return;
     }
     try {
-      if (asset?.owner == null) {
-        LNDSnackbar.showError('Something went wrong. Please try again later.');
-        return;
-      }
+      if (asset == null) throw 'Asset does not exist';
+
+      if (asset?.owner == null) throw 'Asset owner does not exist';
+
+      if (asset?.id == null) throw 'Asset ID does not exist';
 
       LNDLoading.show();
 
@@ -313,10 +296,19 @@ class AssetController extends GetxController {
       // final assetsCollection = FirebaseFirestore.instance.collection(
       //   LNDCollections.assets.name,
       // );
-      final bookingsCollection = FirebaseFirestore.instance
+
+      final userBookingsCollection = FirebaseFirestore.instance
           .collection(LNDCollections.users.name)
           .doc(AuthController.instance.uid)
           .collection(LNDCollections.bookings.name);
+
+      final userBookingDoc = userBookingsCollection.doc();
+
+      final assetBookingsDoc = FirebaseFirestore.instance
+          .collection(LNDCollections.assets.name)
+          .doc(asset!.id)
+          .collection(LNDCollections.bookings.name)
+          .doc(userBookingDoc.id);
 
       // final newAvailability = {
       //   'availability': FieldValue.arrayUnion(
@@ -328,38 +320,28 @@ class AssetController extends GetxController {
       // batch.update(assetsCollection.doc(asset?.id), newAvailability);
 
       // Create a new booking
-      final bookingDoc = bookingsCollection.doc();
-      batch.set(
-        bookingDoc,
-        Booking(
-          id: bookingDoc.id,
-          asset: SimpleAsset(
-            id: asset?.id ?? '',
-            ownerId: asset?.ownerId,
-            title: asset?.title,
-            images: asset?.images,
-            bookings: dates,
-            category: asset?.category,
+      // For future: Separate status to another collection for source of truth
+
+      final booking =
+          Booking(
+            id: userBookingDoc.id,
+            asset: SimpleAsset.fromMap(asset!.toMap()),
+            dates: dates.map((d) => d.date).toList(),
             createdAt: Timestamp.now(),
-            status: asset?.status,
-          ),
-          dates: dates.map((d) => d.date).toList(),
-          createdAt: Timestamp.now(),
-          payment: Payment(method: 'debit', transactionId: '123456'),
-          renterId: AuthController.instance.uid,
-          status: BookingStatus.pending.label,
-          totalPrice: totalPrice,
-        ).toMap(),
-      );
+            payment: null,
+            renterId: AuthController.instance.uid,
+            status: BookingStatus.pending.label,
+            totalPrice: totalPrice,
+          ).toMap();
+
+      batch.set(userBookingDoc, booking);
+      batch.set(assetBookingsDoc, booking);
 
       // Create a new chat
-      final messageResult = await _createMessage(bookingDoc.id, dates);
+      final messageResult = await _createMessage(userBookingDoc.id, dates);
 
       // If message creation fails, we don't want to proceed with the booking
-      if (!messageResult) {
-        LNDLoading.hide();
-        return;
-      }
+      if (!messageResult) throw 'Creating chat room failed';
 
       await batch.commit();
 
@@ -372,6 +354,7 @@ class AssetController extends GetxController {
     } catch (e, st) {
       LNDLoading.hide();
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
+      LNDSnackbar.showError('Something went wrong. Please try again later.');
     }
   }
 
@@ -489,17 +472,6 @@ class AssetController extends GetxController {
         ),
       );
     }
-  }
-
-  bool checkAvailability(DateTime date) {
-    // Make last day available
-    if ((asset?.availability?.isNotEmpty ?? false) &&
-        date == asset?.availability?.last.date.toDate()) {
-      return true;
-    }
-
-    return !(asset?.availability?.any((av) => av.date.toDate() == date) ??
-        false);
   }
 
   void addBookmark() async {

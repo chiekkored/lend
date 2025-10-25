@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/controllers/asset/asset.controller.dart';
+import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
 class AssetAppBar extends GetWidget<AssetController> {
@@ -24,6 +25,28 @@ class AssetAppBar extends GetWidget<AssetController> {
         ),
         child: Center(child: LNDButton.back()),
       ),
+      actions: [
+        Visibility(
+          visible: AuthController.instance.uid == controller.asset?.ownerId,
+          child: Container(
+            height: 40.0,
+            width: 40.0,
+            margin: const EdgeInsets.only(right: 12.0),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: LNDColors.primary,
+            ),
+            child: Center(
+              child: LNDButton.icon(
+                icon: Icons.calendar_today_rounded,
+                color: LNDColors.white,
+                size: 25.0,
+                onPressed: controller.goToViewCalendar,
+              ),
+            ),
+          ),
+        ),
+      ],
       expandedHeight: 300.0,
       surfaceTintColor: LNDColors.white,
       stretch: true,

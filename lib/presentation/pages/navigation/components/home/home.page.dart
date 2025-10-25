@@ -46,7 +46,7 @@ class HomePage extends GetView<HomeController> {
             ),
             Expanded(
               child: RefreshIndicator.adaptive(
-                onRefresh: () async => controller.getAssets(),
+                onRefresh: () => controller.getAssets(),
                 child: Obx(
                   () =>
                       controller.isLoading

@@ -2,10 +2,10 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/texts.common.dart';
-import 'package:lend/presentation/controllers/asset/asset.controller.dart';
+import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
-class CalendarView extends GetWidget<AssetController> {
+class CalendarView extends GetWidget<CalendarController> {
   const CalendarView({super.key});
 
   @override
@@ -28,7 +28,10 @@ class CalendarView extends GetWidget<AssetController> {
               alpha: 0.3,
             ),
             daySplashColor: LNDColors.primary.withValues(alpha: 0.5),
-            selectableDayPredicate: controller.checkAvailability,
+            selectableDayPredicate:
+                (day) =>
+                    controller.checkAvailability(day) &&
+                    !controller.args.isReadOnly,
             dayBuilder: ({
               required date,
               decoration,
