@@ -33,14 +33,17 @@ class SimpleUserModel {
     );
   }
 
+  String get getName => '${firstName ?? ''} ${lastName ?? ''}'.trim();
+
   @override
   String toString() {
     return 'SimpleUserModel(uid: $uid, firstName: $firstName, lastName: $lastName, photoUrl: $photoUrl)';
   }
 
   @override
-  bool operator ==(covariant SimpleUserModel other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
+    if (other is! SimpleUserModel) return false;
 
     return other.uid == uid &&
         other.firstName == firstName &&

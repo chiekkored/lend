@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
-import 'package:lend/core/bindings/calendar/calendar.binding.dart';
+import 'package:lend/core/bindings/calendar_bookings/calendar_bookings.binding.dart';
+import 'package:lend/core/bindings/calendar_picker/calendar_picker.binding.dart';
 import 'package:lend/core/bindings/chat/chat.binding.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
 import 'package:lend/core/bindings/post_listing/post_listing.binding.dart';
@@ -12,7 +13,8 @@ import 'package:lend/core/bindings/signup/signup.binding.dart';
 import 'package:lend/core/middlewares/auth.middleware.dart';
 import 'package:lend/core/services/main.service.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
-import 'package:lend/presentation/pages/calendar/calendar.page.dart';
+import 'package:lend/presentation/pages/calendar_bookings/calendar_bookings.page.dart';
+import 'package:lend/presentation/pages/calendar_picker/calendar_picker.page.dart';
 import 'package:lend/presentation/pages/chat/chat.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
@@ -47,6 +49,7 @@ class Root extends StatelessWidget {
         scaffoldBackgroundColor: LNDColors.outline,
         splashFactory: NoSplash.splashFactory,
         fontFamily: 'Inter',
+        primaryColor: LNDColors.primary,
       ),
       initialBinding: RootBinding(),
       getPages: [
@@ -62,10 +65,17 @@ class Root extends StatelessWidget {
           preventDuplicates: false,
         ),
         GetPage(
-          name: CalendarPage.routeName,
-          page: () => const CalendarPage(),
+          name: CalendarPickerPage.routeName,
+          page: () => const CalendarPickerPage(),
           preventDuplicates: false,
-          binding: CalendarBinding(),
+          binding: CalendarPickerBinding(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: CalendarBookingsPage.routeName,
+          page: () => const CalendarBookingsPage(),
+          preventDuplicates: false,
+          binding: CalendarBookingsBinding(),
           middlewares: [AuthMiddleware()],
         ),
         GetPage(

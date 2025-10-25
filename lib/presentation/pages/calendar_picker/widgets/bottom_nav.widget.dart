@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
-import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
+import 'package:lend/presentation/controllers/calendar_picker/calendar_picker.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 
-class CalendarBottomNav extends GetWidget<CalendarController> {
+class CalendarBottomNav extends GetWidget<CalendarPickerController> {
   const CalendarBottomNav({super.key});
 
   @override

@@ -125,9 +125,18 @@ class YourListingPage extends GetView<YourListingController> {
                                     ),
                                   ],
                                 ).withSpacing(4.0),
-                                trailing: const Icon(
-                                  Icons.chevron_right_rounded,
-                                  color: LNDColors.hint,
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (asset.bookings?.isNotEmpty ?? false)
+                                      Badge.count(
+                                        count: asset.bookings!.length,
+                                      ),
+                                    const Icon(
+                                      Icons.chevron_right_rounded,
+                                      color: LNDColors.hint,
+                                    ),
+                                  ],
                                 ),
                               );
                             },

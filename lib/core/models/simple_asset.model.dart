@@ -3,14 +3,14 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:lend/core/models/availability.model.dart';
+import 'package:lend/core/models/booking.model.dart';
 
 class SimpleAsset {
   final String id;
   final String? ownerId;
   final String? title;
   final List<String>? images;
-  final List<Availability>? bookings;
+  final List<Booking>? bookings;
   final String? category;
   final Timestamp? createdAt;
   final String? status;
@@ -30,7 +30,7 @@ class SimpleAsset {
     String? ownerId,
     String? title,
     List<String>? images,
-    List<Availability>? bookings,
+    List<Booking>? bookings,
     String? category,
     Timestamp? createdAt,
     String? status,
@@ -72,9 +72,9 @@ class SimpleAsset {
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
       bookings:
           map['bookings'] != null
-              ? List<Availability>.from(
-                (map['bookings']).map<Availability?>(
-                  (x) => Availability.fromMap(x as Map<String, dynamic>),
+              ? List<Booking>.from(
+                (map['bookings']).map<Booking?>(
+                  (x) => Booking.fromMap(x as Map<String, dynamic>),
                 ),
               )
               : null,

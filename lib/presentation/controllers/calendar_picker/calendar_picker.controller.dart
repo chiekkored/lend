@@ -2,13 +2,13 @@ import 'package:get/get.dart';
 import 'package:lend/core/models/rates.model.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
-class CalendarPageArgs {
+class CalendarPickerPageArgs {
   final bool isReadOnly;
   final List<DateTime> dates;
   final Rates rates;
   final void Function(List<DateTime> dates, int total) onSubmit;
 
-  CalendarPageArgs({
+  CalendarPickerPageArgs({
     required this.isReadOnly,
     required this.dates,
     required this.rates,
@@ -16,10 +16,11 @@ class CalendarPageArgs {
   });
 }
 
-class CalendarController extends GetxController {
-  static CalendarController get instance => Get.find<CalendarController>();
+class CalendarPickerController extends GetxController {
+  static CalendarPickerController get instance =>
+      Get.find<CalendarPickerController>();
 
-  final args = Get.arguments as CalendarPageArgs;
+  final args = Get.arguments as CalendarPickerPageArgs;
 
   final RxList<DateTime> _selectedDates = <DateTime>[].obs;
   List<DateTime> get selectedDates => _selectedDates;

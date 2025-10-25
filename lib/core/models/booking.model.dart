@@ -5,13 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:lend/core/models/simple_asset.model.dart';
+import 'package:lend/core/models/simple_user.model.dart';
 
 class Booking {
   String? id;
   SimpleAsset? asset;
   Timestamp? createdAt;
   Payment? payment;
-  String? renterId;
+  SimpleUserModel? renter;
   String? status;
   int? totalPrice;
   List<Timestamp>? dates;
@@ -20,7 +21,7 @@ class Booking {
     required this.asset,
     required this.createdAt,
     required this.payment,
-    required this.renterId,
+    required this.renter,
     required this.status,
     required this.totalPrice,
     required this.dates,
@@ -31,7 +32,7 @@ class Booking {
     SimpleAsset? asset,
     Timestamp? createdAt,
     Payment? payment,
-    String? renterId,
+    SimpleUserModel? renter,
     String? status,
     int? totalPrice,
     List<Timestamp>? dates,
@@ -41,7 +42,7 @@ class Booking {
       asset: asset ?? this.asset,
       createdAt: createdAt ?? this.createdAt,
       payment: payment ?? this.payment,
-      renterId: renterId ?? this.renterId,
+      renter: renter ?? this.renter,
       status: status ?? this.status,
       totalPrice: totalPrice ?? this.totalPrice,
       dates: dates ?? this.dates,
@@ -57,7 +58,7 @@ class Booking {
               ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
               : null,
       'payment': payment?.toMap(),
-      'renterId': renterId,
+      'renter': renter?.toMap(),
       'status': status,
       'totalPrice': totalPrice,
       'dates': dates?.map((x) => Timestamp(x.seconds, x.nanoseconds)).toList(),
@@ -77,7 +78,10 @@ class Booking {
           map['payment'] != null
               ? Payment.fromMap(map['payment'] as Map<String, dynamic>)
               : null,
-      renterId: map['renterId'] != null ? map['renterId'] as String : null,
+      renter:
+          map['renter'] != null
+              ? SimpleUserModel.fromMap(map['renter'] as Map<String, dynamic>)
+              : null,
       status: map['status'] != null ? map['status'] as String : null,
       totalPrice: map['totalPrice'] != null ? map['totalPrice'] as int : null,
       dates: map['dates'] != null ? List<Timestamp>.from(map['dates']) : null,
@@ -91,7 +95,7 @@ class Booking {
 
   @override
   String toString() {
-    return 'Booking(id: $id, asset: $asset, createdAt: $createdAt, payment: $payment, renterId: $renterId, status: $status, totalPrice: $totalPrice, dates: $dates)';
+    return 'Booking(id: $id, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates)';
   }
 
   @override
@@ -102,7 +106,7 @@ class Booking {
         other.asset == asset &&
         other.createdAt == createdAt &&
         other.payment == payment &&
-        other.renterId == renterId &&
+        other.renter == renter &&
         other.status == status &&
         other.totalPrice == totalPrice &&
         listEquals(other.dates, dates);
@@ -114,7 +118,7 @@ class Booking {
         asset.hashCode ^
         createdAt.hashCode ^
         payment.hashCode ^
-        renterId.hashCode ^
+        renter.hashCode ^
         status.hashCode ^
         totalPrice.hashCode ^
         dates.hashCode;

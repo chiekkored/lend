@@ -41,6 +41,7 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
 
   void cancelSubscriptions() {
     _chatsSubscription?.cancel();
+    LNDLogger.d('Chat Subscription Cancelled', stackTrace: StackTrace.current);
   }
 
   // Listen to user's chats
@@ -78,6 +79,10 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
       LNDLogger.e('Error setting up chat listener', error: e, stackTrace: st);
       _isChatsLoading.value = false;
     }
+  }
+
+  Chat? findChatByBookingId(String bookingId) {
+    return chats.firstWhereOrNull((chat) => chat.bookingId == bookingId);
   }
 
   void goToChatPage(Chat chat) {

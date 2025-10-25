@@ -2,10 +2,10 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/texts.common.dart';
-import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
+import 'package:lend/presentation/controllers/calendar_picker/calendar_picker.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
-class CalendarView extends GetWidget<CalendarController> {
+class CalendarView extends GetWidget<CalendarPickerController> {
   const CalendarView({super.key});
 
   @override
@@ -22,6 +22,7 @@ class CalendarView extends GetWidget<CalendarController> {
             calendarViewMode: CalendarDatePicker2Mode.scroll,
             dayModeScrollDirection: Axis.vertical,
             firstDate: DateTime.now().add(const Duration(days: 1)),
+            lastDate: DateTime.now().add(const Duration(days: 365)),
             todayTextStyle: LNDText.boldStyle.copyWith(color: LNDColors.black),
             selectedDayHighlightColor: LNDColors.primary,
             selectedRangeHighlightColor: LNDColors.primary.withValues(

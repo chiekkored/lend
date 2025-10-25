@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/presentation/common/show.common.dart';
-import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
+import 'package:lend/presentation/controllers/calendar_bookings/calendar_bookings.controller.dart';
+import 'package:lend/presentation/controllers/calendar_picker/calendar_picker.controller.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
-import 'package:lend/presentation/pages/calendar/calendar.page.dart';
+import 'package:lend/presentation/pages/calendar_bookings/calendar_bookings.page.dart';
+import 'package:lend/presentation/pages/calendar_picker/calendar_picker.page.dart';
 import 'package:lend/presentation/pages/chat/chat.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
@@ -57,8 +59,16 @@ class LNDNavigate {
     return await Get.toNamed(ProductShowcasePage.routeName, arguments: args);
   }
 
-  static Future<T?>? toCalendarPage<T>({required CalendarPageArgs args}) async {
-    return await Get.toNamed(CalendarPage.routeName, arguments: args);
+  static Future<T?>? toCalendarPickerPage<T>({
+    required CalendarPickerPageArgs args,
+  }) async {
+    return await Get.toNamed(CalendarPickerPage.routeName, arguments: args);
+  }
+
+  static Future<T?>? toCalendarBookingsPage<T>({
+    required CalendarBookingsPageArgs args,
+  }) async {
+    return await Get.toNamed(CalendarBookingsPage.routeName, arguments: args);
   }
 
   static Future<T?>? toChatPage<T>({required Chat chat}) async {

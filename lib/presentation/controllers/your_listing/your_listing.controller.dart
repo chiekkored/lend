@@ -48,6 +48,8 @@ class YourListingController extends GetxController with AuthMixin {
     try {
       _myAssets.clear();
       _isMyAssetsLoading.value = true;
+
+      // Get users/doc/assets documents
       final assetsDocs =
           await FirebaseFirestore.instance
               .collection(LNDCollections.users.name)
@@ -56,8 +58,31 @@ class YourListingController extends GetxController with AuthMixin {
               .get();
 
       if (assetsDocs.docs.isNotEmpty) {
-        final assetsList =
-            assetsDocs.docs.map((e) => SimpleAsset.fromMap(e.data())).toList();
+        final List<SimpleAsset> assetsList = [];
+
+        for (var doc in assetsDocs.docs) {
+          // Get assets/doc/bookings documents
+          final bookingsDocs =
+              await FirebaseFirestore.instance
+                  .collection(LNDCollections.assets.name)
+                  .doc(doc.id)
+                  .collection(LNDCollections.bookings.name)
+                  .get();
+          if (bookingsDocs.docs.isNotEmpty) {
+            final List<Map<String, dynamic>> bookingsList = [];
+
+            for (var bookingDoc in bookingsDocs.docs) {
+              bookingsList.add(bookingDoc.data());
+            }
+
+            // Insert the bookings data to SimpleAsset data model
+            final assetData = doc.data();
+            assetData['bookings'] = bookingsList;
+            assetsList.add(SimpleAsset.fromMap(assetData));
+          } else {
+            assetsList.add(SimpleAsset.fromMap(doc.data()));
+          }
+        }
 
         _myAssets.assignAll(assetsList);
         _isMyAssetsLoading.value = false;

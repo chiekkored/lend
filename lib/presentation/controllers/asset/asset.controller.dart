@@ -18,7 +18,8 @@ import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
-import 'package:lend/presentation/controllers/calendar/calendar.controller.dart';
+import 'package:lend/presentation/controllers/calendar_bookings/calendar_bookings.controller.dart';
+import 'package:lend/presentation/controllers/calendar_picker/calendar_picker.controller.dart';
 import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/navigation/navigation.controller.dart';
@@ -39,7 +40,8 @@ class AssetController extends GetxController {
   final Rx<Asset?> _asset = Rx<Asset?>(Get.arguments as Asset?);
   Asset? get asset => _asset.value;
 
-  final RxList<Booking> _confirmedDates = <Booking>[].obs;
+  final RxList<Booking> _bookingDates = <Booking>[].obs;
+  List<Booking> get bookingDates => _bookingDates;
 
   final RxBool _isAssetLoading = false.obs;
   bool get isAssetLoading => _isAssetLoading.value;
@@ -140,7 +142,7 @@ class AssetController extends GetxController {
 
       final result = await bookingDocs.get();
 
-      _confirmedDates.value =
+      _bookingDates.value =
           result.docs.map((doc) => Booking.fromMap(doc.data())).toList();
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
@@ -221,9 +223,9 @@ class AssetController extends GetxController {
     LNDShow.bottomSheet(const AssetAllPricesSheet(), enableDrag: false);
   }
 
-  void goToReservation() async {
+  void goToCalendarPicker() async {
     final confirmedDates =
-        _confirmedDates
+        _bookingDates
             .where((date) => date.status == BookingStatus.confirmed.label)
             .toList();
     final datesOnly =
@@ -233,8 +235,8 @@ class AssetController extends GetxController {
             .map((timestamp) => timestamp.toDate())
             .toSet()
             .toList();
-    await LNDNavigate.toCalendarPage(
-      args: CalendarPageArgs(
+    await LNDNavigate.toCalendarPickerPage(
+      args: CalendarPickerPageArgs(
         isReadOnly: false,
         dates: datesOnly,
         rates: asset?.rates ?? Rates(),
@@ -244,20 +246,12 @@ class AssetController extends GetxController {
     );
   }
 
-  void goToViewCalendar() async {
-    final datesOnly =
-        _confirmedDates
-            .where((booking) => booking.dates?.isNotEmpty ?? false)
-            .expand((booking) => booking.dates!)
-            .map((timestamp) => timestamp.toDate())
-            .toSet()
-            .toList();
-    await LNDNavigate.toCalendarPage(
-      args: CalendarPageArgs(
+  void goToCalendarBookings() async {
+    await LNDNavigate.toCalendarBookingsPage(
+      args: CalendarBookingsPageArgs(
         isReadOnly: true,
-        dates: datesOnly,
+        bookings: _bookingDates,
         rates: Rates(),
-        onSubmit: (selectedDates, totalPrice) {},
       ),
     );
   }
@@ -322,6 +316,12 @@ class AssetController extends GetxController {
       // Create a new booking
       // For future: Separate status to another collection for source of truth
 
+      final chatsCollection = FirebaseFirestore.instance.collection(
+        LNDCollections.chats.name,
+      );
+
+      final chatsDoc = chatsCollection.doc();
+
       final booking =
           Booking(
             id: userBookingDoc.id,
@@ -329,7 +329,7 @@ class AssetController extends GetxController {
             dates: dates.map((d) => d.date).toList(),
             createdAt: Timestamp.now(),
             payment: null,
-            renterId: AuthController.instance.uid,
+            renter: ProfileController.instance.simpleUser,
             status: BookingStatus.pending.label,
             totalPrice: totalPrice,
           ).toMap();
@@ -338,12 +338,14 @@ class AssetController extends GetxController {
       batch.set(assetBookingsDoc, booking);
 
       // Create a new chat
-      final messageResult = await _createMessage(userBookingDoc.id, dates);
+      final newBatch = await _createMessage(
+        batch,
+        userBookingDoc.id,
+        chatsDoc,
+        dates,
+      );
 
-      // If message creation fails, we don't want to proceed with the booking
-      if (!messageResult) throw 'Creating chat room failed';
-
-      await batch.commit();
+      await newBatch.commit();
 
       await refreshAsset();
       await MyRentalsController.instance.getMyRentals();
@@ -358,24 +360,21 @@ class AssetController extends GetxController {
     }
   }
 
-  Future<bool> _createMessage(
+  Future<WriteBatch> _createMessage(
+    WriteBatch batch,
     String bookingDocId,
+    DocumentReference chatsDoc,
     List<Availability> bookedDates,
   ) async {
     try {
-      final batch = FirebaseFirestore.instance.batch();
       final userChatsCollection = FirebaseFirestore.instance.collection(
         LNDCollections.userChats.name,
-      );
-      final chatsCollection = FirebaseFirestore.instance.collection(
-        LNDCollections.chats.name,
       );
       const bookingString = 'Booking Confirmed';
 
       // Create a new message
 
       // Collection: chats/{randomId}
-      final chatsDoc = chatsCollection.doc();
       batch.set(chatsDoc, ChatRoot(chatType: ChatType.private.label).toMap());
 
       // Collection: chats/{randomId}/messages
@@ -446,11 +445,10 @@ class AssetController extends GetxController {
         ).toMap(),
       );
 
-      await batch.commit();
-      return true;
+      return batch;
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
-      return false;
+      return batch;
     }
   }
 

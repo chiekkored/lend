@@ -49,8 +49,50 @@ class AssetBottomNav extends GetWidget<AssetController> {
                   () => LNDButton.primary(
                     text: 'Reserve now',
                     enabled: !controller.isAssetLoading,
-                    onPressed: controller.goToReservation,
+                    onPressed: controller.goToCalendarPicker,
                   ),
+                )
+              else
+                Row(
+                  spacing: 8.0,
+                  children: [
+                    Container(
+                      height: 40.0,
+                      width: 40.0,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: LNDColors.outline,
+                      ),
+                      child: Obx(
+                        () => Badge.count(
+                          count: controller.bookingDates.length,
+                          isLabelVisible: controller.bookingDates.isNotEmpty,
+                          child: Center(
+                            child: LNDButton.icon(
+                              icon: Icons.calendar_month_rounded,
+                              size: 25.0,
+                              onPressed: controller.goToCalendarBookings,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 40.0,
+                      width: 40.0,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: LNDColors.outline,
+                      ),
+                      child: Center(
+                        child: LNDButton.icon(
+                          icon: Icons.more_vert_rounded,
+                          size: 25.0,
+                          onPressed: () {},
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
             ],
           ),
