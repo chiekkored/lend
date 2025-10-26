@@ -168,3 +168,121 @@ class Payment {
   @override
   int get hashCode => method.hashCode ^ transactionId.hashCode;
 }
+
+class AddBooking {
+  String? id;
+  AddSimpleAsset? asset;
+  Timestamp? createdAt;
+  Payment? payment;
+  SimpleUserModel? renter;
+  String? status;
+  int? totalPrice;
+  List<Timestamp>? dates;
+  AddBooking({
+    required this.id,
+    required this.asset,
+    required this.createdAt,
+    required this.payment,
+    required this.renter,
+    required this.status,
+    required this.totalPrice,
+    required this.dates,
+  });
+
+  AddBooking copyWith({
+    String? id,
+    AddSimpleAsset? asset,
+    Timestamp? createdAt,
+    Payment? payment,
+    SimpleUserModel? renter,
+    String? status,
+    int? totalPrice,
+    List<Timestamp>? dates,
+  }) {
+    return AddBooking(
+      id: id ?? this.id,
+      asset: asset ?? this.asset,
+      createdAt: createdAt ?? this.createdAt,
+      payment: payment ?? this.payment,
+      renter: renter ?? this.renter,
+      status: status ?? this.status,
+      totalPrice: totalPrice ?? this.totalPrice,
+      dates: dates ?? this.dates,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'asset': asset?.toMap(),
+      'createdAt':
+          createdAt != null
+              ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
+              : null,
+      'payment': payment?.toMap(),
+      'renter': renter?.toMap(),
+      'status': status,
+      'totalPrice': totalPrice,
+      'dates': dates?.map((x) => Timestamp(x.seconds, x.nanoseconds)).toList(),
+    };
+  }
+
+  factory AddBooking.fromMap(Map<String, dynamic> map) {
+    return AddBooking(
+      id: map['id'] != null ? map['id'] as String : null,
+      asset:
+          map['asset'] != null
+              ? AddSimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
+              : null,
+      createdAt:
+          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+      payment:
+          map['payment'] != null
+              ? Payment.fromMap(map['payment'] as Map<String, dynamic>)
+              : null,
+      renter:
+          map['renter'] != null
+              ? SimpleUserModel.fromMap(map['renter'] as Map<String, dynamic>)
+              : null,
+      status: map['status'] != null ? map['status'] as String : null,
+      totalPrice: map['totalPrice'] != null ? map['totalPrice'] as int : null,
+      dates: map['dates'] != null ? List<Timestamp>.from(map['dates']) : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory AddBooking.fromJson(String source) =>
+      AddBooking.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'AddBooking(id: $id, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates)';
+  }
+
+  @override
+  bool operator ==(covariant AddBooking other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.asset == asset &&
+        other.createdAt == createdAt &&
+        other.payment == payment &&
+        other.renter == renter &&
+        other.status == status &&
+        other.totalPrice == totalPrice &&
+        listEquals(other.dates, dates);
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        asset.hashCode ^
+        createdAt.hashCode ^
+        payment.hashCode ^
+        renter.hashCode ^
+        status.hashCode ^
+        totalPrice.hashCode ^
+        dates.hashCode;
+  }
+}

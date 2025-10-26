@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 class LNDLogger {
@@ -75,7 +77,9 @@ class LNDLogger {
     dynamic error,
     required StackTrace stackTrace,
   }) {
-    _logger.e(message, error: error, stackTrace: stackTrace);
+    String formattedError = _parseError(error);
+
+    _logger.e(message, error: formattedError, stackTrace: stackTrace);
   }
 
   /// Logs a fatal message.
@@ -122,7 +126,9 @@ class LNDLogger {
   /// [message] - The message to log.
   /// [error] (optional) - An error object to log along with the message.
   static void eNoStack(String message, {dynamic error}) {
-    _loggerNoStack.e(message, error: error);
+    String formattedError = _parseError(error);
+
+    _loggerNoStack.e(message, error: formattedError);
   }
 
   /// Logs a fatal message without including the stack trace.
@@ -130,5 +136,50 @@ class LNDLogger {
   /// [error] (optional) - An error object to log along with the message.
   static void fNoStack(String message, {dynamic error}) {
     _loggerNoStack.f(message, error: error);
+  }
+
+  /// Try to extract human-friendly error details from dynamic objects,
+  /// including Firebase/Firestore exceptions.
+  static String _parseError(dynamic error) {
+    if (error == null) return 'Unknown error';
+
+    try {
+      // Handle Firebase & Firestore exceptions
+      if (error is FirebaseException) {
+        // FirebaseException has code & message fields
+        final code = error.code;
+        final msg = error.message ?? 'No message';
+        return 'FirebaseException(code: $code, message: $msg)';
+      }
+    } catch (_) {}
+
+    // If class has a `code` / `message` but not FirebaseException,
+    // we reflectively try to get them:
+    try {
+      final dynamic maybeCode =
+          error.code; // ignore: invalid_use_of_protected_member
+      final dynamic maybeMsg = error.message;
+      if (maybeCode != null || maybeMsg != null) {
+        return 'Error(code: ${maybeCode ?? "n/a"}, message: ${maybeMsg ?? error.toString()})';
+      }
+    } catch (_) {}
+
+    // Generic fallback for Exception / Error
+    if (error is Exception || error is Error) {
+      debugPrint('HEREEEEEEE: ${error}');
+      return error.toString();
+    }
+
+    // String error
+    if (error is String) {
+      return error;
+    }
+
+    // Last-ditch fallback: stringify
+    try {
+      return error.toString();
+    } catch (_) {
+      return 'Error: ${error.runtimeType}';
+    }
   }
 }

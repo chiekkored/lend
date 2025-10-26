@@ -5,6 +5,7 @@ import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/calendar_bookings/calendar_bookings.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/extensions/string.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
 
@@ -52,6 +53,7 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                   if (isDisabled ?? false) color = LNDColors.gray;
                   if (isSelected ?? false) color = LNDColors.white;
                   final bookingColors = controller.getBookingColors(date);
+                  final isBooked = controller.checkAvailability(date);
 
                   return Container(
                     decoration: decoration,
@@ -72,10 +74,9 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                                     fontSize: 12.0,
                                     color: color,
                                     textDecoration:
-                                        // isBooked
-                                        //     ? TextDecoration.lineThrough
-                                        //     :
-                                        null,
+                                        isBooked
+                                            ? TextDecoration.lineThrough
+                                            : null,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -154,6 +155,9 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                       end: booking.dates?.last.toDate(),
                     );
 
+                    final isPending =
+                        booking.status == BookingStatus.pending.label;
+
                     return ListTile(
                       dense: true,
                       leading: CircleAvatar(
@@ -164,7 +168,7 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                         text: booking.renter?.getName ?? 'Unknown user',
                       ),
                       subtitle: LNDText.regular(
-                        text: dates,
+                        text: '$dates • ${booking.status}',
                         fontSize: 12.0,
                         color: LNDColors.hint,
                       ),
@@ -188,20 +192,23 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                               ),
                             ),
                           ),
-                          Container(
-                            height: 40.0,
-                            width: 40.0,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: LNDColors.outline,
-                            ),
-                            child: Center(
-                              child: LNDButton.icon(
-                                icon: Icons.check_circle_rounded,
-                                color: LNDColors.success,
-                                size: 25.0,
-                                onPressed:
-                                    () => controller.onTapBooking(booking),
+                          Visibility(
+                            visible: isPending,
+                            child: Container(
+                              height: 40.0,
+                              width: 40.0,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: LNDColors.outline,
+                              ),
+                              child: Center(
+                                child: LNDButton.icon(
+                                  icon: Icons.check_circle_rounded,
+                                  color: LNDColors.success,
+                                  size: 25.0,
+                                  onPressed:
+                                      () => controller.onTapBooking(booking),
+                                ),
                               ),
                             ),
                           ),

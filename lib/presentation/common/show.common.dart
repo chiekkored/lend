@@ -69,7 +69,7 @@ class LNDShow {
                 CupertinoDialogAction(
                   onPressed: () {
                     onCancel?.call();
-                    Get.back();
+                    Get.back(result: false);
                   },
                   child: Text(
                     cancelText,
@@ -79,7 +79,7 @@ class LNDShow {
                 CupertinoDialogAction(
                   onPressed: () {
                     onConfirm?.call();
-                    Get.back();
+                    Get.back(result: true);
                   },
                   isDefaultAction: true,
                   child: Text(
@@ -115,7 +115,7 @@ class LNDShow {
                   },
                   child: Text(
                     confirmText,
-                    style: TextStyle(color: confirmColor),
+                    style: TextStyle(color: confirmColor ?? LNDColors.black),
                   ),
                 ),
               ],

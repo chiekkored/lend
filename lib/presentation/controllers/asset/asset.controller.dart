@@ -323,9 +323,9 @@ class AssetController extends GetxController {
       final chatsDoc = chatsCollection.doc();
 
       final booking =
-          Booking(
+          AddBooking(
             id: userBookingDoc.id,
-            asset: SimpleAsset.fromMap(asset!.toMap()),
+            asset: AddSimpleAsset.fromMap(asset!.toMap()),
             dates: dates.map((d) => d.date).toList(),
             createdAt: Timestamp.now(),
             payment: null,
