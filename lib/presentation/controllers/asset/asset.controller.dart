@@ -226,7 +226,7 @@ class AssetController extends GetxController {
   void goToCalendarPicker() async {
     final confirmedDates =
         _bookingDates
-            .where((date) => date.status == BookingStatus.confirmed.label)
+            .where((date) => date.status == BookingStatus.confirmed)
             .toList();
     final datesOnly =
         confirmedDates
@@ -401,23 +401,20 @@ class AssetController extends GetxController {
       final userChatsSubChatDoc = userChatsDoc
           .collection(LNDCollections.chats.name)
           .doc(chatsDoc.id);
-      batch.set(
-        userChatsSubChatDoc,
-        Chat(
-          id: chatsDoc.id,
-          chatId: chatsDoc.id,
-          bookingId: bookingDocId,
-          renterId: AuthController.instance.uid,
-          asset: SimpleAsset.fromMap(asset!.toMap()),
-          participants: [asset!.owner!, ProfileController.instance.simpleUser],
-          lastMessage: bookingString,
-          lastMessageDate: Timestamp.now(),
-          lastMessageSenderId: asset!.ownerId,
-          availabilities: bookedDates,
-          createdAt: Timestamp.now(),
-          hasRead: false,
-        ).toMap(),
+      final chatObject = Chat(
+        id: chatsDoc.id,
+        chatId: chatsDoc.id,
+        bookingId: bookingDocId,
+        renterId: AuthController.instance.uid,
+        asset: SimpleAsset.fromMap(asset!.toMap()),
+        participants: [asset!.owner!, ProfileController.instance.simpleUser],
+        lastMessage: bookingString,
+        lastMessageDate: Timestamp.now(),
+        lastMessageSenderId: asset!.ownerId,
+        createdAt: Timestamp.now(),
+        hasRead: false,
       );
+      batch.set(userChatsSubChatDoc, chatObject.toMap());
 
       // For asset owner
       // Collection: userChats/{userId}
@@ -427,23 +424,7 @@ class AssetController extends GetxController {
       final assetOwnerSubChatDoc = assetOwnerDoc
           .collection(LNDCollections.chats.name)
           .doc(chatsDoc.id);
-      batch.set(
-        assetOwnerSubChatDoc,
-        Chat(
-          id: chatsDoc.id,
-          chatId: chatsDoc.id,
-          bookingId: bookingDocId,
-          renterId: AuthController.instance.uid,
-          asset: SimpleAsset.fromMap(asset!.toMap()),
-          participants: [asset!.owner!, ProfileController.instance.simpleUser],
-          lastMessage: bookingString,
-          lastMessageDate: Timestamp.now(),
-          lastMessageSenderId: asset!.ownerId,
-          availabilities: bookedDates,
-          createdAt: Timestamp.now(),
-          hasRead: false,
-        ).toMap(),
-      );
+      batch.set(assetOwnerSubChatDoc, chatObject.toMap());
 
       return batch;
     } catch (e, st) {

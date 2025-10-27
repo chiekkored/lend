@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 class LNDLogger {
@@ -166,7 +165,6 @@ class LNDLogger {
 
     // Generic fallback for Exception / Error
     if (error is Exception || error is Error) {
-      debugPrint('HEREEEEEEE: ${error}');
       return error.toString();
     }
 

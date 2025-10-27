@@ -8,6 +8,10 @@ import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/core/models/message.model.dart';
 import 'package:lend/core/models/simple_user.model.dart';
+import 'package:lend/core/services/booking.service.dart';
+import 'package:lend/presentation/common/loading.common.dart';
+import 'package:lend/presentation/common/show.common.dart';
+import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/message_type.enum.dart';
@@ -22,7 +26,8 @@ class ChatController extends GetxController {
 
   final TextEditingController textController = TextEditingController();
 
-  final Rx<Booking?> booking = Rx<Booking?>(null);
+  final Rx<Booking?> _booking = Rx<Booking?>(null);
+  Booking? get booking => _booking.value;
 
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
@@ -35,7 +40,7 @@ class ChatController extends GetxController {
 
   @override
   void onClose() {
-    booking.close();
+    _booking.close();
     textController.dispose();
     _messagesSubscription?.cancel();
     _isLoading.close();
@@ -54,7 +59,7 @@ class ChatController extends GetxController {
     _messagesSubscription?.cancel();
   }
 
-  void _getBooking() async {
+  Future<void> _getBooking() async {
     final bookingDoc =
         await _firestore
             .collection(LNDCollections.users.name)
@@ -67,7 +72,7 @@ class ChatController extends GetxController {
       final bookingData = bookingDoc.data();
 
       if (bookingData != null) {
-        booking.value = Booking.fromMap(bookingData);
+        _booking.value = Booking.fromMap(bookingData);
       }
     }
   }
@@ -153,6 +158,40 @@ class ChatController extends GetxController {
         error: e,
         stackTrace: st,
       );
+    }
+  }
+
+  void onTapAccept() async {
+    if (booking == null) return;
+
+    final result = await LNDShow.alertDialog<bool?>(
+      title: 'Accept this booking?',
+      content:
+          'Are you sure you want to accept this booking request? '
+          'All other pending bookings for the same day will be declined.',
+    );
+
+    if (result == null || !result) return;
+
+    try {
+      LNDLoading.show();
+
+      final result = await BookingService.acceptBooking(booking!);
+
+      result.fold(
+        ifLeft: (response) async {
+          await _getBooking();
+          LNDLoading.hide();
+          // Get.back();
+        },
+        ifRight: (error) {
+          throw error;
+        },
+      );
+    } catch (e, st) {
+      LNDLoading.hide();
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
+      LNDSnackbar.showError(e.toString());
     }
   }
 

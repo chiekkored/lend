@@ -155,8 +155,7 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                       end: booking.dates?.last.toDate(),
                     );
 
-                    final isPending =
-                        booking.status == BookingStatus.pending.label;
+                    final isPending = booking.status == BookingStatus.pending;
 
                     return ListTile(
                       dense: true,

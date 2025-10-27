@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/core/models/simple_user.model.dart';
+import 'package:lend/utilities/enums/booking_status.enum.dart';
 
 class Booking {
   String? id;
@@ -13,7 +14,7 @@ class Booking {
   Timestamp? createdAt;
   Payment? payment;
   SimpleUserModel? renter;
-  String? status;
+  BookingStatus? status;
   int? totalPrice;
   List<Timestamp>? dates;
   Booking({
@@ -33,7 +34,7 @@ class Booking {
     Timestamp? createdAt,
     Payment? payment,
     SimpleUserModel? renter,
-    String? status,
+    BookingStatus? status,
     int? totalPrice,
     List<Timestamp>? dates,
   }) {
@@ -59,7 +60,7 @@ class Booking {
               : null,
       'payment': payment?.toMap(),
       'renter': renter?.toMap(),
-      'status': status,
+      'status': status?.label,
       'totalPrice': totalPrice,
       'dates': dates?.map((x) => Timestamp(x.seconds, x.nanoseconds)).toList(),
     };
@@ -82,7 +83,10 @@ class Booking {
           map['renter'] != null
               ? SimpleUserModel.fromMap(map['renter'] as Map<String, dynamic>)
               : null,
-      status: map['status'] != null ? map['status'] as String : null,
+      status:
+          map['status'] != null
+              ? BookingStatus.fromString(map['status'])
+              : null,
       totalPrice: map['totalPrice'] != null ? map['totalPrice'] as int : null,
       dates: map['dates'] != null ? List<Timestamp>.from(map['dates']) : null,
     );

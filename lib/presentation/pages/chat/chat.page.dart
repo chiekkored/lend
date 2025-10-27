@@ -9,6 +9,7 @@ import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/chat/chat.controller.dart';
 import 'package:lend/presentation/pages/chat/widgets/chat_list.widget.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
@@ -42,116 +43,110 @@ class ChatPage extends GetView<ChatController> {
     );
   }
 
-  Widget _buildBottomAppbar(Chat chat, bool isOwner, double extraHeight) {
-    return GestureDetector(
-      onTap: controller.goToAsset,
-      child: ColoredBox(
-        color: LNDColors.outline,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-          child: Column(
-            children: [
-              Row(
+  Widget _buildBottomAppbar(Chat chat) {
+    final isOwner = chat.asset?.ownerId == AuthController.instance.uid;
+
+    return SizedBox(
+      child: Obx(() {
+        if (controller.booking != null) {
+          final booking = controller.booking;
+
+          return GestureDetector(
+            onTap: controller.goToAsset,
+            child: Container(
+              color: LNDColors.outline,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 8.0,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  LNDImage.square(
-                    imageUrl: chat.asset?.images?.first,
-                    size: 40.0,
-                  ),
                   Column(
+                    spacing: 4.0,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      LNDText.medium(text: chat.asset?.title ?? ''),
-                      Obx(
-                        () =>
-                            controller.booking.value == null
-                                ? LNDText.regular(
-                                  text: LNDUtils.getDateRange(
-                                    start:
-                                        chat.availabilities?.first.date
-                                            .toDate(),
-                                    end:
-                                        chat.availabilities?.last.date.toDate(),
-                                  ),
-                                  fontSize: 12.0,
-                                  color: LNDColors.gray,
-                                )
-                                : LNDText.regular(
-                                  text: LNDUtils.getDateRange(
-                                    start:
-                                        chat.availabilities?.first.date
-                                            .toDate(),
-                                    end:
-                                        chat.availabilities?.last.date.toDate(),
-                                  ),
-                                  fontSize: 12.0,
-                                  color: LNDColors.gray,
-                                  textParts: [
-                                    LNDText.regular(
-                                      text: ' • ',
-                                      color: LNDColors.gray,
-                                      fontSize: 12.0,
-                                    ),
-                                    isOwner
-                                        ? LNDText.bold(
-                                          text:
-                                              '₱${controller.booking.value?.totalPrice.toMoney()}',
-                                          fontSize: 12.0,
-                                        )
-                                        : LNDText.bold(
-                                          text:
-                                              controller
-                                                  .booking
-                                                  .value
-                                                  ?.status ??
-                                              '',
-                                          color: LNDColors.primary,
-                                          fontSize: 12.0,
-                                        ),
-                                  ],
-                                ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 4.0,
+                        children: [
+                          CircleAvatar(
+                            radius: 6.0,
+                            backgroundColor:
+                                booking?.status == BookingStatus.pending
+                                    ? Colors.orangeAccent
+                                    : LNDColors.success,
+                          ),
+                          LNDText.regular(
+                            text: booking?.status?.label.capitalizeFirst ?? '',
+                            fontSize: 12.0,
+                          ),
+                        ],
                       ),
+                      Row(
+                        children: [
+                          LNDImage.square(
+                            imageUrl: chat.asset?.images?.first,
+                            size: 40.0,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              LNDText.medium(text: chat.asset?.title ?? ''),
+                              LNDText.regular(
+                                text: LNDUtils.getDateRange(
+                                  start: booking?.dates?.first.toDate(),
+                                  end: booking?.dates?.last.toDate(),
+                                ),
+                                fontSize: 12.0,
+                                color: LNDColors.gray,
+                                textParts: [
+                                  LNDText.regular(
+                                    text: ' • ',
+                                    color: LNDColors.gray,
+                                    fontSize: 12.0,
+                                  ),
+                                  LNDText.bold(
+                                    text:
+                                        '₱${controller.booking?.totalPrice.toMoney()}',
+                                    fontSize: 12.0,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ).withSpacing(8.0),
                     ],
                   ),
+                  const Spacer(),
+                  Visibility(
+                    visible:
+                        isOwner && booking?.status == BookingStatus.pending,
+                    child: LNDButton.primary(
+                      text: 'Accept',
+                      enabled: true,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2.0,
+                        horizontal: 8.0,
+                      ),
+                      onPressed: controller.onTapAccept,
+                    ),
+                  ),
                 ],
-              ).withSpacing(8.0),
-              if (isOwner)
-                Container(
-                  height: extraHeight,
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: LNDButton.secondary(
-                          text: 'Decline',
-                          enabled: true,
-                          textColor: LNDColors.danger,
-                          hasPadding: false,
-                          onPressed: () {},
-                        ),
-                      ),
-                      Expanded(
-                        child: LNDButton.primary(
-                          text: 'Accept',
-                          enabled: true,
-                          hasPadding: false,
-                          onPressed: () {},
-                        ),
-                      ),
-                    ],
-                  ).withSpacing(12.0),
-                ),
-            ],
-          ),
-        ),
-      ),
+              ),
+            ),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      }),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final chat = controller.chat;
-    final isOwner = chat.renterId != AuthController.instance.uid;
-    final extraHeight = isOwner ? 45.0 : 0.0;
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -179,8 +174,8 @@ class ChatPage extends GetView<ChatController> {
             ).withSpacing(8.0),
           ],
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(55.0 + extraHeight),
-            child: _buildBottomAppbar(chat, isOwner, extraHeight),
+            preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+            child: _buildBottomAppbar(chat),
           ),
         ),
         body: SafeArea(

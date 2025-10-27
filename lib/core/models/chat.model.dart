@@ -15,7 +15,6 @@ class Chat {
   String? renterId;
   SimpleAsset? asset;
   List<SimpleUserModel>? participants;
-  List<Availability>? availabilities;
   String? lastMessage;
   Timestamp? lastMessageDate;
   String? lastMessageSenderId;
@@ -28,7 +27,6 @@ class Chat {
     this.renterId,
     this.asset,
     this.participants,
-    this.availabilities,
     this.lastMessage,
     this.lastMessageDate,
     this.lastMessageSenderId,
@@ -57,7 +55,6 @@ class Chat {
       renterId: renterId ?? this.renterId,
       asset: asset ?? this.asset,
       participants: participants ?? this.participants,
-      availabilities: availabilities ?? this.availabilities,
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageDate: lastMessageDate ?? this.lastMessageDate,
       lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
@@ -74,7 +71,6 @@ class Chat {
       'renterId': renterId,
       'asset': asset?.toMap(),
       'participants': participants?.map((x) => x.toMap()).toList(),
-      'availabilities': availabilities?.map((x) => x.toMap()).toList(),
       'lastMessage': lastMessage,
       'lastMessageDate':
           lastMessageDate != null
@@ -110,14 +106,6 @@ class Chat {
                 ),
               )
               : null,
-      availabilities:
-          map['availabilities'] != null
-              ? List<Availability>.from(
-                (map['availabilities']).map<Availability?>(
-                  (x) => Availability.fromMap(x as Map<String, dynamic>),
-                ),
-              )
-              : null,
       lastMessage:
           map['lastMessage'] != null ? map['lastMessage'] as String : null,
       lastMessageDate:
@@ -141,7 +129,7 @@ class Chat {
 
   @override
   String toString() {
-    return 'Chat(id: $id, chatId: $chatId, bookingId: $bookingId, renterId: $renterId, asset: $asset, participants: $participants, availabilities: $availabilities, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
+    return 'Chat(id: $id, chatId: $chatId, bookingId: $bookingId, renterId: $renterId, asset: $asset, participants: $participants, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
   }
 
   @override
@@ -154,7 +142,6 @@ class Chat {
         other.renterId == renterId &&
         other.asset == asset &&
         listEquals(other.participants, participants) &&
-        listEquals(other.availabilities, availabilities) &&
         other.lastMessage == lastMessage &&
         other.lastMessageDate == lastMessageDate &&
         other.lastMessageSenderId == lastMessageSenderId &&
@@ -170,7 +157,6 @@ class Chat {
         renterId.hashCode ^
         asset.hashCode ^
         participants.hashCode ^
-        availabilities.hashCode ^
         lastMessage.hashCode ^
         lastMessageDate.hashCode ^
         lastMessageSenderId.hashCode ^

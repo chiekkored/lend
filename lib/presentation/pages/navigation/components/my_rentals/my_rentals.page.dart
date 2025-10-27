@@ -10,6 +10,7 @@ import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/navigation/components/my_rentals/widgets/my_rentals_appbar.widget.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/enums/eligibility.enum.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
@@ -136,12 +137,12 @@ class MyRentalsPage extends GetView<MyRentalsController> {
               CircleAvatar(
                 radius: 6.0,
                 backgroundColor:
-                    rentals.status == 'Pending'
+                    rentals.status == BookingStatus.pending
                         ? Colors.orangeAccent
                         : LNDColors.success,
               ),
               LNDText.regular(
-                text: rentals.status?.capitalizeFirst ?? '',
+                text: rentals.status?.label.capitalizeFirst ?? '',
                 fontSize: 12.0,
               ),
             ],

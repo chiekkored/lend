@@ -1,16 +1,15 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/rates.model.dart';
+import 'package:lend/core/services/booking.service.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/asset/asset.controller.dart';
 import 'package:lend/presentation/controllers/messages/messages.controller.dart';
-import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
@@ -117,8 +116,7 @@ class CalendarBookingsController extends GetxController {
     for (var booking in args.bookings) {
       for (var bookedDate in booking.dates ?? []) {
         if (bookedDate.toDate().isAtSameMomentAs(date)) {
-          if (booking.status == BookingStatus.confirmed.label ||
-              booking.status == BookingStatus.pending.label) {
+          if (booking.status == BookingStatus.confirmed) {
             return true;
           }
         }
@@ -152,101 +150,28 @@ class CalendarBookingsController extends GetxController {
 
     if (result == null || !result) return;
 
-    const E1 = 'Selected booking does not exist';
-    const E2 = 'This booking is no longer available for confirmation';
-
     try {
       LNDLoading.show();
 
-      final db = FirebaseFirestore.instance;
-      final asset = AssetController.instance.asset;
+      final result = await BookingService.acceptBooking(booking);
 
-      await db.runTransaction((transaction) async {
-        final selectedRef = db
-            .collection(LNDCollections.assets.name)
-            .doc(asset?.id)
-            .collection(LNDCollections.bookings.name)
-            .doc(booking.id);
-
-        final selectedUserRef = db
-            .collection(LNDCollections.users.name)
-            .doc(booking.renter?.uid)
-            .collection(LNDCollections.bookings.name)
-            .doc(booking.id);
-
-        // --- READ SELECTED ---
-        final selectedSnap = await transaction.get(selectedRef);
-        if (!selectedSnap.exists) throw E1;
-
-        final selectedBooking = Booking.fromMap(selectedSnap.data()!);
-        if (selectedBooking.status != BookingStatus.pending.label) {
-          throw E2;
-        }
-
-        // --- PREPARE OTHER READS ---
-        final otherRefs =
-            selectedDayBookings
-                .where((b) => b.booking.id != booking.id)
-                .map(
-                  (b) => (
-                    assetRef: db
-                        .collection(LNDCollections.assets.name)
-                        .doc(asset?.id)
-                        .collection(LNDCollections.bookings.name)
-                        .doc(b.booking.id),
-                    userRef: db
-                        .collection(LNDCollections.users.name)
-                        .doc(b.booking.renter?.uid)
-                        .collection(LNDCollections.bookings.name)
-                        .doc(b.booking.id),
-                  ),
-                )
-                .toList();
-
-        // --- READ ALL OTHERS BEFORE ANY WRITE ---
-        final otherSnaps = await Future.wait(
-          otherRefs.map((pair) => transaction.get(pair.assetRef)),
-        );
-
-        // --- WRITE PHASE STARTS HERE ---
-
-        // Confirm selected
-        transaction.update(selectedRef, {
-          'status': BookingStatus.confirmed.label,
-        });
-        transaction.update(selectedUserRef, {
-          'status': BookingStatus.confirmed.label,
-        });
-
-        // Decline only pending others
-        for (var i = 0; i < otherRefs.length; i++) {
-          final data = otherSnaps[i].data();
-          if (data == null) continue;
-
-          final b = Booking.fromMap(data);
-          if (b.status == BookingStatus.pending.label) {
-            transaction.update(otherRefs[i].assetRef, {
-              'status': BookingStatus.declined.label,
-            });
-            transaction.update(otherRefs[i].userRef, {
-              'status': BookingStatus.declined.label,
-            });
-          }
-        }
-      });
-
-      await AssetController.instance.getBookings();
-      update();
-      LNDLoading.hide();
+      result.fold(
+        ifLeft: (response) async {
+          await AssetController.instance.getBookings();
+          update();
+          LNDLoading.hide();
+        },
+        ifRight: (error) {
+          throw error;
+        },
+      );
     } catch (e, st) {
       LNDLoading.hide();
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
-      if (e == E1 || e == E2) {
+      if (Get.isRegistered<AssetController>()) {
         AssetController.instance.getBookings();
-        LNDSnackbar.showError(e.toString());
-        return;
       }
-      LNDSnackbar.showError('Something went wrong');
+      LNDSnackbar.showError(e.toString());
     }
   }
 }

@@ -22,6 +22,7 @@ class LNDButton extends StatelessWidget {
   final Widget? child;
   final bool isBold;
   final double? borderRadius;
+  final EdgeInsets? padding;
 
   const LNDButton._({
     required this.text,
@@ -40,6 +41,7 @@ class LNDButton extends StatelessWidget {
     this.child,
     this.isBold = false,
     this.borderRadius = 32.0,
+    this.padding,
   });
 
   factory LNDButton.primary({
@@ -49,6 +51,7 @@ class LNDButton extends StatelessWidget {
     Color textColor = LNDColors.white,
     bool isLoading = false,
     bool hasPadding = true,
+    EdgeInsets? padding,
   }) {
     return LNDButton._(
       text: text,
@@ -58,6 +61,7 @@ class LNDButton extends StatelessWidget {
       textColor: textColor,
       isLoading: isLoading,
       hasPadding: hasPadding,
+      padding: padding,
     );
   }
 
@@ -69,6 +73,7 @@ class LNDButton extends StatelessWidget {
     Color textColor = LNDColors.black,
     bool isLoading = false,
     bool hasPadding = true,
+    EdgeInsets? padding,
   }) {
     return LNDButton._(
       text: text,
@@ -78,6 +83,7 @@ class LNDButton extends StatelessWidget {
       textColor: textColor,
       isLoading: isLoading,
       hasPadding: hasPadding,
+      padding: padding,
     );
   }
 
@@ -111,6 +117,7 @@ class LNDButton extends StatelessWidget {
     bool isLoading = false,
     ButtonStyle? style,
     bool hasPadding = true,
+    EdgeInsets? padding,
   }) {
     return LNDButton._(
       text: text,
@@ -121,6 +128,7 @@ class LNDButton extends StatelessWidget {
       textColor: textColor,
       style: style,
       hasPadding: hasPadding,
+      padding: padding,
     );
   }
 
@@ -286,6 +294,7 @@ class LNDButton extends StatelessWidget {
         style:
             style ??
             OutlinedButton.styleFrom(
+              padding: hasPadding ? padding : EdgeInsets.zero,
               side: BorderSide.none,
               backgroundColor: enabled ? color : color.withValues(alpha: 0.5),
               shape:
@@ -297,7 +306,8 @@ class LNDButton extends StatelessWidget {
         child:
             hasPadding
                 ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 18.0),
+                  padding:
+                      padding ?? const EdgeInsets.symmetric(vertical: 18.0),
                   child: Center(child: childContent),
                 )
                 : Center(child: childContent),
