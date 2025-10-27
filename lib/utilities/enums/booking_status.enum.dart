@@ -10,7 +10,7 @@ enum BookingStatus {
   static BookingStatus fromString(String value) {
     return BookingStatus.values.firstWhere(
       (e) => e.label.toLowerCase() == value.toLowerCase(),
-      orElse: () => BookingStatus.pending, // fallback
+      orElse: () => BookingStatus.pending,
     );
   }
 }

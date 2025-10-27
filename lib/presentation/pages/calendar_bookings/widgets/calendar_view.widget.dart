@@ -6,6 +6,7 @@ import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/calendar_bookings/calendar_bookings.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
+import 'package:lend/utilities/extensions/bookingStatus.extension.dart';
 import 'package:lend/utilities/extensions/string.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
 
@@ -37,10 +38,6 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                   alpha: 0.3,
                 ),
                 daySplashColor: LNDColors.primary.withValues(alpha: 0.5),
-                // selectableDayPredicate:
-                //     (day) =>
-                //         controller.checkAvailability(day) &&
-                //         !controller.args.isReadOnly,
                 dayBuilder: ({
                   required date,
                   decoration,
@@ -167,9 +164,17 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                         text: booking.renter?.getName ?? 'Unknown user',
                       ),
                       subtitle: LNDText.regular(
-                        text: '$dates • ${booking.status}',
+                        text: dates,
                         fontSize: 12.0,
                         color: LNDColors.hint,
+                        textParts: [
+                          LNDText.regular(text: ' • ', color: LNDColors.hint),
+                          LNDText.regular(
+                            text: booking.status?.label ?? '',
+                            fontSize: 12.0,
+                            color: booking.status?.color ?? LNDColors.hint,
+                          ),
+                        ],
                       ),
                       trailing: Row(
                         spacing: 4.0,

@@ -42,6 +42,14 @@ class AssetController extends GetxController {
 
   final RxList<Booking> _bookingDates = <Booking>[].obs;
   List<Booking> get bookingDates => _bookingDates;
+  List<Booking> get confirmedBookingDates =>
+      _bookingDates
+          .where((date) => date.status == BookingStatus.confirmed)
+          .toList();
+  List<Booking> get pendingBookingDates =>
+      _bookingDates
+          .where((date) => date.status == BookingStatus.pending)
+          .toList();
 
   final RxBool _isAssetLoading = false.obs;
   bool get isAssetLoading => _isAssetLoading.value;
@@ -224,12 +232,8 @@ class AssetController extends GetxController {
   }
 
   void goToCalendarPicker() async {
-    final confirmedDates =
-        _bookingDates
-            .where((date) => date.status == BookingStatus.confirmed)
-            .toList();
     final datesOnly =
-        confirmedDates
+        confirmedBookingDates
             .where((booking) => booking.dates?.isNotEmpty ?? false)
             .expand((booking) => booking.dates!)
             .map((timestamp) => timestamp.toDate())

@@ -10,6 +10,7 @@ import 'package:lend/presentation/controllers/chat/chat.controller.dart';
 import 'package:lend/presentation/pages/chat/widgets/chat_list.widget.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
+import 'package:lend/utilities/extensions/bookingStatus.extension.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
@@ -72,10 +73,7 @@ class ChatPage extends GetView<ChatController> {
                         children: [
                           CircleAvatar(
                             radius: 6.0,
-                            backgroundColor:
-                                booking?.status == BookingStatus.pending
-                                    ? Colors.orangeAccent
-                                    : LNDColors.success,
+                            backgroundColor: booking?.status?.color,
                           ),
                           LNDText.regular(
                             text: booking?.status?.label.capitalizeFirst ?? '',

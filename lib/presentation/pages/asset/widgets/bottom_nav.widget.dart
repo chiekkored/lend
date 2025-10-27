@@ -65,8 +65,9 @@ class AssetBottomNav extends GetWidget<AssetController> {
                       ),
                       child: Obx(
                         () => Badge.count(
-                          count: controller.bookingDates.length,
-                          isLabelVisible: controller.bookingDates.isNotEmpty,
+                          count: controller.pendingBookingDates.length,
+                          isLabelVisible:
+                              controller.pendingBookingDates.isNotEmpty,
                           child: Center(
                             child: LNDButton.icon(
                               icon: Icons.calendar_month_rounded,
