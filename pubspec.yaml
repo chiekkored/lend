@@ -43,6 +43,7 @@ dependencies:
   gal: ^2.3.1
   image_picker: ^1.1.2
   dart_either: ^2.0.0
+  timeago: ^3.7.1
 
   # UI Components
   calendar_date_picker2: ^1.1.9

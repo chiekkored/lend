@@ -61,7 +61,9 @@ class CalendarBookingsController extends GetxController {
 
     return _coloredBookings.where((colored) {
       return colored.booking.dates?.any(
-            (d) => d.toDate().isAtSameMomentAs(selectedDate!),
+            (d) =>
+                d.toDate().isAtSameMomentAs(selectedDate!) &&
+                colored.booking.status == BookingStatus.pending,
           ) ??
           false;
     }).toList();
@@ -103,7 +105,8 @@ class CalendarBookingsController extends GetxController {
       final color = colored.color;
 
       booking.dates?.forEach((bookedDate) {
-        if (bookedDate.toDate().isAtSameMomentAs(date)) {
+        if (bookedDate.toDate().isAtSameMomentAs(date) &&
+            booking.status == BookingStatus.pending) {
           colors.add(color);
         }
       });

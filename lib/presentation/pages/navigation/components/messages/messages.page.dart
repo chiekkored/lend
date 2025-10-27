@@ -186,8 +186,7 @@ class MessagesPage extends GetView<MessagesController> {
                     ),
                   ),
                   additionalInfo: LNDText.regular(
-                    text:
-                        chat.lastMessageDate?.toFormattedStringTimeOnly() ?? '',
+                    text: chat.lastMessageDate?.toTimeAgo() ?? '',
                     fontSize: 12.0,
                     color: LNDColors.hint,
                   ),

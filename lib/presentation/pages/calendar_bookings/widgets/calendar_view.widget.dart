@@ -135,70 +135,53 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                     ),
                   );
                 }
-                return ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: controller.selectedDayBookings.length,
-                  separatorBuilder:
-                      (_, _) => const Divider(color: LNDColors.outline),
-                  itemBuilder: (_, index) {
-                    final coloredBooking =
-                        controller.selectedDayBookings[index];
+                return Expanded(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: controller.selectedDayBookings.length,
+                    separatorBuilder:
+                        (_, _) => const Divider(color: LNDColors.outline),
+                    itemBuilder: (_, index) {
+                      final coloredBooking =
+                          controller.selectedDayBookings[index];
 
-                    final booking = coloredBooking.booking;
-                    final color = coloredBooking.color;
+                      final booking = coloredBooking.booking;
+                      final color = coloredBooking.color;
 
-                    final dates = LNDUtils.getDateRange(
-                      start: booking.dates?.first.toDate(),
-                      end: booking.dates?.last.toDate(),
-                    );
+                      final dates = LNDUtils.getDateRange(
+                        start: booking.dates?.first.toDate(),
+                        end: booking.dates?.last.toDate(),
+                      );
 
-                    final isPending = booking.status == BookingStatus.pending;
+                      final isPending = booking.status == BookingStatus.pending;
 
-                    return ListTile(
-                      dense: true,
-                      leading: CircleAvatar(
-                        backgroundColor: color,
-                        radius: 10.0,
-                      ),
-                      title: LNDText.medium(
-                        text: booking.renter?.getName ?? 'Unknown user',
-                      ),
-                      subtitle: LNDText.regular(
-                        text: dates,
-                        fontSize: 12.0,
-                        color: LNDColors.hint,
-                        textParts: [
-                          LNDText.regular(text: ' • ', color: LNDColors.hint),
-                          LNDText.regular(
-                            text: booking.status?.label ?? '',
-                            fontSize: 12.0,
-                            color: booking.status?.color ?? LNDColors.hint,
-                          ),
-                        ],
-                      ),
-                      trailing: Row(
-                        spacing: 4.0,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            height: 40.0,
-                            width: 40.0,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: LNDColors.outline,
+                      return ListTile(
+                        dense: true,
+                        leading: CircleAvatar(
+                          backgroundColor: color,
+                          radius: 10.0,
+                        ),
+                        title: LNDText.medium(
+                          text: booking.renter?.getName ?? 'Unknown user',
+                        ),
+                        subtitle: LNDText.regular(
+                          text: dates,
+                          fontSize: 12.0,
+                          color: LNDColors.hint,
+                          textParts: [
+                            LNDText.regular(text: ' • ', color: LNDColors.hint),
+                            LNDText.regular(
+                              text: booking.status?.label ?? '',
+                              fontSize: 12.0,
+                              color: booking.status?.color ?? LNDColors.hint,
                             ),
-                            child: Center(
-                              child: LNDButton.icon(
-                                icon: Icons.inbox_rounded,
-                                size: 25.0,
-                                onPressed:
-                                    () => controller.onTapGoToChat(booking),
-                              ),
-                            ),
-                          ),
-                          Visibility(
-                            visible: isPending,
-                            child: Container(
+                          ],
+                        ),
+                        trailing: Row(
+                          spacing: 4.0,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
                               height: 40.0,
                               width: 40.0,
                               decoration: const BoxDecoration(
@@ -207,19 +190,38 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                               ),
                               child: Center(
                                 child: LNDButton.icon(
-                                  icon: Icons.check_circle_rounded,
-                                  color: LNDColors.success,
+                                  icon: Icons.inbox_rounded,
                                   size: 25.0,
                                   onPressed:
-                                      () => controller.onTapBooking(booking),
+                                      () => controller.onTapGoToChat(booking),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                            Visibility(
+                              visible: isPending,
+                              child: Container(
+                                height: 40.0,
+                                width: 40.0,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: LNDColors.outline,
+                                ),
+                                child: Center(
+                                  child: LNDButton.icon(
+                                    icon: Icons.check_circle_rounded,
+                                    color: LNDColors.success,
+                                    size: 25.0,
+                                    onPressed:
+                                        () => controller.onTapBooking(booking),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 );
               }),
             ],
