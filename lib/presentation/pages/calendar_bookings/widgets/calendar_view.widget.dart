@@ -78,7 +78,7 @@ class CalendarView extends GetWidget<CalendarBookingsController> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children:
-                                        bookingColors.map((color) {
+                                        bookingColors.reversed.map((color) {
                                           return Container(
                                             margin: const EdgeInsets.symmetric(
                                               horizontal: 1,

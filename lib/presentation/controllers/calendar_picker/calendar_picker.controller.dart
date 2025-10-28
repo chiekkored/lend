@@ -28,10 +28,14 @@ class CalendarPickerController extends GetxController {
   final RxInt _totalPrice = 0.obs;
   int get totalPrice => _totalPrice.value;
 
+  final RxInt _totalDays = 0.obs;
+  int get totalDays => _totalDays.value;
+
   @override
   void onClose() {
     _selectedDates.close();
     _totalPrice.close();
+    _totalDays.close();
 
     super.onClose();
   }
@@ -48,7 +52,7 @@ class CalendarPickerController extends GetxController {
     }
 
     if (args.dates.any(
-      (av) => !av.isBefore(dates.first) && !av.isAfter(dates.last),
+      (av) => !av.isBefore(dates.last) && !av.isAfter(dates.first),
     )) {
       _selectedDates.value = [dates.last];
     } else {
@@ -76,7 +80,7 @@ class CalendarPickerController extends GetxController {
       int totalPrice = 0;
       DateTime startDate = selectedDates.first;
       DateTime endDate = selectedDates.last;
-      int totalDays = endDate.difference(startDate).inDays;
+      _totalDays.value = endDate.difference(startDate).inDays;
 
       if (args.rates.annually != null && totalDays >= 365) {
         totalPrice += args.rates.annually ?? 0;

@@ -23,11 +23,25 @@ class CalendarBottomNav extends GetWidget<CalendarPickerController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Obx(
-                () => LNDText.bold(
-                  text: '₱${controller.totalPrice.toMoney()}',
-                  fontSize: 18.0,
-                ),
+              Row(
+                children: [
+                  Obx(
+                    () => LNDText.bold(
+                      text: '₱${controller.totalPrice.toMoney()} ',
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  Obx(
+                    () =>
+                        controller.totalDays != 0
+                            ? LNDText.regular(
+                              text: '(${controller.totalDays} days)',
+                              fontSize: 12.0,
+                              color: LNDColors.hint,
+                            )
+                            : const SizedBox.shrink(),
+                  ),
+                ],
               ),
               Obx(
                 () => LNDButton.primary(

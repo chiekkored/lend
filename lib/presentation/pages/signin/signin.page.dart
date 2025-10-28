@@ -86,6 +86,23 @@ class SigninPage extends GetView<SigninController> {
                   ),
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    LNDButton.text(
+                      text: 'Dev #1 Sign in',
+                      onPressed: () => controller.devSignin(1),
+                      enabled: true,
+                      color: LNDColors.primary,
+                    ),
+                    LNDButton.text(
+                      text: 'Dev #2 Sign in',
+                      onPressed: () => controller.devSignin(2),
+                      enabled: true,
+                      color: LNDColors.primary,
+                    ),
+                  ],
+                ),
+                Row(
                   children: [
                     const Expanded(child: Divider()),
                     LNDText.regular(text: 'OR', color: LNDColors.gray),

@@ -236,6 +236,18 @@ class SigninController extends GetxController {
     _successSignin();
   }
 
+  void devSignin(int num) {
+    if (num == 1) {
+      emailController.text = 'redzilla31@gmail.com';
+      passwordController.text = 'Chiko236';
+    } else {
+      emailController.text = 'chiekkored@gmail.com';
+      passwordController.text = 'Chiko236';
+    }
+
+    signIn();
+  }
+
   /// Navigate to the home page after successful sign in.
   void _successSignin() {
     // AppController.instance.setBiometricsButtonVisibility(true);
