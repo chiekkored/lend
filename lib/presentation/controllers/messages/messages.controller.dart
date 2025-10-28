@@ -97,4 +97,8 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
   void goToChatPage(Chat chat) {
     LNDNavigate.toChatPage(chat: chat);
   }
+
+  void goToArchivedMessagesPage() {
+    LNDNavigate.toArchivedMessagesPage();
+  }
 }

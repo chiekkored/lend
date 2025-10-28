@@ -17,6 +17,7 @@ import 'package:lend/presentation/pages/calendar_bookings/calendar_bookings.page
 import 'package:lend/presentation/pages/calendar_picker/calendar_picker.page.dart';
 import 'package:lend/presentation/pages/chat/chat.page.dart';
 import 'package:lend/presentation/pages/loading_overlay/loading_overlay.page.dart';
+import 'package:lend/presentation/pages/navigation/components/messages/components/archived_messages.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
@@ -125,6 +126,11 @@ class Root extends StatelessWidget {
           name: ChatPage.routeName,
           page: () => const ChatPage(),
           binding: ChatBinding(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: ArchivedMessagePage.routeName,
+          page: () => const ArchivedMessagePage(),
           middlewares: [AuthMiddleware()],
         ),
       ],

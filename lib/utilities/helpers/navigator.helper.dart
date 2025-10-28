@@ -10,6 +10,7 @@ import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar_bookings/calendar_bookings.page.dart';
 import 'package:lend/presentation/pages/calendar_picker/calendar_picker.page.dart';
 import 'package:lend/presentation/pages/chat/chat.page.dart';
+import 'package:lend/presentation/pages/navigation/components/messages/components/archived_messages.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
@@ -73,6 +74,10 @@ class LNDNavigate {
 
   static Future<T?>? toChatPage<T>({required Chat chat}) async {
     return await Get.toNamed(ChatPage.routeName, arguments: chat);
+  }
+
+  static Future<T?>? toArchivedMessagesPage<T>() async {
+    return await Get.toNamed(ArchivedMessagePage.routeName);
   }
 
   static Future<T?>? toMyAssetPage<T>(
