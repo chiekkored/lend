@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/image_type.enum.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LNDImage extends StatelessWidget {
@@ -11,7 +13,9 @@ class LNDImage extends StatelessWidget {
   final double borderRadius;
   final double height;
   final double width;
-  static const String _fallbackAsset = 'assets/images/placeholder.png';
+  final ImageType imageType;
+  static const String _fallbackUser = 'assets/svg/default_avatar.svg';
+  static const String _fallbackAsset = 'assets/svg/image.svg';
 
   const LNDImage._({
     required this.imageUrl,
@@ -19,21 +23,33 @@ class LNDImage extends StatelessWidget {
     this.borderRadius = 12.0,
     this.height = 50.0,
     this.width = 50.0,
+    this.imageType = ImageType.asset,
   });
 
-  factory LNDImage.circle({required String? imageUrl, double size = 50.0}) {
-    return LNDImage._(imageUrl: imageUrl, size: size, borderRadius: size / 2);
+  factory LNDImage.circle({
+    required String? imageUrl,
+    double size = 50.0,
+    ImageType imageType = ImageType.asset,
+  }) {
+    return LNDImage._(
+      imageUrl: imageUrl,
+      size: size,
+      borderRadius: size / 2,
+      imageType: imageType,
+    );
   }
 
   factory LNDImage.square({
     required String? imageUrl,
     double size = 50.0,
     double borderRadius = 12.0,
+    ImageType imageType = ImageType.asset,
   }) {
     return LNDImage._(
       imageUrl: imageUrl,
       size: size,
       borderRadius: borderRadius,
+      imageType: imageType,
     );
   }
 
@@ -101,7 +117,14 @@ class LNDImage extends StatelessWidget {
   Widget _buildFallbackImage() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: Image.asset(_fallbackAsset, fit: BoxFit.cover),
+      // child: Image.asset(_fallbackAsset, fit: BoxFit.cover),
+      child: Container(
+        padding: const EdgeInsets.all(4.0),
+        color: LNDColors.white,
+        child: SvgPicture.asset(
+          imageType == ImageType.user ? _fallbackUser : _fallbackAsset,
+        ),
+      ),
     );
   }
 }

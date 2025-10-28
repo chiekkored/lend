@@ -11,6 +11,7 @@ import 'package:lend/presentation/pages/navigation/components/messages/widgets/m
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/presentation/pages/chat/widgets/chat_list.widget.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/image_type.enum.dart';
 import 'package:lend/utilities/extensions/timestamp.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
@@ -124,6 +125,7 @@ class MessagesPage extends GetView<MessagesController> {
                               child: LNDImage.circle(
                                 imageUrl: participant.photoUrl,
                                 size: 20.0,
+                                imageType: ImageType.user,
                               ),
                             ),
                           ),
