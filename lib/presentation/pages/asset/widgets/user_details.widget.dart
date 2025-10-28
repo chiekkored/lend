@@ -7,6 +7,7 @@ import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/asset/asset.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/image_type.enum.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -71,6 +72,7 @@ class AssetUserDetails extends GetWidget<AssetController> {
                             LNDImage.circle(
                               imageUrl: controller.asset?.owner?.photoUrl,
                               size: 40.0,
+                              imageType: ImageType.user,
                             ),
                             const SizedBox(width: 8.0),
                             LNDText.bold(

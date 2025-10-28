@@ -51,7 +51,7 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
   void cancelSubscriptions() {
     if (_chatsSubscription != null) {
       _chatsSubscription?.cancel();
-      LNDLogger.dNoStack('Chat Subscription Cancelled');
+      LNDLogger.dNoStack('🔴 Chat Subscription Cancelled');
     }
   }
 
@@ -63,6 +63,7 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
     try {
       cancelSubscriptions();
 
+      LNDLogger.dNoStack('🟢 Chat Subscription Started');
       _chatsSubscription = _firestore
           .collection(LNDCollections.userChats.name)
           .doc(userId)

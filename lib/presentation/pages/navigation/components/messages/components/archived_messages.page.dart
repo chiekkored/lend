@@ -28,6 +28,7 @@ class ArchivedMessagePage extends GetWidget<MessagesController> {
       body: Obx(
         () => LNDListView(
           items: controller.archivedChats,
+          emptyString: 'No archives yet',
           itemBuilder: (chat, index) {
             // Get participant that is not the logged in user
             final participant = chat.participants?.firstWhereOrNull(
