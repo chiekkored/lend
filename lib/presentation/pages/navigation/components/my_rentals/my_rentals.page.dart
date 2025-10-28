@@ -4,6 +4,7 @@ import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
+import 'package:lend/presentation/common/spinner.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
@@ -34,52 +35,58 @@ class MyRentalsPage extends GetView<MyRentalsController> {
             headerSliverBuilder: (_, __) {
               return [const MyRentalsAppbar()];
             },
-            body:
-                !controller.isAuthenticated
-                    ? ColoredBox(color: LNDColors.white, child: _SigninView())
-                    : Obx(() {
-                      // ignore: prefer_is_empty
-                      if (controller.myRentals.length == 0) {
-                        return const Column(
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text('You have no rentals yet'),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            if (ProfileController
-                                    .instance
-                                    .user
-                                    ?.isListingEligible ==
-                                Eligibility.no)
-                              _buildNotEligible(),
-                            Obx(
-                              () => ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: controller.myRentals.length,
-                                itemBuilder: (_, index) {
-                                  final rentals = controller.myRentals[index];
-                                  final dates = LNDUtils.getDateRange(
-                                    start: rentals.dates?.first.toDate(),
-                                    end: rentals.dates?.last.toDate(),
-                                  );
-                                  return _buildRentalItem(rentals, dates);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
+            body: _buildBody(),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (!controller.isAuthenticated) {
+      return _SigninView();
+    }
+
+    if (controller.isMyRentalsLoading) {
+      return const Center(child: LNDSpinner());
+    }
+
+    final isEligible =
+        ProfileController.instance.user?.isRentingEligible == Eligibility.yes;
+
+    return RefreshIndicator.adaptive(
+      onRefresh: () async => controller.refreshMyRentals(),
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          if (!isEligible) SliverToBoxAdapter(child: _buildNotEligible()),
+
+          Obx(() {
+            final rentals = controller.myRentals;
+            if (rentals.isEmpty) {
+              return SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: LNDText.regular(
+                    text: 'You have no rentals yet',
+                    color: LNDColors.hint,
+                  ),
+                ),
+              );
+            }
+
+            return SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final booking = rentals[index];
+                final dates = LNDUtils.getDateRange(
+                  start: booking.dates?.first.toDate(),
+                  end: booking.dates?.last.toDate(),
+                );
+                return _buildRentalItem(booking, dates);
+              }, childCount: rentals.length),
+            );
+          }),
+        ],
       ),
     );
   }

@@ -27,9 +27,9 @@ class MyRentalsController extends GetxController
     super.onClose();
   }
 
-  Future<void> getMyRentals() async {
+  Future<void> getMyRentals({bool showLoading = true}) async {
     try {
-      _isMyRentalsLoading.value = true;
+      if (showLoading) _isMyRentalsLoading.value = true;
 
       final bookingsDocs =
           await FirebaseFirestore.instance
@@ -46,6 +46,11 @@ class MyRentalsController extends GetxController
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
+  }
+
+  Future<void> refreshMyRentals() async {
+    _myRentals.clear();
+    await getMyRentals();
   }
 
   void goToAsset(Asset? asset) {

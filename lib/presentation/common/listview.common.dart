@@ -36,6 +36,7 @@ class LNDListView<T> extends StatelessWidget {
       child:
           items.isEmpty
               ? ListView(
+                shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   SizedBox(
