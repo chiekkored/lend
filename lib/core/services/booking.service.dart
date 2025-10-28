@@ -3,6 +3,7 @@ import 'package:dart_either/dart_either.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
+import 'package:lend/utilities/enums/chat_status.enum.dart';
 
 class BookingService {
   static final _db = FirebaseFirestore.instance;
@@ -45,7 +46,8 @@ class BookingService {
         // Build reference pairs (asset + user copy)
         final otherRefs =
             otherQuery.docs
-                .where((doc) => doc.id != booking.id) // exclude selected
+                // exclude selected
+                .where((doc) => doc.id != booking.id)
                 .map((doc) {
                   final data = doc.data();
                   final bookingData = Booking.fromMap(data);
@@ -76,6 +78,11 @@ class BookingService {
         // Decline others still pending
         for (final ref in otherRefs) {
           final otherBooking = Booking.fromMap(ref.data);
+          final chatRef = _db
+              .collection(LNDCollections.userChats.name)
+              .doc(otherBooking.renter?.uid)
+              .collection(LNDCollections.chats.name)
+              .doc(otherBooking.chatId);
 
           if (otherBooking.status == BookingStatus.pending) {
             transaction.update(ref.assetRef, {
@@ -84,6 +91,7 @@ class BookingService {
             transaction.update(ref.userRef, {
               'status': BookingStatus.declined.label,
             });
+            transaction.update(chatRef, {'status': ChatStatus.archived.label});
           }
         }
       });

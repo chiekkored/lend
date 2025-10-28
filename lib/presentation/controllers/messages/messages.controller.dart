@@ -8,6 +8,7 @@ import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/core/models/message.model.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/enums/chat_status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
 
@@ -16,7 +17,13 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final RxList<Chat> _chats = <Chat>[].obs;
-  List<Chat> get chats => _chats;
+  List<Chat> get allChats => _chats;
+  List<Chat> get activeChats =>
+      _chats.where((chat) => chat.status == ChatStatus.active).toList();
+  List<Chat> get archivedChats =>
+      _chats.where((chat) => chat.status == ChatStatus.archived).toList();
+  List<Chat> get deletedChats =>
+      _chats.where((chat) => chat.status == ChatStatus.deleted).toList();
 
   final RxList<Message> _messages = <Message>[].obs;
   List<Message> get messages => _messages;
@@ -40,8 +47,10 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
   }
 
   void cancelSubscriptions() {
-    _chatsSubscription?.cancel();
-    LNDLogger.d('Chat Subscription Cancelled', stackTrace: StackTrace.current);
+    if (_chatsSubscription != null) {
+      _chatsSubscription?.cancel();
+      LNDLogger.dNoStack('Chat Subscription Cancelled');
+    }
   }
 
   // Listen to user's chats
@@ -50,7 +59,7 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
     final userId = AuthController.instance.uid;
 
     try {
-      _chatsSubscription?.cancel();
+      cancelSubscriptions();
 
       _chatsSubscription = _firestore
           .collection(LNDCollections.userChats.name)
@@ -82,7 +91,7 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
   }
 
   Chat? findChatByBookingId(String bookingId) {
-    return chats.firstWhereOrNull((chat) => chat.bookingId == bookingId);
+    return allChats.firstWhereOrNull((chat) => chat.bookingId == bookingId);
   }
 
   void goToChatPage(Chat chat) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
+import 'package:lend/presentation/common/listview.common.dart';
 import 'package:lend/presentation/common/spinner.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
@@ -48,17 +49,15 @@ class MessagesPage extends GetView<MessagesController> {
       return const Center(child: LNDSpinner());
     }
 
-    if (controller.chats.isEmpty) {
-      return Center(
-        child: LNDText.regular(text: 'No messages yet', color: LNDColors.hint),
-      );
-    }
+    return LNDListView(
+      items: controller.activeChats,
+      emptyString: 'No messages yet',
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: controller.chats.length,
-      itemBuilder: (context, index) {
-        final chat = controller.chats[index];
+      onRefresh: () async {
+        controller.listenToChats();
+        return;
+      },
+      itemBuilder: (chat, index) {
         // Get participant that is not the logged in user
         final participant = chat.participants?.firstWhereOrNull(
           (user) => user.uid != AuthController.instance.uid,

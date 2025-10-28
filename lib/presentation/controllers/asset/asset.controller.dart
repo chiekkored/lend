@@ -329,6 +329,7 @@ class AssetController extends GetxController {
       final booking =
           AddBooking(
             id: userBookingDoc.id,
+            chatId: chatsDoc.id,
             asset: AddSimpleAsset.fromMap(asset!.toMap()),
             dates: dates.map((d) => d.date).toList(),
             createdAt: Timestamp.now(),

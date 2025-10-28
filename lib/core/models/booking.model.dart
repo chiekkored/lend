@@ -10,6 +10,7 @@ import 'package:lend/utilities/enums/booking_status.enum.dart';
 
 class Booking {
   String? id;
+  String? chatId;
   SimpleAsset? asset;
   Timestamp? createdAt;
   Payment? payment;
@@ -19,6 +20,7 @@ class Booking {
   List<Timestamp>? dates;
   Booking({
     required this.id,
+    required this.chatId,
     required this.asset,
     required this.createdAt,
     required this.payment,
@@ -30,6 +32,7 @@ class Booking {
 
   Booking copyWith({
     String? id,
+    String? chatId,
     SimpleAsset? asset,
     Timestamp? createdAt,
     Payment? payment,
@@ -40,6 +43,7 @@ class Booking {
   }) {
     return Booking(
       id: id ?? this.id,
+      chatId: chatId ?? this.chatId,
       asset: asset ?? this.asset,
       createdAt: createdAt ?? this.createdAt,
       payment: payment ?? this.payment,
@@ -53,6 +57,7 @@ class Booking {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
+      'chatId': chatId,
       'asset': asset?.toMap(),
       'createdAt':
           createdAt != null
@@ -69,6 +74,7 @@ class Booking {
   factory Booking.fromMap(Map<String, dynamic> map) {
     return Booking(
       id: map['id'] != null ? map['id'] as String : null,
+      chatId: map['chatId'] != null ? map['chatId'] as String : null,
       asset:
           map['asset'] != null
               ? SimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
@@ -99,7 +105,7 @@ class Booking {
 
   @override
   String toString() {
-    return 'Booking(id: $id, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates)';
+    return 'Booking(id: $id, chatId: $chatId, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates)';
   }
 
   @override
@@ -107,6 +113,7 @@ class Booking {
     if (identical(this, other)) return true;
 
     return other.id == id &&
+        other.chatId == chatId &&
         other.asset == asset &&
         other.createdAt == createdAt &&
         other.payment == payment &&
@@ -119,6 +126,7 @@ class Booking {
   @override
   int get hashCode {
     return id.hashCode ^
+        chatId.hashCode ^
         asset.hashCode ^
         createdAt.hashCode ^
         payment.hashCode ^
@@ -175,6 +183,7 @@ class Payment {
 
 class AddBooking {
   String? id;
+  String? chatId;
   AddSimpleAsset? asset;
   Timestamp? createdAt;
   Payment? payment;
@@ -184,6 +193,7 @@ class AddBooking {
   List<Timestamp>? dates;
   AddBooking({
     required this.id,
+    required this.chatId,
     required this.asset,
     required this.createdAt,
     required this.payment,
@@ -195,6 +205,7 @@ class AddBooking {
 
   AddBooking copyWith({
     String? id,
+    String? chatId,
     AddSimpleAsset? asset,
     Timestamp? createdAt,
     Payment? payment,
@@ -205,6 +216,7 @@ class AddBooking {
   }) {
     return AddBooking(
       id: id ?? this.id,
+      chatId: chatId ?? this.chatId,
       asset: asset ?? this.asset,
       createdAt: createdAt ?? this.createdAt,
       payment: payment ?? this.payment,
@@ -218,6 +230,7 @@ class AddBooking {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
+      'chatId': chatId,
       'asset': asset?.toMap(),
       'createdAt':
           createdAt != null
@@ -234,6 +247,7 @@ class AddBooking {
   factory AddBooking.fromMap(Map<String, dynamic> map) {
     return AddBooking(
       id: map['id'] != null ? map['id'] as String : null,
+      chatId: map['chatId'] != null ? map['chatId'] as String : null,
       asset:
           map['asset'] != null
               ? AddSimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
@@ -261,7 +275,7 @@ class AddBooking {
 
   @override
   String toString() {
-    return 'AddBooking(id: $id, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates)';
+    return 'AddBooking(id: $id, chatId: $chatId, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates)';
   }
 
   @override
@@ -269,6 +283,7 @@ class AddBooking {
     if (identical(this, other)) return true;
 
     return other.id == id &&
+        other.chatId == chatId &&
         other.asset == asset &&
         other.createdAt == createdAt &&
         other.payment == payment &&
@@ -281,6 +296,7 @@ class AddBooking {
   @override
   int get hashCode {
     return id.hashCode ^
+        chatId.hashCode ^
         asset.hashCode ^
         createdAt.hashCode ^
         payment.hashCode ^

@@ -7,6 +7,7 @@ import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/simple_asset.model.dart';
 
 import 'package:lend/core/models/simple_user.model.dart';
+import 'package:lend/utilities/enums/chat_status.enum.dart';
 
 class Chat {
   String? id;
@@ -20,6 +21,7 @@ class Chat {
   String? lastMessageSenderId;
   Timestamp? createdAt;
   bool? hasRead;
+  ChatStatus? status;
   Chat({
     this.id,
     this.chatId,
@@ -32,6 +34,7 @@ class Chat {
     this.lastMessageSenderId,
     this.createdAt,
     this.hasRead,
+    this.status,
   });
 
   Chat copyWith({
@@ -47,6 +50,7 @@ class Chat {
     String? lastMessageSenderId,
     Timestamp? createdAt,
     bool? hasRead,
+    ChatStatus? status,
   }) {
     return Chat(
       id: id ?? this.id,
@@ -60,6 +64,7 @@ class Chat {
       lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
       createdAt: createdAt ?? this.createdAt,
       hasRead: hasRead ?? this.hasRead,
+      status: status ?? this.status,
     );
   }
 
@@ -85,6 +90,7 @@ class Chat {
               ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
               : null,
       'hasRead': hasRead,
+      'status': status?.label,
     }..removeWhere((key, value) => value == null);
   }
 
@@ -119,6 +125,8 @@ class Chat {
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
       hasRead: map['hasRead'] != null ? map['hasRead'] as bool : null,
+      status:
+          map['status'] != null ? ChatStatus.fromString(map['status']) : null,
     );
   }
 
@@ -129,7 +137,7 @@ class Chat {
 
   @override
   String toString() {
-    return 'Chat(id: $id, chatId: $chatId, bookingId: $bookingId, renterId: $renterId, asset: $asset, participants: $participants, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead)';
+    return 'Chat(id: $id, chatId: $chatId, bookingId: $bookingId, renterId: $renterId, asset: $asset, participants: $participants, lastMessage: $lastMessage, lastMessageDate: $lastMessageDate, lastMessageSenderId: $lastMessageSenderId, createdAt: $createdAt, hasRead: $hasRead, status: $status)';
   }
 
   @override
@@ -146,6 +154,7 @@ class Chat {
         other.lastMessageDate == lastMessageDate &&
         other.lastMessageSenderId == lastMessageSenderId &&
         other.createdAt == createdAt &&
+        other.status == status &&
         other.hasRead == hasRead;
   }
 
@@ -161,6 +170,7 @@ class Chat {
         lastMessageDate.hashCode ^
         lastMessageSenderId.hashCode ^
         createdAt.hashCode ^
+        status.hashCode ^
         hasRead.hashCode;
   }
 }
