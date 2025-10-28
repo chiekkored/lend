@@ -26,21 +26,25 @@ class MyRentalsAppbar extends GetView<YourListingController> {
                     Eligibility.yes,
             child: Padding(
               padding: const EdgeInsets.only(right: 16.0),
-              child: Badge(
-                label: ClipOval(
-                  child: Obx(
-                    () => LNDText.regular(
-                      text: controller.myAssets.length.toString(),
-                      fontSize: 12.0,
-                      color: LNDColors.white,
+              child: LNDButton.widget(
+                color: Colors.transparent,
+                child: Badge(
+                  label: ClipOval(
+                    child: Obx(
+                      () => LNDText.regular(
+                        text: controller.myAssets.length.toString(),
+                        fontSize: 12.0,
+                        color: LNDColors.white,
+                      ),
                     ),
                   ),
+                  child: const Icon(
+                    Icons.sell_rounded,
+                    size: 25.0,
+                    color: LNDColors.black,
+                  ),
                 ),
-                child: LNDButton.icon(
-                  icon: Icons.sell_rounded,
-                  size: 25.0,
-                  onPressed: () => controller.goToMyAssets(context),
-                ),
+                onPressed: () => controller.goToMyAssets(context),
               ),
             ),
           ),

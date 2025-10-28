@@ -17,11 +17,15 @@ class MessagesAppbar extends GetWidget<MessagesController> {
       title: LNDText.bold(text: 'Messages', fontSize: 32.0),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 12.0),
-          child: LNDButton.icon(
-            icon: Icons.inventory_2_rounded,
+          padding: const EdgeInsets.only(right: 16.0),
+          child: LNDButton.widget(
+            color: Colors.transparent,
             onPressed: controller.goToArchivedMessagesPage,
-            size: 24.0,
+            child: const Icon(
+              Icons.inventory_2_rounded,
+              size: 25.0,
+              color: LNDColors.black,
+            ),
           ),
         ),
       ],

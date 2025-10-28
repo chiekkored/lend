@@ -87,7 +87,7 @@ class LNDButton extends StatelessWidget {
     );
   }
 
-  factory LNDButton.custom({
+  factory LNDButton.shape({
     required String text,
     required VoidCallback? onPressed,
     required bool enabled,
