@@ -5,6 +5,7 @@ import 'package:lend/presentation/common/shimmer.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/asset/asset.controller.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 
@@ -44,7 +45,8 @@ class AssetBottomNav extends GetWidget<AssetController> {
                           ],
                         ),
               ),
-              if (AuthController.instance.uid != controller.asset?.ownerId)
+              if (AuthController.instance.uid != controller.asset?.ownerId &&
+                  ProfileController.instance.isRentingEligible)
                 Obx(
                   () => LNDButton.primary(
                     text: 'Reserve now',
@@ -52,7 +54,9 @@ class AssetBottomNav extends GetWidget<AssetController> {
                     onPressed: controller.goToCalendarPicker,
                   ),
                 )
-              else
+              else if (AuthController.instance.uid ==
+                      controller.asset?.ownerId &&
+                  ProfileController.instance.isListingEligible)
                 Row(
                   spacing: 8.0,
                   children: [

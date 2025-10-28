@@ -11,7 +11,6 @@ import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/navigation/components/my_rentals/widgets/my_rentals_appbar.widget.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
-import 'package:lend/utilities/enums/eligibility.enum.dart';
 import 'package:lend/utilities/extensions/bookingStatus.extension.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
@@ -51,8 +50,7 @@ class MyRentalsPage extends GetView<MyRentalsController> {
       return const Center(child: LNDSpinner());
     }
 
-    final isEligible =
-        ProfileController.instance.user?.isRentingEligible == Eligibility.yes;
+    final isEligible = ProfileController.instance.isRentingEligible;
 
     return RefreshIndicator.adaptive(
       onRefresh: () async => controller.refreshMyRentals(),

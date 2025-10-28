@@ -7,6 +7,7 @@ import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/eligibility.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
 class ProfileController extends GetxController with AuthMixin {
@@ -14,6 +15,11 @@ class ProfileController extends GetxController with AuthMixin {
 
   final Rx<UserModel?> _user = Rx<UserModel?>(null);
   UserModel? get user => _user.value;
+
+  bool get isRentingEligible =>
+      _user.value?.isRentingEligible == Eligibility.yes;
+  bool get isListingEligible =>
+      _user.value?.isListingEligible == Eligibility.yes;
 
   // Simple user data model getter (only firstName, lastName, photoUrl, and email) using SimpleUserModel
   SimpleUserModel get simpleUser => SimpleUserModel(

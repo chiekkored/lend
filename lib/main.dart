@@ -11,11 +11,14 @@ import 'package:lend/core/bindings/root.binding.dart';
 import 'package:lend/core/bindings/signin/signin.binding.dart';
 import 'package:lend/core/bindings/signup/signup.binding.dart';
 import 'package:lend/core/middlewares/auth.middleware.dart';
+import 'package:lend/core/middlewares/listing_eligible.middleware.dart';
+import 'package:lend/core/middlewares/rent_eligible.middleware.dart';
 import 'package:lend/core/services/main.service.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar_bookings/calendar_bookings.page.dart';
 import 'package:lend/presentation/pages/calendar_picker/calendar_picker.page.dart';
 import 'package:lend/presentation/pages/chat/chat.page.dart';
+import 'package:lend/presentation/pages/eligibility/eligibility.page.dart';
 import 'package:lend/presentation/pages/loading_overlay/loading_overlay.page.dart';
 import 'package:lend/presentation/pages/navigation/components/messages/components/archived_messages.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
@@ -74,14 +77,14 @@ class Root extends StatelessWidget {
           page: () => const CalendarPickerPage(),
           preventDuplicates: false,
           binding: CalendarPickerBinding(),
-          middlewares: [AuthMiddleware()],
+          middlewares: [AuthMiddleware(), RentEligibleMiddleware()],
         ),
         GetPage(
           name: CalendarBookingsPage.routeName,
           page: () => const CalendarBookingsPage(),
           preventDuplicates: false,
           binding: CalendarBookingsBinding(),
-          middlewares: [AuthMiddleware()],
+          middlewares: [AuthMiddleware(), ListingEligibleMiddleware()],
         ),
         GetPage(
           name: SigninPage.routeName,
@@ -132,6 +135,10 @@ class Root extends StatelessWidget {
           name: ArchivedMessagePage.routeName,
           page: () => const ArchivedMessagePage(),
           middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: EligibilityPage.routeName,
+          page: () => const EligibilityPage(),
         ),
       ],
       initialRoute: NavigationPage.routeName,
