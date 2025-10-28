@@ -29,6 +29,7 @@ import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
+import 'package:lend/utilities/enums/chat_status.enum.dart';
 import 'package:lend/utilities/enums/chat_type.enum.dart';
 import 'package:lend/utilities/enums/message_type.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -418,6 +419,7 @@ class AssetController extends GetxController {
         lastMessageSenderId: asset!.ownerId,
         createdAt: Timestamp.now(),
         hasRead: false,
+        status: ChatStatus.active,
       );
       batch.set(userChatsSubChatDoc, chatObject.toMap());
 

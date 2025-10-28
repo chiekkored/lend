@@ -20,6 +20,7 @@ class NavigationPage extends GetView<NavigationController> {
   Widget build(BuildContext context) {
     const selectedIconSize = 35.0;
     const unselectedIconSize = 35.0;
+    const badgeSize = 12.0;
     return PersistentTabView(
       backgroundColor: LNDColors.white,
       controller: controller.navigationController,
@@ -58,10 +59,31 @@ class NavigationPage extends GetView<NavigationController> {
         PersistentTabConfig(
           item: ItemConfig(
             textStyle: LNDText.mediumStyle.copyWith(fontSize: 10.0),
-            icon: const Icon(Icons.inbox_rounded, size: selectedIconSize),
-            inactiveIcon: const Icon(
-              Icons.inbox_outlined,
-              size: unselectedIconSize,
+            icon: Center(
+              child: Obx(
+                () => Badge(
+                  smallSize: badgeSize,
+                  padding: EdgeInsets.zero,
+                  isLabelVisible: MessagesController.instance.unreadCount,
+                  child: const Icon(
+                    Icons.inbox_rounded,
+                    size: selectedIconSize,
+                  ),
+                ),
+              ),
+            ),
+            inactiveIcon: Center(
+              child: Obx(
+                () => Badge(
+                  smallSize: badgeSize,
+                  padding: EdgeInsets.zero,
+                  isLabelVisible: MessagesController.instance.unreadCount,
+                  child: const Icon(
+                    Icons.inbox_outlined,
+                    size: unselectedIconSize,
+                  ),
+                ),
+              ),
             ),
             activeForegroundColor: LNDColors.primary,
             inactiveForegroundColor: LNDColors.unselected,

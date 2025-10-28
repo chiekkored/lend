@@ -29,6 +29,8 @@ class MyRentalsAppbar extends GetView<YourListingController> {
               child: LNDButton.widget(
                 color: Colors.transparent,
                 child: Badge(
+                  // ignore: prefer_is_empty
+                  isLabelVisible: controller.myAssets.length != 0,
                   label: ClipOval(
                     child: Obx(
                       () => LNDText.regular(

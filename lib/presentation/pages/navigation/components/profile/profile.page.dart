@@ -8,6 +8,7 @@ import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/navigation/components/profile/widgets/profile_appbar.widget.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/image_type.enum.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
 import 'package:shimmer/shimmer.dart';
@@ -55,6 +56,7 @@ class ProfilePage extends GetView<ProfileController> {
                                     : LNDImage.circle(
                                       imageUrl: user?.photoUrl,
                                       size: 50.0,
+                                      imageType: ImageType.user,
                                     ),
                             title:
                                 controller.isLoading

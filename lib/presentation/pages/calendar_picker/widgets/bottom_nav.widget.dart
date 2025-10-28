@@ -5,6 +5,7 @@ import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/calendar_picker/calendar_picker.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
+import 'package:pluralize/pluralize.dart';
 
 class CalendarBottomNav extends GetWidget<CalendarPickerController> {
   const CalendarBottomNav({super.key});
@@ -35,7 +36,8 @@ class CalendarBottomNav extends GetWidget<CalendarPickerController> {
                     () =>
                         controller.totalDays != 0
                             ? LNDText.regular(
-                              text: '(${controller.totalDays} days)',
+                              text:
+                                  '(${Pluralize().pluralize('day', controller.totalDays, true)})',
                               fontSize: 12.0,
                               color: LNDColors.hint,
                             )

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:lend/core/models/rates.model.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
+import 'package:pluralize/pluralize.dart';
 
 class CalendarPickerPageArgs {
   final bool isReadOnly;
@@ -48,8 +49,13 @@ class CalendarPickerController extends GetxController {
     if (dates.first == dates.last) {
       _selectedDates.value = [dates.last];
       _totalPrice.value = 0;
+      _totalDays.value = 0;
       return;
     }
+
+    final pluralize = Pluralize();
+
+    pluralize.pluralize('day', 1, true);
 
     if (args.dates.any(
       (av) => !av.isBefore(dates.last) && !av.isAfter(dates.first),

@@ -24,6 +24,8 @@ class MessagesController extends GetxController with AuthMixin, LNDScrollMixin {
       _chats.where((chat) => chat.status == ChatStatus.archived).toList();
   List<Chat> get deletedChats =>
       _chats.where((chat) => chat.status == ChatStatus.deleted).toList();
+  bool get unreadCount =>
+      activeChats.where((chat) => chat.hasRead == false).toList().isNotEmpty;
 
   final RxList<Message> _messages = <Message>[].obs;
   List<Message> get messages => _messages;
