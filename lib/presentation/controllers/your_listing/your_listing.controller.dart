@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/mixins/auth.mixin.dart';
 import 'package:lend/core/models/asset.model.dart';
+import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/availability.enum.dart';
+import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
 
@@ -69,15 +71,17 @@ class YourListingController extends GetxController with AuthMixin {
                   .collection(LNDCollections.bookings.name)
                   .get();
           if (bookingsDocs.docs.isNotEmpty) {
-            final List<Map<String, dynamic>> bookingsList = [];
+            final List<Booking> bookingsList = [];
 
             for (var bookingDoc in bookingsDocs.docs) {
-              bookingsList.add(bookingDoc.data());
+              bookingsList.add(Booking.fromMap(bookingDoc.data()));
             }
 
             // Insert the bookings data to SimpleAsset data model
             final assetData = doc.data();
-            assetData['bookings'] = bookingsList;
+            assetData['bookings'] = bookingsList.where(
+              (booking) => booking.status == BookingStatus.pending,
+            );
             assetsList.add(SimpleAsset.fromMap(assetData));
           } else {
             assetsList.add(SimpleAsset.fromMap(doc.data()));

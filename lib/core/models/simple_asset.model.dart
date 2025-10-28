@@ -71,13 +71,7 @@ class SimpleAsset {
       title: map['title'] != null ? map['title'] as String : null,
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
       bookings:
-          map['bookings'] != null
-              ? List<Booking>.from(
-                (map['bookings']).map<Booking?>(
-                  (x) => Booking.fromMap(x as Map<String, dynamic>),
-                ),
-              )
-              : null,
+          map['bookings'] != null ? List<Booking>.from(map['bookings']) : null,
       category: map['category'] != null ? map['category'] as String : null,
       createdAt:
           map['createdAt'] != null ? map['createdAt'] as Timestamp : null,

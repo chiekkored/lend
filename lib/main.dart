@@ -16,6 +16,7 @@ import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar_bookings/calendar_bookings.page.dart';
 import 'package:lend/presentation/pages/calendar_picker/calendar_picker.page.dart';
 import 'package:lend/presentation/pages/chat/chat.page.dart';
+import 'package:lend/presentation/pages/loading_overlay/loading_overlay.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
@@ -51,6 +52,9 @@ class Root extends StatelessWidget {
         fontFamily: 'Inter',
         primaryColor: LNDColors.primary,
       ),
+      builder: (_, child) {
+        return LoadingOverlay(child: child ?? const SizedBox.shrink());
+      },
       initialBinding: RootBinding(),
       getPages: [
         GetPage(

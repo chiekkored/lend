@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,7 +46,7 @@ class CalendarBookingsController extends GetxController {
     return args.bookings.map((booking) {
       final bookingId = booking.id ?? '';
       if (!_bookingColorMap.containsKey(bookingId)) {
-        _bookingColorMap[bookingId] = _getRandomColor();
+        _bookingColorMap[bookingId] = _getRandomColor(bookingId);
       }
       return ColoredBookings(
         booking: booking,
@@ -69,6 +69,17 @@ class CalendarBookingsController extends GetxController {
     }).toList();
   }
 
+  final renterColors = [
+    const Color(0xFFE57373), // red
+    const Color(0xFF64B5F6), // blue
+    const Color(0xFF81C784), // green
+    const Color(0xFFFFB74D), // orange
+    const Color(0xFFBA68C8), // purple
+    const Color(0xFF4DB6AC), // teal
+    const Color(0xFFFF8A65), // coral
+    const Color(0xFF7986CB), // indigo
+  ];
+
   @override
   void onClose() {
     _selectedDates.close();
@@ -77,19 +88,29 @@ class CalendarBookingsController extends GetxController {
   }
 
   /// Generates random color
-  Color _getRandomColor() {
-    final random = Random();
+  Color _getRandomColor(String id) {
+    // final random = Random();
 
     // Limit values between 0 and 180 to avoid very bright colors
-    const min = 0;
-    const max = 180;
+    // const min = 0;
+    // const max = 180;
 
-    return Color.fromARGB(
-      255,
-      min + random.nextInt(max - min),
-      min + random.nextInt(max - min),
-      min + random.nextInt(max - min),
-    );
+    // return Color.fromARGB(
+    //   255,
+    //   min + random.nextInt(max - min),
+    //   min + random.nextInt(max - min),
+    //   min + random.nextInt(max - min),
+    // );
+
+    if (id.isEmpty) return renterColors.first;
+
+    // Convert id string to a numeric hash
+    final bytes = utf8.encode(id);
+    final hash = bytes.fold<int>(0, (prev, byte) => (prev + byte) % 100000);
+
+    // Use hash to pick a color deterministically
+    final index = hash % renterColors.length;
+    return renterColors[index];
   }
 
   void onCalendarChanged(List<DateTime> dates) async {
