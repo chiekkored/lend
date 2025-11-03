@@ -8,7 +8,7 @@ import 'package:lend/presentation/controllers/messages/messages.controller.dart'
 import 'package:lend/presentation/pages/navigation/components/messages/widgets/message_item.widget.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 
-class ArchivedMessagePage extends GetWidget<MessagesController> {
+class ArchivedMessagePage extends GetView<MessagesController> {
   static const routeName = '/archived-messages';
   const ArchivedMessagePage({super.key});
 

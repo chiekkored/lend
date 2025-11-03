@@ -5,10 +5,12 @@ import 'package:lend/core/models/simple_user.model.dart';
 import 'package:lend/core/models/user.model.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/controllers/profile_view/profile_view.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/eligibility.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
+import 'package:lend/utilities/helpers/navigator.helper.dart';
 
 class ProfileController extends GetxController with AuthMixin {
   static ProfileController get instance => Get.find<ProfileController>();
@@ -51,6 +53,12 @@ class ProfileController extends GetxController with AuthMixin {
       }
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
+    }
+  }
+
+  void goToProfileView() {
+    if (user != null) {
+      LNDNavigate.toProfileViewPage(args: ProfileViewArgs(user: user!));
     }
   }
 

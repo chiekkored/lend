@@ -7,6 +7,7 @@ import 'package:lend/core/bindings/calendar_picker/calendar_picker.binding.dart'
 import 'package:lend/core/bindings/chat/chat.binding.dart';
 import 'package:lend/core/bindings/navigation/navigation.binding.dart';
 import 'package:lend/core/bindings/post_listing/post_listing.binding.dart';
+import 'package:lend/core/bindings/profile_view/profile_view.binding.dart';
 import 'package:lend/core/bindings/root.binding.dart';
 import 'package:lend/core/bindings/signin/signin.binding.dart';
 import 'package:lend/core/bindings/signup/signup.binding.dart';
@@ -21,6 +22,7 @@ import 'package:lend/presentation/pages/chat/chat.page.dart';
 import 'package:lend/presentation/pages/eligibility/eligibility.page.dart';
 import 'package:lend/presentation/pages/loading_overlay/loading_overlay.page.dart';
 import 'package:lend/presentation/pages/navigation/components/messages/components/archived_messages.page.dart';
+import 'package:lend/presentation/pages/profile_view/profile_view.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
@@ -139,6 +141,12 @@ class Root extends StatelessWidget {
         GetPage(
           name: EligibilityPage.routeName,
           page: () => const EligibilityPage(),
+        ),
+        GetPage(
+          name: ProfileViewPage.routeName,
+          page: () => const ProfileViewPage(),
+          binding: ProfileViewBinding(),
+          middlewares: [AuthMiddleware()],
         ),
       ],
       initialRoute: NavigationPage.routeName,

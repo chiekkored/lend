@@ -67,30 +67,33 @@ class AssetUserDetails extends GetWidget<AssetController> {
                             ],
                           ).withSpacing(8.0),
                         )
-                        : Row(
-                          children: [
-                            LNDImage.circle(
-                              imageUrl: controller.asset?.owner?.photoUrl,
-                              size: 40.0,
-                              imageType: ImageType.user,
-                            ),
-                            const SizedBox(width: 8.0),
-                            LNDText.bold(
-                              text: controller.asset?.owner?.firstName ?? '',
-                              textParts: [
-                                LNDText.bold(
-                                  text:
-                                      ' ${controller.asset?.owner?.lastName ?? ''}',
-                                ),
-                              ],
-                            ),
-                            const SizedBox(width: 2.0),
-                            const Icon(
-                              Icons.verified_rounded,
-                              size: 15.0,
-                              color: LNDColors.primary,
-                            ),
-                          ],
+                        : GestureDetector(
+                          onTap: controller.goToProfileView,
+                          child: Row(
+                            children: [
+                              LNDImage.circle(
+                                imageUrl: controller.asset?.owner?.photoUrl,
+                                size: 40.0,
+                                imageType: ImageType.user,
+                              ),
+                              const SizedBox(width: 8.0),
+                              LNDText.bold(
+                                text: controller.asset?.owner?.firstName ?? '',
+                                textParts: [
+                                  LNDText.bold(
+                                    text:
+                                        ' ${controller.asset?.owner?.lastName ?? ''}',
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 2.0),
+                              const Icon(
+                                Icons.verified_rounded,
+                                size: 15.0,
+                                color: LNDColors.primary,
+                              ),
+                            ],
+                          ),
                         ),
               ),
             ),

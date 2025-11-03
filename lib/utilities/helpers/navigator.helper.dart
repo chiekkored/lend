@@ -6,12 +6,14 @@ import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/calendar_bookings/calendar_bookings.controller.dart';
 import 'package:lend/presentation/controllers/calendar_picker/calendar_picker.controller.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
+import 'package:lend/presentation/controllers/profile_view/profile_view.controller.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/presentation/pages/calendar_bookings/calendar_bookings.page.dart';
 import 'package:lend/presentation/pages/calendar_picker/calendar_picker.page.dart';
 import 'package:lend/presentation/pages/chat/chat.page.dart';
 import 'package:lend/presentation/pages/navigation/components/messages/components/archived_messages.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
+import 'package:lend/presentation/pages/profile_view/profile_view.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
@@ -42,6 +44,12 @@ class LNDNavigate {
 
   static Future<T?>? toSignupPage<T>() async {
     return await Get.toNamed(SignUpPage.routeName);
+  }
+
+  static Future<T?>? toProfileViewPage<T>({
+    required ProfileViewArgs args,
+  }) async {
+    return await Get.toNamed(ProfileViewPage.routeName, arguments: args);
   }
 
   static Future<T?>? toAssetPage<T>({required Asset? args}) async {

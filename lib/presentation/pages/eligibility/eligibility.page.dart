@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
-import 'package:lend/presentation/controllers/signin/signin.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 
-class EligibilityPage extends GetView<SigninController> {
+class EligibilityPage extends StatelessWidget {
   static const routeName = '/eligiblity';
   const EligibilityPage({super.key});
 

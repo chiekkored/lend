@@ -91,6 +91,7 @@ class ProfilePage extends GetView<ProfileController> {
                               color: LNDColors.gray,
                               size: 30.0,
                             ),
+                            onTap: controller.goToProfileView,
                           ),
                 ),
               ),
@@ -112,15 +113,20 @@ class ProfilePage extends GetView<ProfileController> {
                   ],
                 ),
               ),
-              ColoredBox(
-                color: LNDColors.white,
-                child: _buildListWidget(
-                  label: 'Logout',
-                  icon: Icons.logout_rounded,
-                  color: LNDColors.danger,
-                  showTrailing: false,
-                  onTap: controller.signOut,
-                ),
+              Obx(
+                () =>
+                    !controller.isAuthenticated
+                        ? const SizedBox.shrink()
+                        : ColoredBox(
+                          color: LNDColors.white,
+                          child: _buildListWidget(
+                            label: 'Logout',
+                            icon: Icons.logout_rounded,
+                            color: LNDColors.danger,
+                            showTrailing: false,
+                            onTap: controller.signOut,
+                          ),
+                        ),
               ),
             ],
           ).withSpacing(16.0),

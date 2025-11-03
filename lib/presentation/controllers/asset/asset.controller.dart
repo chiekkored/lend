@@ -13,6 +13,7 @@ import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/core/models/message.model.dart';
 import 'package:lend/core/models/rates.model.dart';
 import 'package:lend/core/models/simple_asset.model.dart';
+import 'package:lend/core/models/user.model.dart';
 import 'package:lend/core/models/user_chat.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
@@ -24,6 +25,7 @@ import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/navigation/navigation.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
+import 'package:lend/presentation/controllers/profile_view/profile_view.controller.dart';
 import 'package:lend/presentation/pages/asset/widgets/all_prices.widget.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/product_showcase/product_showcase.page.dart';
@@ -483,6 +485,14 @@ class AssetController extends GetxController {
     LNDNavigate.toProductShowcasePage(
       args: ProductShowcaseArguments(showcase: asset?.showcase ?? []),
     );
+  }
+
+  void goToProfileView() {
+    if (asset != null || asset?.owner != null) {
+      LNDNavigate.toProfileViewPage(
+        args: ProfileViewArgs(user: UserModel.fromMap(asset!.owner!.toMap())),
+      );
+    }
   }
 
   // Future<void> _getAddressFromLatLng(LatLng position) async {
