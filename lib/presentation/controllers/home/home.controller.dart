@@ -4,8 +4,10 @@ import 'package:lend/core/mixins/scroll.mixin.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
+import 'package:lend/core/services/get_storage.service.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/constants/get_storage.constant.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
@@ -41,10 +43,25 @@ class HomeController extends GetxController with LNDScrollMixin {
     super.onClose();
   }
 
+  void init() {}
+
+  void _setInitialValues() {
+    final assetList = _readCache();
+
+    if (assetList == null) return;
+
+    final initialAssets = assetList.map((ast) => Asset.fromJson(ast)).toList();
+
+    _assets.value = initialAssets;
+    _isLoading.value = false;
+  }
+
   Future<void> getAssets() async {
     _isLoading.value = true;
 
     try {
+      _setInitialValues();
+
       Query query = assetsCollection;
 
       if (_selectedCategory.value != Categories.all) {
@@ -62,11 +79,26 @@ class HomeController extends GetxController with LNDScrollMixin {
                 (asset) => Asset.fromMap(asset.data() as Map<String, dynamic>),
               )
               .toList();
+
+      _writeToCache();
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
 
     _isLoading.value = false;
+  }
+
+  void _writeToCache() {
+    LNDStorageService.writeList(
+      '${LNDStorageConstants.assets}_${selectedCategory.name}',
+      assets.map((a) => a.toJson()).toList(),
+    );
+  }
+
+  List<dynamic>? _readCache() {
+    return LNDStorageService.readList(
+      '${LNDStorageConstants.assets}_${selectedCategory.name}',
+    );
   }
 
   void setSelectedCategory(Categories category) {

@@ -31,4 +31,11 @@ extension DateTimeFormatter on Timestamp? {
     }
     return timeago.format(this!.toDate(), locale: 'en_short');
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      '_seconds': this!.seconds,
+      '_nanoseconds': this!.nanoseconds,
+    };
+  }
 }

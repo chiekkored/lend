@@ -8,6 +8,7 @@ import 'package:lend/core/models/availability.model.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
 import 'package:lend/core/models/simple_user.model.dart';
+import 'package:lend/utilities/extensions/timestamp.extension.dart';
 
 class Asset {
   String id;
@@ -87,7 +88,7 @@ class Asset {
       'inclusions': inclusions,
       'createdAt':
           createdAt != null
-              ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
+              ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds).toMap()
               : null,
       'status': status,
     }..removeWhere((key, value) => value == null);
@@ -121,7 +122,14 @@ class Asset {
               ? List<String>.from((map['inclusions']))
               : null,
       createdAt:
-          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+          map['createdAt'] != null
+              ? map['createdAt'] is Timestamp
+                  ? map['createdAt'] as Timestamp
+                  : Timestamp(
+                    map['createdAt']['_seconds'],
+                    map['createdAt']['_nanoseconds'],
+                  )
+              : null,
       status: map['status'] != null ? map['status'] as String : null,
     );
   }

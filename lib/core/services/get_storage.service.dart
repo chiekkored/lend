@@ -8,9 +8,19 @@ class LNDStorageService {
     await _box.write(key, value);
   }
 
+  // Write a list value
+  static Future<void> writeList(String key, List<dynamic> value) async {
+    await _box.write(key, value);
+  }
+
   // Read a value
   static T? read<T>(String key) {
     return _box.read<T>(key);
+  }
+
+  // Read list value
+  static List<dynamic>? readList(String key) {
+    return _box.read<List<dynamic>>(key);
   }
 
   // Remove a value

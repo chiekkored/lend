@@ -306,31 +306,45 @@ class PostListingController extends GetxController with TextFieldsMixin {
   }
 
   void _uploadPhotos({required List<Rx<FileModel>> files}) async {
-    // Create a list to hold all upload futures
-    final List<Future> uploadFutures = [];
+    try {
+      // Create a list to hold all upload futures
+      final List<Future> uploadFutures = [];
 
-    // Start all uploads in parallel
-    for (var photoFile in files) {
-      if (photoFile.value.file != null) {
-        final ref = FirebaseStorage.instance.ref().child(
-          'images/${photoFile.value.file?.name}',
-        );
+      // Start all uploads in parallel
+      for (var photoFile in files) {
+        if (photoFile.value.file != null) {
+          final ref = FirebaseStorage.instance.ref().child(
+            'images/${photoFile.value.file?.name}',
+          );
 
-        final uploadTask = ref.putFile(File(photoFile.value.file!.path));
-        uploadTask.snapshotEvents.listen((event) {
-          photoFile.value.progress = event.bytesTransferred / event.totalBytes;
-          photoFile.refresh();
-        });
-
-        // Add the future to our list without awaiting it
-        uploadFutures.add(
-          uploadTask.whenComplete(() async {
-            final downloadUrl = await ref.getDownloadURL();
-            photoFile.value.storagePath = downloadUrl;
+          final uploadTask = ref.putFile(File(photoFile.value.file!.path));
+          uploadTask.snapshotEvents.listen((event) {
+            photoFile.value.progress =
+                event.bytesTransferred / event.totalBytes;
             photoFile.refresh();
-          }),
-        );
+          });
+
+          // Add the future to our list without awaiting it
+          uploadFutures.add(
+            uploadTask
+                .whenComplete(() async {
+                  final downloadUrl = await ref.getDownloadURL();
+                  photoFile.value.storagePath = downloadUrl;
+                  photoFile.refresh();
+                })
+                .catchError((e) {
+                  LNDSnackbar.showWarning(
+                    'Something went wrong while uploading',
+                  );
+                  return e;
+                }),
+          );
+        }
       }
+    } catch (e) {
+      LNDSnackbar.showWarning(
+        'Something went wrong while uploading the photo/s',
+      );
     }
   }
 
@@ -421,9 +435,7 @@ class PostListingController extends GetxController with TextFieldsMixin {
         );
 
         if (!allCoverPhotosUploaded) {
-          LNDSnackbar.showWarning(
-            'Please wait for all cover photos to upload.',
-          );
+          LNDSnackbar.showWarning('Please wait for all cover photos to upload');
           hasValidationErrors = true;
         }
       }

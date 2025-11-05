@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lend/utilities/extensions/geopoint.extension.dart';
 
 class Location {
   String? description;
@@ -25,7 +26,9 @@ class Location {
     return <String, dynamic>{
       'description': description,
       'latLng':
-          latLng != null ? GeoPoint(latLng!.latitude, latLng!.longitude) : null,
+          latLng != null
+              ? GeoPoint(latLng!.latitude, latLng!.longitude).toMap()
+              : null,
       'useSpecificLocation': useSpecificLocation,
     };
   }
@@ -34,7 +37,15 @@ class Location {
     return Location(
       description:
           map['description'] != null ? map['description'] as String : null,
-      latLng: map['latLng'] != null ? map['latLng'] as GeoPoint : null,
+      latLng:
+          map['latLng'] != null
+              ? map['latLng'] is GeoPoint
+                  ? map['latLng'] as GeoPoint
+                  : GeoPoint(
+                    map['latLng']['latitude'],
+                    map['latLng']['longitude'],
+                  )
+              : null,
       useSpecificLocation:
           map['useSpecificLocation'] != null
               ? map['useSpecificLocation'] as bool

@@ -125,35 +125,6 @@ class PostCoverPhotosW extends GetWidget<PostListingController> {
           child: LNDImage.square(imageUrl: photo.value.file?.path, size: 125.0),
         ),
         Positioned(
-          top: 10.0,
-          right: 10.0,
-          child: SizedBox(
-            height: 20.0,
-            width: 20.0,
-            child: ClipRect(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.5),
-                ),
-                child: ClipOval(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: LNDButton.icon(
-                      icon: FontAwesomeIcons.xmark,
-                      size: 15.0,
-                      color: LNDColors.black,
-                      onPressed: () {
-                        controller.removeCoverPhoto(index);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
           bottom: 10.0,
           right: 0.0,
           left: 0.0,
@@ -191,6 +162,35 @@ class PostCoverPhotosW extends GetWidget<PostListingController> {
                   : const Positioned.fill(
                     child: LNDSpinner(color: LNDColors.black),
                   ),
+        ),
+        Positioned(
+          top: 10.0,
+          right: 10.0,
+          child: SizedBox(
+            height: 20.0,
+            width: 20.0,
+            child: ClipRect(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.5),
+                ),
+                child: ClipOval(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: LNDButton.icon(
+                      icon: FontAwesomeIcons.xmark,
+                      size: 15.0,
+                      color: LNDColors.black,
+                      onPressed: () {
+                        controller.removeCoverPhoto(index);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );
