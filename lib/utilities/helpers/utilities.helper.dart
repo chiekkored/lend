@@ -19,9 +19,9 @@ class LNDUtils {
     String endMonth = end.toAbbrMonth();
 
     if (startMonth == endMonth) {
-      return '$startMonth ${start.day}-${end.day}, ${end.year}';
+      return '$startMonth ${start.day} - ${end.day}, ${end.year}';
     } else {
-      return '$startMonth ${start.day}-$endMonth ${end.day}, ${end.year}';
+      return '$startMonth ${start.day} - $endMonth ${end.day}, ${end.year}';
     }
   }
 }

@@ -108,24 +108,19 @@ class ChatListW extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          message.text ?? '',
-                          style: TextStyle(
-                            color:
-                                isCurrentUser
-                                    ? LNDColors.white
-                                    : LNDColors.black,
-                          ),
+                        LNDText.regular(
+                          isSelectable: true,
+                          text: message.text ?? '',
+                          color:
+                              isCurrentUser ? LNDColors.white : LNDColors.black,
                         ),
-                        Text(
-                          message.createdAt.toFormattedStringTimeOnly(),
-                          style: TextStyle(
-                            fontSize: 10.0,
-                            color:
-                                isCurrentUser
-                                    ? LNDColors.white.withValues(alpha: 0.8)
-                                    : LNDColors.black.withValues(alpha: 0.6),
-                          ),
+                        LNDText.regular(
+                          text: message.createdAt.toFormattedStringTimeOnly(),
+                          fontSize: 10.0,
+                          color:
+                              isCurrentUser
+                                  ? LNDColors.white.withValues(alpha: 0.8)
+                                  : LNDColors.black.withValues(alpha: 0.6),
                         ),
                       ],
                     ),
