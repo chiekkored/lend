@@ -8,7 +8,9 @@ import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/asset/asset.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/image_type.enum.dart';
+import 'package:lend/utilities/extensions/string.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
+import 'package:lend/utilities/helpers/utilities.helper.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AssetUserDetails extends GetWidget<AssetController> {
@@ -68,7 +70,7 @@ class AssetUserDetails extends GetWidget<AssetController> {
                           ).withSpacing(8.0),
                         )
                         : GestureDetector(
-                          onTap: controller.goToProfileView,
+                          // onTap: controller.goToProfileView,
                           child: Row(
                             children: [
                               LNDImage.circle(
@@ -78,13 +80,13 @@ class AssetUserDetails extends GetWidget<AssetController> {
                               ),
                               const SizedBox(width: 8.0),
                               LNDText.bold(
-                                text: controller.asset?.owner?.firstName ?? '',
-                                textParts: [
-                                  LNDText.bold(
-                                    text:
-                                        ' ${controller.asset?.owner?.lastName ?? ''}',
-                                  ),
-                                ],
+                                text:
+                                    LNDUtils.formatFullName(
+                                      firstName:
+                                          controller.asset?.owner?.firstName,
+                                      lastName:
+                                          controller.asset?.owner?.lastName,
+                                    ).toObscure(),
                               ),
                               const SizedBox(width: 2.0),
                               const Icon(

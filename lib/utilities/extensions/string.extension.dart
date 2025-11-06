@@ -92,4 +92,16 @@ extension StringFormatter on String {
     final number = replaceAll(',', '');
     return number;
   }
+
+  String toObscure() {
+    if (trim().isEmpty) return '';
+
+    return split(' ')
+        .where((word) => word.isNotEmpty)
+        .map((word) {
+          final first = word[0];
+          return '$first${'*' * 3}';
+        })
+        .join(' ');
+  }
 }

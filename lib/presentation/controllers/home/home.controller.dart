@@ -13,6 +13,8 @@ import 'package:lend/utilities/helpers/loggers.helper.dart';
 
 class HomeController extends GetxController with LNDScrollMixin {
   static final instance = Get.find<HomeController>();
+  String get _cacheKey =>
+      '${LNDStorageConstants.assets}_${selectedCategory.name}';
 
   final assetsCollection = FirebaseFirestore.instance.collection(
     LNDCollections.assets.name,
@@ -90,15 +92,13 @@ class HomeController extends GetxController with LNDScrollMixin {
 
   void _writeToCache() {
     LNDStorageService.writeList(
-      '${LNDStorageConstants.assets}_${selectedCategory.name}',
+      _cacheKey,
       assets.map((a) => a.toJson()).toList(),
     );
   }
 
   List<dynamic>? _readCache() {
-    return LNDStorageService.readList(
-      '${LNDStorageConstants.assets}_${selectedCategory.name}',
-    );
+    return LNDStorageService.readList(_cacheKey);
   }
 
   void setSelectedCategory(Categories category) {

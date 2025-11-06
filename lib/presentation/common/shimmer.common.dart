@@ -40,3 +40,25 @@ class LNDShimmerBox extends StatelessWidget {
     );
   }
 }
+
+class LNDShimmerCircle extends StatelessWidget {
+  final double size;
+  final Widget? child;
+
+  const LNDShimmerCircle({required this.size, this.child, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LNDShimmer(
+      child: Container(
+        height: size,
+        width: size,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: LNDColors.white,
+        ),
+        child: child,
+      ),
+    );
+  }
+}

@@ -73,6 +73,7 @@ class HomePage extends GetView<HomeController> {
 
   Widget _buildPostWidget(Asset asset) {
     return GestureDetector(
+      key: Key(asset.id),
       onTap: () => controller.openAssetPage(asset),
       child: Container(
         height: 340.0,

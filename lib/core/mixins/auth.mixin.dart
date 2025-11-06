@@ -6,6 +6,7 @@ import 'package:lend/presentation/pages/signin/signin.page.dart';
 mixin AuthMixin {
   Rxn<User> get firebaseUser => AuthController.instance.firebaseUser;
   bool get isAuthenticated => firebaseUser.value != null;
+  bool isCurrentUser(uid) => AuthController.instance.uid == uid;
 
   /// Check if the user is authenticated.
   /// If not, redirect to the SigninPage
