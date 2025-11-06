@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/model/prediction.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -9,11 +10,15 @@ import 'package:permission_handler/permission_handler.dart';
 
 class LocationCallbackModel {
   final String address;
+  final String country;
+  final String cityState;
   final LatLng? latLng;
   final bool useSpecificLocation;
 
   LocationCallbackModel({
     required this.address,
+    required this.country,
+    required this.cityState,
     required this.latLng,
     required this.useSpecificLocation,
   });
@@ -36,6 +41,9 @@ class LocationPickerController extends GetxController {
   final Rx<LatLng> _currentPosition = const LatLng(0, 0).obs;
 
   final Rx<LatLng?> _pinnedPosition = Rx(null);
+
+  String country = '';
+  String cityState = '';
 
   final marker = <Marker>{}.obs;
   final circle = <Circle>{}.obs;
@@ -79,6 +87,8 @@ class LocationPickerController extends GetxController {
     if (locationCallback != null) {
       locationController.text = locationCallback?.address ?? '';
       useSpecificLocation.value = locationCallback?.useSpecificLocation ?? true;
+      country = locationCallback?.country ?? '';
+      cityState = locationCallback?.cityState ?? '';
 
       if (locationCallback?.latLng != null) {
         updateCameraWithMarker(
@@ -216,12 +226,20 @@ class LocationPickerController extends GetxController {
     }
   }
 
+  void setAddressDetails(Prediction? prediction) {
+    final addressDetails = prediction?.terms ?? [];
+    List<Terms> lastTwo = addressDetails.sublist(addressDetails.length - 2);
+
+    country = lastTwo.last.value ?? '';
+    cityState = lastTwo.first.value ?? '';
+  }
+
   void applyLocation() {
-    // Logic to apply the selected location
-    // For example, you might want to save the location or update the UI
     Get.back<LocationCallbackModel>(
       result: LocationCallbackModel(
         address: locationController.text,
+        country: country,
+        cityState: cityState,
         useSpecificLocation: useSpecificLocation.value,
         latLng:
             _pinnedPosition.value == null

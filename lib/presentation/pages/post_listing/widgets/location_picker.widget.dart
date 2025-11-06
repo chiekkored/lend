@@ -64,6 +64,8 @@ class LocationPickerW extends StatelessWidget {
                       itemClick: (prediction) {
                         controller.locationController.text =
                             prediction.description ?? '';
+                        controller.setAddressDetails(prediction);
+
                         FocusManager.instance.primaryFocus?.unfocus();
                       },
                       itemBuilder: (_, __, prediction) {

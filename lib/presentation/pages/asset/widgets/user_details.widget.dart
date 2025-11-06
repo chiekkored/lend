@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/asset/asset.controller.dart';
@@ -25,14 +24,14 @@ class AssetUserDetails extends GetWidget<AssetController> {
     if (location?.useSpecificLocation == true ||
         address == null ||
         address.isEmpty) {
-      return address ?? '';
+      return (address ?? '').toObscure();
     }
 
     // Otherwise show only last two components
     final components = address.split(', ');
     if (components.length <= 2) return address;
 
-    return components.sublist(components.length - 2).join(', ');
+    return components.sublist(components.length - 2).join(', ').toObscure();
   }
 
   @override
@@ -122,11 +121,11 @@ class AssetUserDetails extends GetWidget<AssetController> {
                         ],
                       ),
                     ),
-                    LNDButton.icon(
-                      icon: FontAwesomeIcons.angleRight,
-                      onPressed: () {},
-                      size: 20.0,
-                    ),
+                    // LNDButton.icon(
+                    //   icon: FontAwesomeIcons.angleRight,
+                    //   onPressed: () {},
+                    //   size: 20.0,
+                    // ),
                   ],
                 ),
                 SizedBox(

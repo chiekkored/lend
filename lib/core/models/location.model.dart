@@ -6,17 +6,29 @@ import 'package:lend/utilities/extensions/geopoint.extension.dart';
 
 class Location {
   String? description;
+  String? country;
+  String? cityState;
   GeoPoint? latLng;
   bool? useSpecificLocation;
-  Location({this.description, this.latLng, this.useSpecificLocation});
+  Location({
+    this.description,
+    this.country,
+    this.cityState,
+    this.latLng,
+    this.useSpecificLocation,
+  });
 
   Location copyWith({
     String? description,
+    String? country,
+    String? cityState,
     GeoPoint? latLng,
     bool? useSpecificLocation,
   }) {
     return Location(
       description: description ?? this.description,
+      country: country ?? this.country,
+      cityState: cityState ?? this.cityState,
       latLng: latLng ?? this.latLng,
       useSpecificLocation: useSpecificLocation ?? this.useSpecificLocation,
     );
@@ -25,6 +37,8 @@ class Location {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'description': description,
+      'country': country,
+      'cityState': cityState,
       'latLng':
           latLng != null
               ? GeoPoint(latLng!.latitude, latLng!.longitude).toMap()
@@ -37,6 +51,8 @@ class Location {
     return Location(
       description:
           map['description'] != null ? map['description'] as String : null,
+      country: map['country'] != null ? map['country'] as String : null,
+      cityState: map['cityState'] != null ? map['cityState'] as String : null,
       latLng:
           map['latLng'] != null
               ? map['latLng'] is GeoPoint
@@ -60,18 +76,24 @@ class Location {
 
   @override
   String toString() =>
-      'Location(description: $description, latLng: $latLng), useSpecificLocation: $useSpecificLocation)';
+      'Location(description: $description,country: $country,cityState: $cityState, latLng: $latLng), useSpecificLocation: $useSpecificLocation)';
 
   @override
   bool operator ==(covariant Location other) {
     if (identical(this, other)) return true;
 
     return other.description == description &&
+        other.country == country &&
+        other.cityState == cityState &&
         other.latLng == latLng &&
         other.useSpecificLocation == useSpecificLocation;
   }
 
   @override
   int get hashCode =>
-      description.hashCode ^ latLng.hashCode ^ useSpecificLocation.hashCode;
+      description.hashCode ^
+      country.hashCode ^
+      cityState.hashCode ^
+      latLng.hashCode ^
+      useSpecificLocation.hashCode;
 }

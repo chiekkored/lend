@@ -191,6 +191,8 @@ class PostListingController extends GetxController with TextFieldsMixin {
       location: LocationCallbackModel(
         address: locationController.text,
         useSpecificLocation: _location?.useSpecificLocation ?? true,
+        country: _location?.country ?? '',
+        cityState: _location?.cityState ?? '',
         latLng:
             _location?.latLng == null
                 ? null
@@ -205,6 +207,8 @@ class PostListingController extends GetxController with TextFieldsMixin {
       locationController.text = result.address;
       _location = Location(
         description: result.address,
+        country: result.country,
+        cityState: result.cityState,
         useSpecificLocation: result.useSpecificLocation,
         latLng:
             result.latLng == null
