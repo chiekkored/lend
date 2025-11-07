@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,6 +34,7 @@ import 'package:lend/utilities/enums/chat_type.enum.dart';
 import 'package:lend/utilities/enums/message_type.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:lend/utilities/helpers/navigator.helper.dart';
+import 'package:lend/utilities/helpers/utilities.helper.dart';
 
 class AssetController extends GetxController {
   static final instance = Get.find<AssetController>();
@@ -183,7 +182,7 @@ class AssetController extends GetxController {
       );
     } else {
       const radius = 500.0;
-      final randomLocation = _getRandomLocationWithinRadius(
+      final randomLocation = LNDUtils.getRandomLocationWithinRadius(
         cameraPosition.target,
         radius,
       );
@@ -205,29 +204,6 @@ class AssetController extends GetxController {
     }
 
     // _getAddressFromLatLng(cameraPosition.target);
-  }
-
-  /// Generates a random LatLng within the specified radius (in meters) from the center point
-  LatLng _getRandomLocationWithinRadius(LatLng center, double radius) {
-    // Generate a random distance from center (0 to radius)
-    final random = math.Random();
-    final randomRadius = radius * math.sqrt(random.nextDouble());
-
-    // Generate random angle
-    final randomAngle = random.nextDouble() * 2 * math.pi;
-
-    // Calculate offset in meters
-    final xOffset = randomRadius * math.cos(randomAngle);
-    final yOffset = randomRadius * math.sin(randomAngle);
-
-    // Convert meter offsets to latitude/longitude offsets
-    // 111,111 meters is approximately 1 degree of latitude
-    // Longitude degrees vary based on latitude
-    final latOffset = yOffset / 111111;
-    final lngOffset =
-        xOffset / (111111 * math.cos(center.latitude * math.pi / 180));
-
-    return LatLng(center.latitude + latOffset, center.longitude + lngOffset);
   }
 
   void openAllPrices() async {

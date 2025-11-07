@@ -6,7 +6,9 @@ import 'package:lend/core/mixins/auth.mixin.dart';
 import 'package:lend/core/mixins/scroll.mixin.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/booking.model.dart';
+import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/controllers/my_rentals/widgets/on_going_booking_view.widget.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -109,6 +111,11 @@ class MyRentalsController extends GetxController
   Future<void> refreshMyRentals() async {
     _myRentals.clear();
     await getMyRentals();
+  }
+
+  void onTapOnGoingBooking(int index) async {
+    final booking = onGoingRentals[index];
+    LNDShow.bottomSheet(OnGoingBookingW(booking: booking));
   }
 
   void goToAsset(Asset? asset) {

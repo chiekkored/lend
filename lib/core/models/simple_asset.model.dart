@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lend/core/models/booking.model.dart';
+import 'package:lend/core/models/location.model.dart';
 
 class SimpleAsset {
   final String id;
@@ -14,6 +15,7 @@ class SimpleAsset {
   final String? category;
   final Timestamp? createdAt;
   final String? status;
+  final Location? location;
   SimpleAsset({
     required this.id,
     required this.ownerId,
@@ -23,29 +25,30 @@ class SimpleAsset {
     required this.category,
     required this.createdAt,
     required this.status,
+    required this.location,
   });
 
-  SimpleAsset copyWith({
-    String? id,
-    String? ownerId,
-    String? title,
-    List<String>? images,
-    List<Booking>? bookings,
-    String? category,
-    Timestamp? createdAt,
-    String? status,
-  }) {
-    return SimpleAsset(
-      id: id ?? this.id,
-      ownerId: ownerId ?? this.ownerId,
-      title: title ?? this.title,
-      images: images ?? this.images,
-      bookings: bookings ?? this.bookings,
-      category: category ?? this.category,
-      createdAt: createdAt ?? this.createdAt,
-      status: status ?? this.status,
-    );
-  }
+  // SimpleAsset copyWith({
+  //   String? id,
+  //   String? ownerId,
+  //   String? title,
+  //   List<String>? images,
+  //   List<Booking>? bookings,
+  //   String? category,
+  //   Timestamp? createdAt,
+  //   String? status,
+  // }) {
+  //   return SimpleAsset(
+  //     id: id ?? this.id,
+  //     ownerId: ownerId ?? this.ownerId,
+  //     title: title ?? this.title,
+  //     images: images ?? this.images,
+  //     bookings: bookings ?? this.bookings,
+  //     category: category ?? this.category,
+  //     createdAt: createdAt ?? this.createdAt,
+  //     status: status ?? this.status,
+  //   );
+  // }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -61,6 +64,7 @@ class SimpleAsset {
               ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
               : null,
       'status': status,
+      'location': location?.toMap(),
     };
   }
 
@@ -83,6 +87,7 @@ class SimpleAsset {
                   )
               : null,
       status: map['status'] != null ? map['status'] as String : null,
+      location: Location.fromMap(map['location'] as Map<String, dynamic>),
     );
   }
 
@@ -93,7 +98,7 @@ class SimpleAsset {
 
   @override
   String toString() {
-    return 'SimpleAsset(id: $id, ownerId: $ownerId, title: $title, images: $images, bookings: $bookings, category: $category, createdAt: $createdAt, status: $status)';
+    return 'SimpleAsset(id: $id, ownerId: $ownerId, title: $title, images: $images, bookings: $bookings, category: $category, createdAt: $createdAt, status: $status, location: $location)';
   }
 
   @override
@@ -107,7 +112,8 @@ class SimpleAsset {
         listEquals(other.bookings, bookings) &&
         other.category == category &&
         other.createdAt == createdAt &&
-        other.status == status;
+        other.status == status &&
+        other.location == location;
   }
 
   @override
@@ -119,7 +125,8 @@ class SimpleAsset {
         bookings.hashCode ^
         category.hashCode ^
         createdAt.hashCode ^
-        status.hashCode;
+        status.hashCode ^
+        location.hashCode;
   }
 }
 

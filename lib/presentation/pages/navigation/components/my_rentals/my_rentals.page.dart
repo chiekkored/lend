@@ -68,95 +68,7 @@ class MyRentalsPage extends GetView<MyRentalsController> {
               return const SliverToBoxAdapter(child: SizedBox.shrink());
             }
 
-            return SliverToBoxAdapter(
-              child: Container(
-                height: 280.0,
-                color: LNDColors.primary.withValues(alpha: 0.3),
-                child: Swiper(
-                  itemCount: onGoingRentals.length,
-                  viewportFraction: 0.8,
-                  scale: 0.9,
-                  loop: false,
-                  itemBuilder: (_, index) {
-                    final booking = onGoingRentals[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: LNDColors.outline,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(16.0),
-                                  topRight: Radius.circular(16.0),
-                                ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(12.0),
-                                  topRight: Radius.circular(12.0),
-                                ),
-                                child: LNDImage.custom(
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  imageUrl: booking.asset?.images?.first,
-                                  borderRadius: 0.0,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              padding: const EdgeInsets.all(12.0),
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                color: LNDColors.white,
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16.0),
-                                  bottomRight: Radius.circular(16.0),
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      LNDText.regular(
-                                        text: booking.asset?.title ?? '',
-                                        isSelectable: true,
-                                      ),
-                                      LNDText.bold(
-                                        text: '₱${booking.totalPrice}',
-                                      ),
-                                    ],
-                                  ),
-                                  LNDText.regular(
-                                    text: booking.asset?.category ?? '',
-                                    color: LNDColors.hint,
-                                  ),
-                                  // LNDText.regular(
-                                  //   text: booking.asset?.category ?? '',
-                                  //   color: LNDColors.hint,
-                                  // ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            );
+            return _buildOnGoingRentals(onGoingRentals);
           }),
 
           Obx(() {
@@ -185,6 +97,96 @@ class MyRentalsPage extends GetView<MyRentalsController> {
             );
           }),
         ],
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _buildOnGoingRentals(List<Booking> onGoingRentals) {
+    return SliverToBoxAdapter(
+      child: Container(
+        height: 280.0,
+        color: LNDColors.primary.withValues(alpha: 0.3),
+        child: Swiper(
+          onTap: (idx) => controller.onTapOnGoingBooking(idx),
+          itemCount: onGoingRentals.length,
+          viewportFraction: 0.8,
+          scale: 0.9,
+          loop: false,
+          itemBuilder: (_, index) {
+            final booking = onGoingRentals[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: LNDColors.outline,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16.0),
+                          topRight: Radius.circular(16.0),
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12.0),
+                          topRight: Radius.circular(12.0),
+                        ),
+                        child: LNDImage.custom(
+                          height: double.infinity,
+                          width: double.infinity,
+                          imageUrl: booking.asset?.images?.first,
+                          borderRadius: 0.0,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(12.0),
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: LNDColors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(16.0),
+                          bottomRight: Radius.circular(16.0),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LNDText.regular(
+                                text: booking.asset?.title ?? '',
+                                isSelectable: true,
+                              ),
+                              LNDText.bold(text: '₱${booking.totalPrice}'),
+                            ],
+                          ),
+                          LNDText.regular(
+                            text: booking.asset?.category ?? '',
+                            color: LNDColors.hint,
+                          ),
+                          // LNDText.regular(
+                          //   text: booking.asset?.category ?? '',
+                          //   color: LNDColors.hint,
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

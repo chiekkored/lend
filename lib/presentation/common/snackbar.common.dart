@@ -88,48 +88,62 @@ class LNDSnackbar {
     String buttonText,
     VoidCallback? buttonOnPressed,
   ) async {
-    await Get.closeCurrentSnackbar();
-
-    Get.rawSnackbar(
-      duration: const Duration(seconds: 5),
-      titleText:
-          title.isEmpty
-              ? null
-              : LNDText.bold(
-                text: title,
-                color: LNDColors.white,
-                fontSize: 18.0,
-              ),
-      messageText: LNDText.regular(
-        text: message,
-        color: LNDColors.white,
-        overflow: TextOverflow.clip,
-      ),
-      backgroundColor: color,
-      borderRadius: 16.0,
-      snackPosition: SnackPosition.BOTTOM,
-      icon: Icon(icon, color: LNDColors.white, size: 25.0),
-      animationDuration: const Duration(milliseconds: 500),
-      margin:
-          Platform.isAndroid
-              ? const EdgeInsets.all(8.0)
-              : const EdgeInsets.symmetric(horizontal: 8.0),
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
-      mainButton:
-          showButton
-              ? Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: LNDButton.text(
-                  text: buttonText,
-                  onPressed: () {
-                    buttonOnPressed?.call();
-                  },
-                  enabled: true,
-                  color: LNDColors.primary,
+    ScaffoldMessenger.of(Get.context!)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 5),
+          backgroundColor: color,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          margin:
+              Platform.isAndroid
+                  ? const EdgeInsets.all(8.0)
+                  : const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
+          dismissDirection: DismissDirection.horizontal,
+          content: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(icon, color: LNDColors.white, size: 25.0),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (title.isNotEmpty)
+                      LNDText.bold(
+                        text: title,
+                        color: LNDColors.white,
+                        fontSize: 18.0,
+                      ),
+                    LNDText.regular(
+                      text: message,
+                      color: LNDColors.white,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ],
                 ),
-              )
-              : null,
-      onTap: (snack) => Get.closeCurrentSnackbar(),
-    );
+              ),
+              if (showButton)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: LNDButton.text(
+                    text: buttonText,
+                    onPressed: () {
+                      buttonOnPressed?.call();
+                      ScaffoldMessenger.of(Get.context!).hideCurrentSnackBar();
+                    },
+                    enabled: true,
+                    color: LNDColors.primary,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
   }
 }
