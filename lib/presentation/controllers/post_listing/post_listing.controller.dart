@@ -487,6 +487,7 @@ class PostListingController extends GetxController with TextFieldsMixin {
             ownerId: AuthController.instance.uid ?? '',
             createdAt: Timestamp.now(),
             status: availability.value.label,
+            // location: _location,
           ).toMap();
 
       final assetArgs =

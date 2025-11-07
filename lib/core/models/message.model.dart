@@ -57,7 +57,14 @@ class Message {
       text: map['text'] != null ? map['text'] as String : null,
       senderId: map['senderId'] != null ? map['senderId'] as String : null,
       createdAt:
-          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+          map['createdAt'] != null
+              ? map['createdAt'] is Timestamp
+                  ? map['createdAt'] as Timestamp
+                  : Timestamp(
+                    map['createdAt']['_seconds'],
+                    map['createdAt']['_nanoseconds'],
+                  )
+              : null,
       type: map['type'] != null ? map['type'] as String : null,
       mediaUrl: map['mediaUrl'] != null ? map['mediaUrl'] as String : null,
     );

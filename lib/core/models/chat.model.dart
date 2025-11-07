@@ -123,7 +123,14 @@ class Chat {
               ? map['lastMessageSenderId'] as String
               : null,
       createdAt:
-          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+          map['createdAt'] != null
+              ? map['createdAt'] is Timestamp
+                  ? map['createdAt'] as Timestamp
+                  : Timestamp(
+                    map['createdAt']['_seconds'],
+                    map['createdAt']['_nanoseconds'],
+                  )
+              : null,
       hasRead: map['hasRead'] != null ? map['hasRead'] as bool : null,
       status:
           map['status'] != null ? ChatStatus.fromString(map['status']) : null,

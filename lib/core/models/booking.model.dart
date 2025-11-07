@@ -80,7 +80,14 @@ class Booking {
               ? SimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
               : null,
       createdAt:
-          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+          map['createdAt'] != null
+              ? map['createdAt'] is Timestamp
+                  ? map['createdAt'] as Timestamp
+                  : Timestamp(
+                    map['createdAt']['_seconds'],
+                    map['createdAt']['_nanoseconds'],
+                  )
+              : null,
       payment:
           map['payment'] != null
               ? Payment.fromMap(map['payment'] as Map<String, dynamic>)
@@ -253,7 +260,14 @@ class AddBooking {
               ? AddSimpleAsset.fromMap(map['asset'] as Map<String, dynamic>)
               : null,
       createdAt:
-          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+          map['createdAt'] != null
+              ? map['createdAt'] is Timestamp
+                  ? map['createdAt'] as Timestamp
+                  : Timestamp(
+                    map['createdAt']['_seconds'],
+                    map['createdAt']['_nanoseconds'],
+                  )
+              : null,
       payment:
           map['payment'] != null
               ? Payment.fromMap(map['payment'] as Map<String, dynamic>)

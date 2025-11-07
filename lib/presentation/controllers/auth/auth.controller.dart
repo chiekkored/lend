@@ -47,10 +47,12 @@ class AuthController extends GetxController {
     if (user != null) {
       ProfileController.instance.getUserData();
       MyRentalsController.instance.getMyRentals();
+      MyRentalsController.instance.listenToRentals();
       YourListingController.instance.getMyAssets();
       MessagesController.instance.listenToChats();
     } else {
       MessagesController.instance.cancelSubscriptions();
+      MyRentalsController.instance.cancelSubscriptions();
     }
   }
 

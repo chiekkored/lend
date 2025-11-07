@@ -74,7 +74,14 @@ class SimpleAsset {
           map['bookings'] != null ? List<Booking>.from(map['bookings']) : null,
       category: map['category'] != null ? map['category'] as String : null,
       createdAt:
-          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+          map['createdAt'] != null
+              ? map['createdAt'] is Timestamp
+                  ? map['createdAt'] as Timestamp
+                  : Timestamp(
+                    map['createdAt']['_seconds'],
+                    map['createdAt']['_nanoseconds'],
+                  )
+              : null,
       status: map['status'] != null ? map['status'] as String : null,
     );
   }
@@ -177,7 +184,14 @@ class AddSimpleAsset {
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
       category: map['category'] != null ? map['category'] as String : null,
       createdAt:
-          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+          map['createdAt'] != null
+              ? map['createdAt'] is Timestamp
+                  ? map['createdAt'] as Timestamp
+                  : Timestamp(
+                    map['createdAt']['_seconds'],
+                    map['createdAt']['_nanoseconds'],
+                  )
+              : null,
       status: map['status'] != null ? map['status'] as String : null,
     );
   }

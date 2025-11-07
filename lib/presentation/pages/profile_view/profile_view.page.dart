@@ -67,7 +67,7 @@ class ProfileViewPage extends GetView<ProfileViewController> {
                   horizontal: 12.0,
                 ),
                 decoration: BoxDecoration(
-                  color: LNDColors.primary.withOpacity(0.8),
+                  color: LNDColors.primary.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(16.0),
                 ),
                 child: LNDText.regular(

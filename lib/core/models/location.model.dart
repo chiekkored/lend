@@ -39,10 +39,7 @@ class Location {
       'description': description,
       'country': country,
       'cityState': cityState,
-      'latLng':
-          latLng != null
-              ? GeoPoint(latLng!.latitude, latLng!.longitude).toMap()
-              : null,
+      'latLng': latLng?.toMap(),
       'useSpecificLocation': useSpecificLocation,
     };
   }
@@ -79,8 +76,9 @@ class Location {
       'Location(description: $description,country: $country,cityState: $cityState, latLng: $latLng), useSpecificLocation: $useSpecificLocation)';
 
   @override
-  bool operator ==(covariant Location other) {
+  bool operator ==(covariant Object other) {
     if (identical(this, other)) return true;
+    if (other is! Location) return false;
 
     return other.description == description &&
         other.country == country &&

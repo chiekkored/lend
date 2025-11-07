@@ -99,7 +99,14 @@ class UserModel {
               : null,
       photoUrl: map['photoUrl'] != null ? map['photoUrl'] as String : null,
       createdAt:
-          map['createdAt'] != null ? map['createdAt'] as Timestamp : null,
+          map['createdAt'] != null
+              ? map['createdAt'] is Timestamp
+                  ? map['createdAt'] as Timestamp
+                  : Timestamp(
+                    map['createdAt']['_seconds'],
+                    map['createdAt']['_nanoseconds'],
+                  )
+              : null,
       email: map['email'] != null ? map['email'] as String : null,
       phone: map['phone'] != null ? map['phone'] as String : null,
       type: map['type'] != null ? map['type'] as String : null,
