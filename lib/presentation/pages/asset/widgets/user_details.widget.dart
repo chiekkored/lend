@@ -15,25 +15,6 @@ import 'package:shimmer/shimmer.dart';
 class AssetUserDetails extends GetWidget<AssetController> {
   const AssetUserDetails({super.key});
 
-  // Helper method to conditionally show address based on useSpecificLocation
-  String _getAddressText() {
-    final location = controller.asset?.location;
-    final address = location?.description;
-
-    // Return full address if useSpecificLocation is true
-    if (location?.useSpecificLocation == true ||
-        address == null ||
-        address.isEmpty) {
-      return (address ?? '').toObscure();
-    }
-
-    // Otherwise show only last two components
-    final components = address.split(', ');
-    if (components.length <= 2) return address;
-
-    return components.sublist(components.length - 2).join(', ').toObscure();
-  }
-
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -115,7 +96,12 @@ class AssetUserDetails extends GetWidget<AssetController> {
                           const SizedBox(width: 8.0),
                           Expanded(
                             child: Obx(
-                              () => LNDText.regular(text: _getAddressText()),
+                              () => LNDText.regular(
+                                text: LNDUtils.getAddressText(
+                                  location: controller.asset?.location,
+                                  toObscure: true,
+                                ),
+                              ),
                             ),
                           ),
                         ],

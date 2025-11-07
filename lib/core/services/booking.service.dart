@@ -4,6 +4,7 @@ import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/enums/chat_status.enum.dart';
+import 'package:lend/utilities/helpers/loggers.helper.dart';
 
 class BookingService {
   static final _db = FirebaseFirestore.instance;
@@ -98,10 +99,12 @@ class BookingService {
 
       return const Left(true);
     } catch (e) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: StackTrace.current);
+
       if (e == e1 || e == e2) {
         return Right(e.toString());
       }
-      return const Right('Something went wrong');
+      return Right(e.toString());
     }
   }
 }

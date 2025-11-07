@@ -484,7 +484,7 @@ class PostListingController extends GetxController with TextFieldsMixin {
             title: titleController.text.trim(),
             images: coverPhotos.map((e) => e.value.storagePath ?? '').toList(),
             category: categoryController.text,
-            ownerId: AuthController.instance.uid ?? '',
+            owner: ProfileController.instance.simpleUser,
             createdAt: Timestamp.now(),
             status: availability.value.label,
             location: _location,

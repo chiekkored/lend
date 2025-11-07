@@ -1,10 +1,12 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
+import 'package:lend/presentation/common/pulsing_dot.common.dart';
 import 'package:lend/presentation/common/spinner.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
@@ -104,7 +106,7 @@ class MyRentalsPage extends GetView<MyRentalsController> {
   SliverToBoxAdapter _buildOnGoingRentals(List<Booking> onGoingRentals) {
     return SliverToBoxAdapter(
       child: Container(
-        height: 280.0,
+        height: 300.0,
         color: LNDColors.primary.withValues(alpha: 0.3),
         child: Swiper(
           onTap: (idx) => controller.onTapOnGoingBooking(idx),
@@ -121,26 +123,35 @@ class MyRentalsPage extends GetView<MyRentalsController> {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: LNDColors.outline,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16.0),
-                          topRight: Radius.circular(16.0),
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: LNDColors.outline,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16.0),
+                              topRight: Radius.circular(16.0),
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(12.0),
+                              topRight: Radius.circular(12.0),
+                            ),
+                            child: LNDImage.custom(
+                              height: double.infinity,
+                              width: double.infinity,
+                              imageUrl: booking.asset?.images?.first,
+                              borderRadius: 0.0,
+                            ),
+                          ),
                         ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12.0),
-                          topRight: Radius.circular(12.0),
+                        const Positioned(
+                          top: 15.0,
+                          left: 15.0,
+                          child: LNDPulsingDot(color: LNDColors.success),
                         ),
-                        child: LNDImage.custom(
-                          height: double.infinity,
-                          width: double.infinity,
-                          imageUrl: booking.asset?.images?.first,
-                          borderRadius: 0.0,
-                        ),
-                      ),
+                      ],
                     ),
                   ),
 
@@ -157,6 +168,7 @@ class MyRentalsPage extends GetView<MyRentalsController> {
                         ),
                       ),
                       child: Column(
+                        spacing: 2.0,
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -167,17 +179,40 @@ class MyRentalsPage extends GetView<MyRentalsController> {
                                 text: booking.asset?.title ?? '',
                                 isSelectable: true,
                               ),
-                              LNDText.bold(text: '₱${booking.totalPrice}'),
+                              LNDText.bold(
+                                text: '₱${booking.totalPrice.toMoney()}',
+                              ),
                             ],
                           ),
                           LNDText.regular(
-                            text: booking.asset?.category ?? '',
+                            text: LNDUtils.getDateRange(
+                              start: booking.dates?.first.toDate(),
+                              end: booking.dates?.last.toDate(),
+                            ),
                             color: LNDColors.hint,
                           ),
-                          // LNDText.regular(
-                          //   text: booking.asset?.category ?? '',
-                          //   color: LNDColors.hint,
-                          // ),
+                          Visibility(
+                            visible: booking.asset?.location != null,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const FaIcon(
+                                  FontAwesomeIcons.locationDot,
+                                  color: LNDColors.hint,
+                                  size: 20.0,
+                                ),
+                                const SizedBox(width: 8.0),
+                                Expanded(
+                                  child: LNDText.regular(
+                                    text: LNDUtils.getAddressText(
+                                      location: booking.asset?.location,
+                                      toObscure: false,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 
 extension BookingStatusColor on BookingStatus {
@@ -7,11 +8,11 @@ extension BookingStatusColor on BookingStatus {
       case BookingStatus.pending:
         return Colors.orange;
       case BookingStatus.confirmed:
-        return Colors.green;
+        return LNDColors.success;
       case BookingStatus.declined:
-        return Colors.red;
+        return LNDColors.danger;
       case BookingStatus.cancelled:
-        return Colors.red;
+        return LNDColors.danger;
     }
   }
 }

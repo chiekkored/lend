@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lend/core/models/location.model.dart';
 import 'package:lend/utilities/extensions/string.extension.dart';
 
 class LNDUtils {
@@ -49,5 +50,37 @@ class LNDUtils {
         xOffset / (111111 * math.cos(center.latitude * math.pi / 180));
 
     return LatLng(center.latitude + latOffset, center.longitude + lngOffset);
+  }
+
+  // Helper method to conditionally show address based on useSpecificLocation
+  static String getAddressText({
+    required Location? location,
+    required bool toObscure,
+  }) {
+    if (location == null) return '';
+
+    final address = location.description;
+
+    // Return full address if useSpecificLocation is true
+    if (location.useSpecificLocation == true ||
+        address == null ||
+        address.isEmpty) {
+      if (toObscure) return (address ?? '').toObscure();
+
+      return address ?? '';
+    }
+
+    // Otherwise show only last two components
+    final components = address.split(', ');
+
+    if (toObscure) {
+      if (components.length <= 2) return address.toObscure();
+
+      return components.sublist(components.length - 2).join(', ').toObscure();
+    }
+
+    if (components.length <= 2) return address;
+
+    return components.sublist(components.length - 2).join(', ');
   }
 }

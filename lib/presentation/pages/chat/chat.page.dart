@@ -45,7 +45,7 @@ class ChatPage extends GetView<ChatController> {
   }
 
   Widget _buildBottomAppbar(Chat chat) {
-    final isOwner = chat.asset?.ownerId == AuthController.instance.uid;
+    final isOwner = chat.asset?.owner?.uid == AuthController.instance.uid;
 
     return SizedBox(
       child: Obx(() {

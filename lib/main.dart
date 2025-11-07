@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
 import 'package:lend/core/bindings/calendar_bookings/calendar_bookings.binding.dart';
 import 'package:lend/core/bindings/calendar_picker/calendar_picker.binding.dart';
@@ -40,9 +38,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await MainService.initializeFirebase();
-  await GetStorage.init();
+
+  await Future.wait([
+    MainService.intializeGetStorage(),
+    MainService.initializeDeviceOrientation(),
+    MainService.loadEnv(),
+  ]);
+
   // GetStorage().erase();
-  await dotenv.load(fileName: '.env');
 
   runApp(const Root());
 }

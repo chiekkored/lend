@@ -188,10 +188,9 @@ class ChatController extends GetxController {
           throw error;
         },
       );
-    } catch (e, st) {
+    } catch (e) {
       LNDLoading.hide();
-      LNDLogger.e(e.toString(), error: e, stackTrace: st);
-      LNDSnackbar.showError(e.toString());
+      LNDSnackbar.showError('Something went wrong');
     }
   }
 

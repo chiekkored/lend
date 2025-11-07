@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/image_type.enum.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
@@ -62,48 +64,93 @@ class OnGoingBookingW extends StatelessWidget {
               ],
             ).withSpacing(16.0),
           ),
-          SizedBox(
-            height: 100.0,
-            width: double.infinity,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: GoogleMap(
-                buildingsEnabled: false,
-                initialCameraPosition: CameraPosition(target: latLng, zoom: 13),
-                onMapCreated: (gMapController) {
-                  gMapController.animateCamera(
-                    CameraUpdate.newCameraPosition(
-                      CameraPosition(target: latLng, zoom: 13),
+          Row(
+            children: [
+              LNDImage.circle(
+                imageUrl: booking.asset?.owner?.photoUrl,
+                size: 40.0,
+                imageType: ImageType.user,
+              ),
+              const SizedBox(width: 8.0),
+              LNDText.bold(
+                text: LNDUtils.formatFullName(
+                  firstName: booking.asset?.owner?.firstName,
+                  lastName: booking.asset?.owner?.lastName,
+                ),
+              ),
+              const SizedBox(width: 2.0),
+              const Icon(
+                Icons.verified_rounded,
+                size: 15.0,
+                color: LNDColors.primary,
+              ),
+            ],
+          ),
+          if (booking.asset?.location != null) ...[
+            Row(
+              children: [
+                const FaIcon(
+                  FontAwesomeIcons.locationDot,
+                  color: LNDColors.hint,
+                  size: 20.0,
+                ),
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: LNDText.regular(
+                    text: LNDUtils.getAddressText(
+                      location: booking.asset?.location,
+                      toObscure: false,
                     ),
-                  );
-                },
-                circles: {
-                  if (useSpecificLocation)
-                    Circle(
-                      circleId: const CircleId('selected-location'),
-                      center: LNDUtils.getRandomLocationWithinRadius(
-                        latLng,
-                        500.0,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 100.0,
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: GoogleMap(
+                  buildingsEnabled: false,
+                  initialCameraPosition: CameraPosition(
+                    target: latLng,
+                    zoom: 13,
+                  ),
+                  onMapCreated: (gMapController) {
+                    gMapController.animateCamera(
+                      CameraUpdate.newCameraPosition(
+                        CameraPosition(target: latLng, zoom: 13),
                       ),
-                      radius: 500.0,
-                      fillColor: Colors.blue.withValues(alpha: 0.5),
-                      strokeColor: Colors.blue,
-                      strokeWidth: 1,
-                    ),
-                },
-                markers: {
-                  if (useSpecificLocation)
-                    Marker(
-                      markerId: const MarkerId('selected-location-view'),
-                      position: latLng,
-                    ),
-                },
-                myLocationButtonEnabled: false,
-                zoomGesturesEnabled: false,
-                scrollGesturesEnabled: false,
+                    );
+                  },
+                  circles: {
+                    if (!useSpecificLocation)
+                      Circle(
+                        circleId: const CircleId('selected-location'),
+                        center: LNDUtils.getRandomLocationWithinRadius(
+                          latLng,
+                          500.0,
+                        ),
+                        radius: 500.0,
+                        fillColor: Colors.blue.withValues(alpha: 0.5),
+                        strokeColor: Colors.blue,
+                        strokeWidth: 1,
+                      ),
+                  },
+                  markers: {
+                    if (useSpecificLocation)
+                      Marker(
+                        markerId: const MarkerId('selected-location-view'),
+                        position: latLng,
+                      ),
+                  },
+                  myLocationButtonEnabled: false,
+                  zoomGesturesEnabled: false,
+                  scrollGesturesEnabled: false,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

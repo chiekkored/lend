@@ -10,6 +10,7 @@ class LNDText extends StatelessWidget {
   final List<LNDText>? textParts;
   final TextDecoration? textDecoration;
   final VoidCallback? onTap;
+  final int? maxLines;
 
   const LNDText._(
     this.text,
@@ -20,6 +21,7 @@ class LNDText extends StatelessWidget {
     this.textParts,
     this.textDecoration,
     this.onTap,
+    this.maxLines,
   );
 
   static TextStyle get regularStyle => const TextStyle(
@@ -70,6 +72,7 @@ class LNDText extends StatelessWidget {
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
     VoidCallback? onTap,
+    int? maxLines = 1,
   }) {
     return LNDText._(
       text,
@@ -85,6 +88,7 @@ class LNDText extends StatelessWidget {
       textParts,
       textDecoration,
       onTap,
+      maxLines,
     );
   }
 
@@ -100,6 +104,7 @@ class LNDText extends StatelessWidget {
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
     VoidCallback? onTap,
+    int? maxLines = 1,
   }) {
     return LNDText._(
       text,
@@ -115,6 +120,7 @@ class LNDText extends StatelessWidget {
       textParts,
       textDecoration,
       onTap,
+      maxLines,
     );
   }
 
@@ -130,6 +136,7 @@ class LNDText extends StatelessWidget {
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
     VoidCallback? onTap,
+    int? maxLines = 1,
   }) {
     return LNDText._(
       text,
@@ -145,6 +152,7 @@ class LNDText extends StatelessWidget {
       textParts,
       textDecoration,
       onTap,
+      maxLines,
     );
   }
 
@@ -160,6 +168,7 @@ class LNDText extends StatelessWidget {
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
     VoidCallback? onTap,
+    int? maxLines = 1,
   }) {
     return LNDText._(
       text,
@@ -175,6 +184,7 @@ class LNDText extends StatelessWidget {
       textParts,
       textDecoration,
       onTap,
+      maxLines,
     );
   }
 
@@ -198,11 +208,15 @@ class LNDText extends StatelessWidget {
             ? SelectableText.rich(
               TextSpan(children: spans),
               textAlign: textAlign,
+              maxLines: maxLines,
+              style: style,
             )
             : Text.rich(
               TextSpan(children: spans),
               textAlign: textAlign,
               softWrap: true,
+              maxLines: maxLines,
+              style: style,
             );
 
     return onTap != null

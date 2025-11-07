@@ -354,7 +354,7 @@ class AssetController extends GetxController {
       final userChatsCollection = FirebaseFirestore.instance.collection(
         LNDCollections.userChats.name,
       );
-      const bookingString = 'Booking Confirmed';
+      const bookingString = 'Booking Received!';
 
       // Create a new message
 

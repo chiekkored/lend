@@ -5,10 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/core/models/location.model.dart';
+import 'package:lend/core/models/simple_user.model.dart';
 
 class SimpleAsset {
   final String id;
-  final String? ownerId;
+  final SimpleUserModel? owner;
   final String? title;
   final List<String>? images;
   final List<Booking>? bookings;
@@ -18,7 +19,7 @@ class SimpleAsset {
   final Location? location;
   SimpleAsset({
     required this.id,
-    required this.ownerId,
+    required this.owner,
     required this.title,
     required this.images,
     this.bookings,
@@ -53,10 +54,9 @@ class SimpleAsset {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'ownerId': ownerId,
+      'owner': owner?.toMap(),
       'title': title,
       'images': images,
-
       'bookings': bookings?.map((x) => x.toMap()).toList(),
       'category': category,
       'createdAt':
@@ -71,7 +71,10 @@ class SimpleAsset {
   factory SimpleAsset.fromMap(Map<String, dynamic> map) {
     return SimpleAsset(
       id: map['id'] as String,
-      ownerId: map['ownerId'] != null ? map['ownerId'] as String : null,
+      owner:
+          map['owner'] != null
+              ? SimpleUserModel.fromMap(map['owner'] as Map<String, dynamic>)
+              : null,
       title: map['title'] != null ? map['title'] as String : null,
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
       bookings:
@@ -87,7 +90,10 @@ class SimpleAsset {
                   )
               : null,
       status: map['status'] != null ? map['status'] as String : null,
-      location: Location.fromMap(map['location'] as Map<String, dynamic>),
+      location:
+          map['location'] != null
+              ? Location.fromMap(map['location'] as Map<String, dynamic>)
+              : null,
     );
   }
 
@@ -98,7 +104,7 @@ class SimpleAsset {
 
   @override
   String toString() {
-    return 'SimpleAsset(id: $id, ownerId: $ownerId, title: $title, images: $images, bookings: $bookings, category: $category, createdAt: $createdAt, status: $status, location: $location)';
+    return 'SimpleAsset(id: $id, owner: $owner, title: $title, images: $images, bookings: $bookings, category: $category, createdAt: $createdAt, status: $status, location: $location)';
   }
 
   @override
@@ -106,7 +112,7 @@ class SimpleAsset {
     if (identical(this, other)) return true;
 
     return other.id == id &&
-        other.ownerId == ownerId &&
+        other.owner == owner &&
         other.title == title &&
         listEquals(other.images, images) &&
         listEquals(other.bookings, bookings) &&
@@ -119,7 +125,7 @@ class SimpleAsset {
   @override
   int get hashCode {
     return id.hashCode ^
-        ownerId.hashCode ^
+        owner.hashCode ^
         title.hashCode ^
         images.hashCode ^
         bookings.hashCode ^
@@ -132,46 +138,50 @@ class SimpleAsset {
 
 class AddSimpleAsset {
   final String id;
-  final String? ownerId;
+  final SimpleUserModel? owner;
   final String? title;
   final List<String>? images;
   final String? category;
   final Timestamp? createdAt;
   final String? status;
+  final Location? location;
   AddSimpleAsset({
     required this.id,
-    required this.ownerId,
+    required this.owner,
     required this.title,
     required this.images,
     required this.category,
     required this.createdAt,
     required this.status,
+    required this.location,
   });
 
   AddSimpleAsset copyWith({
     String? id,
-    String? ownerId,
+    SimpleUserModel? owner,
     String? title,
     List<String>? images,
     String? category,
     Timestamp? createdAt,
     String? status,
+    Location? location,
   }) {
     return AddSimpleAsset(
       id: id ?? this.id,
-      ownerId: ownerId ?? this.ownerId,
+      owner: owner ?? this.owner,
       title: title ?? this.title,
       images: images ?? this.images,
       category: category ?? this.category,
       createdAt: createdAt ?? this.createdAt,
       status: status ?? this.status,
+      location: location ?? this.location,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'ownerId': ownerId,
+      'owner': owner?.toMap(),
       'title': title,
       'images': images,
       'category': category,
@@ -180,13 +190,17 @@ class AddSimpleAsset {
               ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
               : null,
       'status': status,
+      'location': location?.toMap(),
     };
   }
 
   factory AddSimpleAsset.fromMap(Map<String, dynamic> map) {
     return AddSimpleAsset(
       id: map['id'] as String,
-      ownerId: map['ownerId'] != null ? map['ownerId'] as String : null,
+      owner:
+          map['owner'] != null
+              ? SimpleUserModel.fromMap(map['owner'] as Map<String, dynamic>)
+              : null,
       title: map['title'] != null ? map['title'] as String : null,
       images: map['images'] != null ? List<String>.from((map['images'])) : null,
       category: map['category'] != null ? map['category'] as String : null,
@@ -200,6 +214,10 @@ class AddSimpleAsset {
                   )
               : null,
       status: map['status'] != null ? map['status'] as String : null,
+      location:
+          map['location'] != null
+              ? Location.fromMap(map['location'] as Map<String, dynamic>)
+              : null,
     );
   }
 
@@ -210,7 +228,7 @@ class AddSimpleAsset {
 
   @override
   String toString() {
-    return 'AddSimpleAsset(id: $id, ownerId: $ownerId, title: $title, images: $images, category: $category, createdAt: $createdAt, status: $status)';
+    return 'AddSimpleAsset(id: $id, owner: $owner, title: $title, images: $images, category: $category, createdAt: $createdAt, status: $status, location: $location)';
   }
 
   @override
@@ -218,22 +236,24 @@ class AddSimpleAsset {
     if (identical(this, other)) return true;
 
     return other.id == id &&
-        other.ownerId == ownerId &&
+        other.owner == owner &&
         other.title == title &&
         listEquals(other.images, images) &&
         other.category == category &&
         other.createdAt == createdAt &&
-        other.status == status;
+        other.status == status &&
+        other.location == location;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-        ownerId.hashCode ^
+        owner.hashCode ^
         title.hashCode ^
         images.hashCode ^
         category.hashCode ^
         createdAt.hashCode ^
-        status.hashCode;
+        status.hashCode ^
+        location.hashCode;
   }
 }

@@ -124,6 +124,7 @@ class LNDSnackbar {
                       text: message,
                       color: LNDColors.white,
                       overflow: TextOverflow.clip,
+                      fontSize: 12.0,
                     ),
                   ],
                 ),
