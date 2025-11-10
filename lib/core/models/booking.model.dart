@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:lend/core/models/booking_action.model.dart';
 
 import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/core/models/simple_user.model.dart';
@@ -20,6 +21,8 @@ class Booking {
   int? totalPrice;
   List<Timestamp>? dates;
   Token? tokens;
+  BookingAction? handedOver;
+  BookingAction? returned;
   Booking({
     required this.id,
     required this.chatId,
@@ -31,6 +34,8 @@ class Booking {
     required this.totalPrice,
     required this.dates,
     this.tokens,
+    this.handedOver,
+    this.returned,
   });
 
   Booking copyWith({
@@ -44,6 +49,8 @@ class Booking {
     int? totalPrice,
     List<Timestamp>? dates,
     Token? tokens,
+    BookingAction? handedOver,
+    BookingAction? returned,
   }) {
     return Booking(
       id: id ?? this.id,
@@ -55,6 +62,9 @@ class Booking {
       status: status ?? this.status,
       totalPrice: totalPrice ?? this.totalPrice,
       dates: dates ?? this.dates,
+      tokens: tokens ?? this.tokens,
+      handedOver: handedOver ?? this.handedOver,
+      returned: returned ?? this.returned,
     );
   }
 
@@ -73,6 +83,8 @@ class Booking {
       'totalPrice': totalPrice,
       'dates': dates?.map((x) => Timestamp(x.seconds, x.nanoseconds)).toList(),
       'tokens': tokens?.toMap(),
+      'handedOver': handedOver?.toMap(),
+      'returned': returned?.toMap(),
     };
   }
 
@@ -111,6 +123,14 @@ class Booking {
           map['tokens'] != null
               ? Token.fromMap(map['tokens'] as Map<String, dynamic>)
               : null,
+      handedOver:
+          map['handedOver'] != null
+              ? BookingAction.fromMap(map['handedOver'] as Map<String, dynamic>)
+              : null,
+      returned:
+          map['returned'] != null
+              ? BookingAction.fromMap(map['returned'] as Map<String, dynamic>)
+              : null,
     );
   }
 
@@ -121,7 +141,7 @@ class Booking {
 
   @override
   String toString() {
-    return 'Booking(id: $id, chatId: $chatId, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates, tokens: $tokens)';
+    return 'Booking(id: $id, chatId: $chatId, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates, tokens: $tokens, handedOver: $handedOver, returned: $returned)';
   }
 
   @override
@@ -137,6 +157,8 @@ class Booking {
         other.status == status &&
         other.totalPrice == totalPrice &&
         other.tokens == tokens &&
+        other.handedOver == handedOver &&
+        other.returned == returned &&
         listEquals(other.dates, dates);
   }
 
@@ -151,6 +173,8 @@ class Booking {
         status.hashCode ^
         totalPrice.hashCode ^
         tokens.hashCode ^
+        handedOver.hashCode ^
+        returned.hashCode ^
         dates.hashCode;
   }
 }

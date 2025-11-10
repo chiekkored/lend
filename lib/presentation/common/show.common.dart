@@ -101,7 +101,7 @@ class LNDShow {
                 TextButton(
                   onPressed: () {
                     onCancel?.call();
-                    Navigator.pop(context);
+                    Get.back(result: false);
                   },
                   child: Text(
                     cancelText,
@@ -111,7 +111,7 @@ class LNDShow {
                 TextButton(
                   onPressed: () {
                     onConfirm?.call();
-                    Navigator.pop(context);
+                    Get.back(result: true);
                   },
                   child: Text(
                     confirmText,

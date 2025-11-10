@@ -13,7 +13,7 @@ class CalendarBottomNav extends GetWidget<CalendarPickerController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 105.0,
+      height: 80.0,
       decoration: const BoxDecoration(
         color: LNDColors.white,
         border: Border(top: BorderSide(color: LNDColors.hint, width: 0.5)),

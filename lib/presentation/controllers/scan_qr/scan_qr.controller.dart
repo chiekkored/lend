@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lend/core/models/qr_raw.model.dart';
+import 'package:lend/core/services/booking.service.dart';
+import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -63,6 +68,7 @@ class ScanQRController extends GetxController {
       final raw = barcodes.first.rawValue;
       if (raw != null && raw.isNotEmpty) {
         lastScanned.value = raw;
+        debugPrint('raw: ${raw}');
         scannerController.stop(); // optional
       }
     }
@@ -76,20 +82,40 @@ class ScanQRController extends GetxController {
           source: ImageSource.gallery,
         );
         if (image != null) {
+          LNDLoading.show();
+
           BarcodeCapture? data = await scannerController.analyzeImage(
             image.path,
             formats: [BarcodeFormat.qrCode],
           );
-          debugPrint('data: ${data?.barcodes}');
-          debugPrint('data: ${data?.image}');
-          debugPrint('data: ${data?.raw}');
-          debugPrint('data: ${data?.size}');
+          if (data != null && data.raw != null) {
+            final qrMap =
+                json.decode(json.encode(data.raw)) as Map<String, dynamic>;
+            final qrData = QrRaw.fromMap(qrMap);
+
+            if ((qrData.data?.first.rawValue?.isEmpty ?? false) ||
+                qrData.data?.first.rawValue == null) {
+              LNDLoading.hide();
+              throw 'Empty raw value';
+            }
+            final result = await BookingService.markBooking(
+              token: qrData.data?.first.rawValue ?? '',
+            );
+            if (result != null || result?['success']) {
+              Get.back(result: true);
+            }
+          } else {
+            LNDSnackbar.showError('Invalid QR');
+          }
+          LNDLoading.hide();
         }
       } else {
         final result = await Gal.requestAccess();
         if (!result) _showRequestPopup('Gallery access denied');
       }
     } catch (e, st) {
+      LNDLoading.hide();
+      LNDSnackbar.showError('Invalid QR');
       LNDLogger.e(e.toString(), stackTrace: st);
     }
   }

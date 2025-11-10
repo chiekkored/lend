@@ -21,15 +21,15 @@ class ChatPage extends GetView<ChatController> {
 
   // Private method to build the chat input box
   Widget _buildChatBox() {
-    final isCurrentDay = LNDUtils.isTodayInTimestamps(
-      controller.booking?.dates ?? [],
-    );
+    final booking = controller.booking;
+    final isCurrentDay = LNDUtils.isTodayInTimestamps(booking?.dates ?? []);
+
     return Padding(
       padding: const EdgeInsets.all(0.0),
       child: Column(
         spacing: 4.0,
         children: [
-          if (isCurrentDay)
+          if (isCurrentDay && booking?.status == BookingStatus.confirmed)
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 8.0,
@@ -38,34 +38,32 @@ class ChatPage extends GetView<ChatController> {
               decoration: const BoxDecoration(
                 border: Border(top: BorderSide(color: LNDColors.outline)),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 12.0,
-                children: [
-                  Expanded(
-                    child: LNDButton.secondary(
-                      enabled: true,
-                      icon: Icons.camera_alt_rounded,
-                      iconSize: 15.0,
-                      hasPadding: false,
-                      text: 'Handed over?',
-                      borderRadius: 16.0,
-                      onPressed: controller.goToScanQR,
-                    ),
-                  ),
-                  Expanded(
-                    child: LNDButton.secondary(
-                      enabled: true,
-                      icon: Icons.qr_code_scanner_rounded,
-                      iconSize: 15.0,
-                      hasPadding: false,
-                      text: 'Returned?',
-                      borderRadius: 16.0,
-                      onPressed: controller.goToQRView,
-                    ),
-                  ),
-                ],
-              ),
+              child:
+                  booking?.handedOver == null
+                      ? LNDButton.secondary(
+                        enabled: booking?.handedOver == null,
+                        icon:
+                            controller.isOwner
+                                ? Icons.qr_code_scanner_rounded
+                                : Icons.camera_alt_rounded,
+                        iconSize: 15.0,
+                        hasPadding: false,
+                        text: 'Handed over?',
+                        borderRadius: 16.0,
+                        onPressed: controller.onTapHandedOver,
+                      )
+                      : LNDButton.secondary(
+                        enabled: true,
+                        icon:
+                            controller.isOwner
+                                ? Icons.camera_alt_rounded
+                                : Icons.qr_code_scanner_rounded,
+                        iconSize: 15.0,
+                        hasPadding: false,
+                        text: 'Returned?',
+                        borderRadius: 16.0,
+                        onPressed: controller.onTapReturned,
+                      ),
             ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),

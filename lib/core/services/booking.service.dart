@@ -159,6 +159,7 @@ class BookingService {
     required String bookingId,
   }) async {
     try {
+      // FirebaseFunctions.instance.useFunctionsEmulator('127.0.0.1', 5001);
       final callable = FirebaseFunctions.instance.httpsCallable(
         LNDFunctions.makeToken,
       );
@@ -174,6 +175,25 @@ class BookingService {
       LNDLogger.e(e.message ?? '', stackTrace: StackTrace.current);
     } catch (e) {
       LNDLogger.e(e.toString(), stackTrace: StackTrace.current);
+    }
+    return null;
+  }
+
+  static Future<Map<String, dynamic>?> markBooking({
+    required String token,
+  }) async {
+    try {
+      final callable = FirebaseFunctions.instance.httpsCallable(
+        LNDFunctions.verifyAndMark,
+      );
+
+      final result = await callable.call({'token': token});
+
+      return Map<String, dynamic>.from(result.data);
+    } on FirebaseFunctionsException catch (e) {
+      LNDLogger.e(e.details, error: e, stackTrace: StackTrace.current);
+    } catch (e) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: StackTrace.current);
     }
     return null;
   }

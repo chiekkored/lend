@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
@@ -47,6 +48,8 @@ void main() async {
     MainService.initializeDeviceOrientation(),
     MainService.loadEnv(),
   ]);
+  // TODO
+  FirebaseFunctions.instance.useFunctionsEmulator('127.0.0.1', 5001);
 
   // GetStorage().erase();
 
@@ -165,7 +168,7 @@ class Root extends StatelessWidget {
         ),
         GetPage(
           name: QRViewPage.routeName,
-          page: () => const QRViewPage(),
+          page: () => QRViewPage(),
           middlewares: [AuthMiddleware()],
         ),
       ],

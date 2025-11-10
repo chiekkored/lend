@@ -3,7 +3,8 @@
         android:label="lend"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true">
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyABrGcghHgRMJszuIJgMp_sJsIOMEVRkfk"/>
         <activity

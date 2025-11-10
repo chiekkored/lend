@@ -37,6 +37,8 @@ class ChatController extends GetxController {
     (user) => user.uid != AuthController.instance.uid,
   );
 
+  bool get isOwner => booking?.asset?.owner?.uid == AuthController.instance.uid;
+
   @override
   void onClose() {
     _booking.close();
@@ -165,14 +167,26 @@ class ChatController extends GetxController {
     }
   }
 
-  void goToScanQR() {
-    if (booking != null) {
-      LNDNavigate.toScanQRPage();
+  void onTapHandedOver() async {
+    if (booking == null) return;
+
+    if (isOwner) {
+      LNDNavigate.toQRViewPage(qrToken: booking?.tokens?.handoverToken ?? '');
+    } else {
+      final result = await LNDNavigate.toScanQRPage();
+
+      if (result ?? false) {
+        _getBooking();
+      }
     }
   }
 
-  void goToQRView() {
-    if (booking != null) {
+  void onTapReturned() {
+    if (booking == null) return;
+
+    if (isOwner) {
+      LNDNavigate.toScanQRPage();
+    } else {
       LNDNavigate.toQRViewPage(qrToken: booking?.tokens?.returnToken ?? '');
     }
   }

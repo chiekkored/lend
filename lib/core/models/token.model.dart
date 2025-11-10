@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lend/utilities/extensions/timestamp.extension.dart';
 
 class Token {
   final String? handoverToken;
@@ -33,14 +34,8 @@ class Token {
     return <String, dynamic>{
       'handoverToken': handoverToken,
       'returnToken': returnToken,
-      'handoverExpiry':
-          handoverExpiry != null
-              ? Timestamp(handoverExpiry!.seconds, handoverExpiry!.nanoseconds)
-              : null,
-      'returnExpiry':
-          returnExpiry != null
-              ? Timestamp(returnExpiry!.seconds, returnExpiry!.nanoseconds)
-              : null,
+      'handoverExpiry': handoverExpiry?.toMap(),
+      'returnExpiry': returnExpiry?.toMap(),
     };
   }
 
