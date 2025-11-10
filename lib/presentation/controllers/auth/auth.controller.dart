@@ -51,6 +51,7 @@ class AuthController extends GetxController {
       YourListingController.instance.getMyAssets();
       MessagesController.instance.listenToChats();
     } else {
+      ProfileController.instance.removeUserData();
       MessagesController.instance.cancelSubscriptions();
       MyRentalsController.instance.cancelSubscriptions();
     }

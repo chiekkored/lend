@@ -34,6 +34,18 @@ class ProfileController extends GetxController with AuthMixin {
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
+  @override
+  void onClose() {
+    _user.close();
+    _isLoading.close();
+
+    super.onClose();
+  }
+
+  void removeUserData() {
+    _user.value = null;
+  }
+
   void getUserData() async {
     try {
       _isLoading.value = true;

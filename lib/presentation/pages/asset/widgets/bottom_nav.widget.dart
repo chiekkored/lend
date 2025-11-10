@@ -15,92 +15,90 @@ class AssetBottomNav extends GetWidget<AssetController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 105.0,
+      height: 80.0,
       decoration: const BoxDecoration(
         color: LNDColors.white,
         border: Border(top: BorderSide(color: LNDColors.hint, width: 0.5)),
       ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Obx(
-                () =>
-                    controller.isAssetLoading
-                        ? const LNDShimmer(
-                          child: LNDShimmerBox(height: 25.0, width: 100.0),
-                        )
-                        : LNDText.bold(
-                          text:
-                              '₱${controller.asset?.rates?.daily.toMoney() ?? ''}',
-                          fontSize: 18.0,
-                          textParts: [
-                            LNDText.regular(
-                              text: ' daily',
-                              color: LNDColors.hint,
-                              fontSize: 16.0,
-                            ),
-                          ],
-                        ),
-              ),
-              if (AuthController.instance.uid != controller.asset?.ownerId &&
-                  ProfileController.instance.isRentingEligible)
-                Obx(
-                  () => LNDButton.primary(
-                    text: 'Reserve now',
-                    enabled: !controller.isAssetLoading,
-                    onPressed: controller.goToCalendarPicker,
-                  ),
-                )
-              else if (AuthController.instance.uid ==
-                      controller.asset?.ownerId &&
-                  ProfileController.instance.isListingEligible)
-                Row(
-                  spacing: 8.0,
-                  children: [
-                    Container(
-                      height: 40.0,
-                      width: 40.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: LNDColors.outline,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Obx(
+              () =>
+                  controller.isAssetLoading
+                      ? const LNDShimmer(
+                        child: LNDShimmerBox(height: 25.0, width: 100.0),
+                      )
+                      : LNDText.bold(
+                        text:
+                            '₱${controller.asset?.rates?.daily.toMoney() ?? ''}',
+                        fontSize: 18.0,
+                        textParts: [
+                          LNDText.regular(
+                            text: ' daily',
+                            color: LNDColors.hint,
+                            fontSize: 16.0,
+                          ),
+                        ],
                       ),
-                      child: Obx(
-                        () => Badge.count(
-                          count: controller.pendingBookingDates.length,
-                          isLabelVisible:
-                              controller.pendingBookingDates.isNotEmpty,
-                          child: Center(
-                            child: LNDButton.icon(
-                              icon: Icons.calendar_month_rounded,
-                              size: 25.0,
-                              onPressed: controller.goToCalendarBookings,
-                            ),
+            ),
+            if (AuthController.instance.uid != controller.asset?.ownerId &&
+                ProfileController.instance.isRentingEligible)
+              Obx(
+                () => LNDButton.primary(
+                  text: 'Reserve now',
+                  enabled: !controller.isAssetLoading,
+                  onPressed: controller.goToCalendarPicker,
+                ),
+              )
+            else if (AuthController.instance.uid == controller.asset?.ownerId &&
+                ProfileController.instance.isListingEligible)
+              Row(
+                spacing: 8.0,
+                children: [
+                  Container(
+                    height: 40.0,
+                    width: 40.0,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: LNDColors.outline,
+                    ),
+                    child: Obx(
+                      () => Badge.count(
+                        count: controller.pendingBookingDates.length,
+                        isLabelVisible:
+                            controller.pendingBookingDates.isNotEmpty,
+                        child: Center(
+                          child: LNDButton.icon(
+                            icon: Icons.calendar_month_rounded,
+                            size: 25.0,
+                            onPressed: controller.goToCalendarBookings,
                           ),
                         ),
                       ),
                     ),
-                    Container(
-                      height: 40.0,
-                      width: 40.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: LNDColors.outline,
-                      ),
-                      child: Center(
-                        child: LNDButton.icon(
-                          icon: Icons.more_vert_rounded,
-                          size: 25.0,
-                          onPressed: () {},
-                        ),
+                  ),
+                  Container(
+                    height: 40.0,
+                    width: 40.0,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: LNDColors.outline,
+                    ),
+                    child: Center(
+                      child: LNDButton.icon(
+                        icon: Icons.more_vert_rounded,
+                        size: 25.0,
+                        onPressed: () {},
                       ),
                     ),
-                  ],
-                ),
-            ],
-          ),
+                  ),
+                ],
+              ),
+          ],
         ),
       ),
     );
