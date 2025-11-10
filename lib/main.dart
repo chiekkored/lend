@@ -23,6 +23,7 @@ import 'package:lend/presentation/pages/eligibility/eligibility.page.dart';
 import 'package:lend/presentation/pages/loading_overlay/loading_overlay.page.dart';
 import 'package:lend/presentation/pages/navigation/components/messages/components/archived_messages.page.dart';
 import 'package:lend/presentation/pages/profile_view/profile_view.page.dart';
+import 'package:lend/presentation/pages/qr_view/qr_view.page.dart';
 import 'package:lend/presentation/pages/scan_qr/scan_qr.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
@@ -160,6 +161,11 @@ class Root extends StatelessWidget {
           name: ScanQRPage.routeName,
           page: () => const ScanQRPage(),
           binding: ScanQRBinding(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: QRViewPage.routeName,
+          page: () => const QRViewPage(),
           middlewares: [AuthMiddleware()],
         ),
       ],

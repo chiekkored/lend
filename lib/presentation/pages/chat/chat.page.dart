@@ -55,13 +55,13 @@ class ChatPage extends GetView<ChatController> {
                   ),
                   Expanded(
                     child: LNDButton.secondary(
-                      enabled: false,
+                      enabled: true,
                       icon: Icons.qr_code_scanner_rounded,
                       iconSize: 15.0,
                       hasPadding: false,
                       text: 'Returned?',
                       borderRadius: 16.0,
-                      onPressed: () {},
+                      onPressed: controller.goToQRView,
                     ),
                   ),
                 ],

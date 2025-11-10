@@ -61,6 +61,7 @@ dependencies:
   dotted_border: ^2.1.0
   modal_bottom_sheet: ^3.0.0
   card_swiper: ^3.0.1
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/core/models/simple_user.model.dart';
+import 'package:lend/core/models/token.model.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 
 class Booking {
@@ -18,6 +19,7 @@ class Booking {
   BookingStatus? status;
   int? totalPrice;
   List<Timestamp>? dates;
+  Token? tokens;
   Booking({
     required this.id,
     required this.chatId,
@@ -28,6 +30,7 @@ class Booking {
     required this.status,
     required this.totalPrice,
     required this.dates,
+    this.tokens,
   });
 
   Booking copyWith({
@@ -40,6 +43,7 @@ class Booking {
     BookingStatus? status,
     int? totalPrice,
     List<Timestamp>? dates,
+    Token? tokens,
   }) {
     return Booking(
       id: id ?? this.id,
@@ -68,6 +72,7 @@ class Booking {
       'status': status?.label,
       'totalPrice': totalPrice,
       'dates': dates?.map((x) => Timestamp(x.seconds, x.nanoseconds)).toList(),
+      'tokens': tokens?.toMap(),
     };
   }
 
@@ -102,6 +107,10 @@ class Booking {
               : null,
       totalPrice: map['totalPrice'] != null ? map['totalPrice'] as int : null,
       dates: map['dates'] != null ? List<Timestamp>.from(map['dates']) : null,
+      tokens:
+          map['tokens'] != null
+              ? Token.fromMap(map['tokens'] as Map<String, dynamic>)
+              : null,
     );
   }
 
@@ -112,7 +121,7 @@ class Booking {
 
   @override
   String toString() {
-    return 'Booking(id: $id, chatId: $chatId, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates)';
+    return 'Booking(id: $id, chatId: $chatId, asset: $asset, createdAt: $createdAt, payment: $payment, renter: $renter, status: $status, totalPrice: $totalPrice, dates: $dates, tokens: $tokens)';
   }
 
   @override
@@ -127,6 +136,7 @@ class Booking {
         other.renter == renter &&
         other.status == status &&
         other.totalPrice == totalPrice &&
+        other.tokens == tokens &&
         listEquals(other.dates, dates);
   }
 
@@ -140,6 +150,7 @@ class Booking {
         renter.hashCode ^
         status.hashCode ^
         totalPrice.hashCode ^
+        tokens.hashCode ^
         dates.hashCode;
   }
 }

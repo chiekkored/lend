@@ -9,12 +9,21 @@ import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/image_type.enum.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
+import 'package:lend/utilities/helpers/navigator.helper.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
 
 class OnGoingBookingW extends StatelessWidget {
   const OnGoingBookingW({required this.booking, super.key});
 
   final Booking booking;
+
+  void _goToScanQR() {
+    LNDNavigate.toScanQRPage();
+  }
+
+  void _goToQRView() {
+    LNDNavigate.toQRViewPage(qrToken: booking.tokens?.returnToken ?? '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +174,7 @@ class OnGoingBookingW extends StatelessWidget {
                   hasPadding: false,
                   text: 'Handed over?',
                   borderRadius: 16.0,
-                  onPressed: () {},
+                  onPressed: _goToScanQR,
                 ),
               ),
               Expanded(
@@ -176,7 +185,7 @@ class OnGoingBookingW extends StatelessWidget {
                   hasPadding: false,
                   text: 'Returned?',
                   borderRadius: 16.0,
-                  onPressed: () {},
+                  onPressed: _goToQRView,
                 ),
               ),
             ],
