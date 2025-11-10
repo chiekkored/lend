@@ -72,7 +72,7 @@ class LNDText extends StatelessWidget {
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
     VoidCallback? onTap,
-    int? maxLines = 1,
+    int? maxLines,
   }) {
     return LNDText._(
       text,
@@ -104,7 +104,7 @@ class LNDText extends StatelessWidget {
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
     VoidCallback? onTap,
-    int? maxLines = 1,
+    int? maxLines,
   }) {
     return LNDText._(
       text,
@@ -136,7 +136,7 @@ class LNDText extends StatelessWidget {
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
     VoidCallback? onTap,
-    int? maxLines = 1,
+    int? maxLines,
   }) {
     return LNDText._(
       text,
@@ -168,7 +168,7 @@ class LNDText extends StatelessWidget {
     List<LNDText>? textParts,
     TextDecoration? textDecoration,
     VoidCallback? onTap,
-    int? maxLines = 1,
+    int? maxLines,
   }) {
     return LNDText._(
       text,

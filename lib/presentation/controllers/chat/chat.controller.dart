@@ -37,27 +37,19 @@ class ChatController extends GetxController {
     (user) => user.uid != AuthController.instance.uid,
   );
 
-  StreamSubscription? _messagesSubscription;
-
   @override
   void onClose() {
     _booking.close();
     textController.dispose();
-    _messagesSubscription?.cancel();
     _isLoading.close();
     super.onClose();
   }
 
   @override
   void onReady() {
-    updateHasRead();
     _getBooking();
 
     super.onReady();
-  }
-
-  void cancelSubscriptions() {
-    _messagesSubscription?.cancel();
   }
 
   Future<void> _getBooking() async {
@@ -75,29 +67,6 @@ class ChatController extends GetxController {
       if (bookingData != null) {
         _booking.value = Booking.fromMap(bookingData);
       }
-    }
-  }
-
-  void updateHasRead() {
-    try {
-      final userChatsCollection = _firestore
-          .collection(LNDCollections.userChats.name)
-          .doc(AuthController.instance.uid)
-          .collection(LNDCollections.chats.name)
-          .doc(chat.id);
-
-      userChatsCollection.update(Chat(hasRead: true).toMap()).catchError((
-        e,
-        st,
-      ) {
-        LNDLogger.e(
-          'Error updating hasRead',
-          error: e,
-          stackTrace: StackTrace.current,
-        );
-      });
-    } catch (e, st) {
-      LNDLogger.e('Error updating hasRead', error: e, stackTrace: st);
     }
   }
 
@@ -132,13 +101,14 @@ class ChatController extends GetxController {
           text: textMessage,
           senderId: AuthController.instance.uid,
           createdAt: Timestamp.now(),
-          type: MessageType.text.label,
+          type: MessageType.text,
         );
 
         final chatDoc = Chat(
           lastMessage: textMessage,
           lastMessageDate: Timestamp.now(),
           lastMessageSenderId: AuthController.instance.uid,
+          hasRead: false,
         );
 
         batch.set(messageCollection.doc(message.id), message.toMap());

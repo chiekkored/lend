@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/chat.model.dart';
 import 'package:lend/core/models/message.model.dart';
+import 'package:lend/presentation/common/spinner.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/presentation/controllers/chat/chat_list.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
+import 'package:lend/utilities/enums/message_type.enum.dart';
 import 'package:lend/utilities/extensions/timestamp.extension.dart';
 
 class ChatListW extends StatelessWidget {
@@ -69,6 +71,8 @@ class ChatListW extends StatelessWidget {
     return GetBuilder<ChatListController>(
       init: ChatListController(chat: chat),
       builder: (controller) {
+        if (controller.isLoading) return const Center(child: LNDSpinner());
+
         return ListView.builder(
           reverse: true,
           itemCount: controller.messages.length,
@@ -76,6 +80,8 @@ class ChatListW extends StatelessWidget {
             final message = controller.messages[index];
             final isCurrentUser =
                 message.senderId == AuthController.instance.uid;
+
+            final isSystem = message.type == MessageType.system;
 
             // Check if we need to display a date separator
             Widget? dateSeparator = _buildDateSeparator(
@@ -85,10 +91,12 @@ class ChatListW extends StatelessWidget {
 
             return Column(
               children: [
-                if (dateSeparator != null) dateSeparator,
+                if (dateSeparator != null && !isSystem) dateSeparator,
                 Align(
                   alignment:
-                      isCurrentUser
+                      isSystem
+                          ? Alignment.center
+                          : isCurrentUser
                           ? Alignment.centerRight
                           : Alignment.centerLeft,
                   child: Container(
@@ -100,30 +108,67 @@ class ChatListW extends StatelessWidget {
                     constraints: BoxConstraints(maxWidth: Get.width * 0.75),
                     decoration: BoxDecoration(
                       color:
-                          isCurrentUser
+                          isSystem
+                              ? LNDColors.gray.withValues(alpha: 0.1)
+                              : isCurrentUser
                               ? LNDColors.primary.withValues(alpha: 0.8)
                               : LNDColors.gray.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LNDText.regular(
-                          isSelectable: true,
-                          text: message.text ?? '',
-                          color:
-                              isCurrentUser ? LNDColors.white : LNDColors.black,
-                        ),
-                        LNDText.regular(
-                          text: message.createdAt.toFormattedStringTimeOnly(),
-                          fontSize: 10.0,
-                          color:
-                              isCurrentUser
-                                  ? LNDColors.white.withValues(alpha: 0.8)
-                                  : LNDColors.black.withValues(alpha: 0.6),
-                        ),
-                      ],
-                    ),
+                    child:
+                        isSystem
+                            ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: 16.0,
+                                children: [
+                                  Icon(
+                                    Icons.info_outline_rounded,
+                                    size: 50.0,
+                                    color: LNDColors.black.withValues(
+                                      alpha: 0.6,
+                                    ),
+                                  ),
+                                  LNDText.regular(
+                                    text: message.text ?? '',
+                                    color: LNDColors.black.withValues(
+                                      alpha: 0.6,
+                                    ),
+                                    overflow: TextOverflow.visible,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            )
+                            : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                LNDText.regular(
+                                  isSelectable: true,
+                                  text: message.text ?? '',
+                                  color:
+                                      isCurrentUser
+                                          ? LNDColors.white
+                                          : LNDColors.black,
+                                ),
+                                LNDText.regular(
+                                  text:
+                                      message.createdAt
+                                          .toFormattedStringTimeOnly(),
+                                  fontSize: 10.0,
+                                  color:
+                                      isCurrentUser
+                                          ? LNDColors.white.withValues(
+                                            alpha: 0.8,
+                                          )
+                                          : LNDColors.black.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                ),
+                              ],
+                            ),
                   ),
                 ),
               ],

@@ -46,6 +46,13 @@ class ChatListController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void onReady() {
+    updateHasRead();
+
+    super.onReady();
+  }
+
   void cancelSubscriptions() {
     _messagesSubscription?.cancel();
   }
@@ -75,6 +82,8 @@ class ChatListController extends GetxController {
               _messages.value = chatsList;
               update();
               _isLoading.value = false;
+
+              updateHasRead();
             },
             onError: (e, st) {
               LNDLogger.e('Error listening to chats', error: e, stackTrace: st);
@@ -84,6 +93,29 @@ class ChatListController extends GetxController {
     } catch (e, st) {
       LNDLogger.e('Error setting up chat listener', error: e, stackTrace: st);
       _isLoading.value = false;
+    }
+  }
+
+  void updateHasRead() {
+    try {
+      final userChatsCollection = _firestore
+          .collection(LNDCollections.userChats.name)
+          .doc(AuthController.instance.uid)
+          .collection(LNDCollections.chats.name)
+          .doc(chat.id);
+
+      userChatsCollection.update(Chat(hasRead: true).toMap()).catchError((
+        e,
+        st,
+      ) {
+        LNDLogger.e(
+          'Error updating hasRead',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+      });
+    } catch (e, st) {
+      LNDLogger.e('Error updating hasRead', error: e, stackTrace: st);
     }
   }
 }

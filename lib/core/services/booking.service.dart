@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:lend/core/models/booking.model.dart';
+import 'package:lend/core/models/chat.model.dart';
+import 'package:lend/core/models/message.model.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/constants/functions.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/enums/chat_status.enum.dart';
+import 'package:lend/utilities/enums/message_type.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
 class BookingService {
@@ -16,6 +19,23 @@ class BookingService {
     const e2 = 'This booking is no longer available for confirmation';
     try {
       await _db.runTransaction((transaction) async {
+        final chatsRef =
+            _db
+                .collection(LNDCollections.chats.name)
+                .doc(booking.chatId)
+                .collection(LNDCollections.messages.name)
+                .doc();
+        final ownerUserChatRef = _db
+            .collection(LNDCollections.userChats.name)
+            .doc(booking.asset?.owner?.uid)
+            .collection(LNDCollections.chats.name)
+            .doc(booking.chatId);
+        final renterUserChatRef = _db
+            .collection(LNDCollections.userChats.name)
+            .doc(booking.renter?.uid)
+            .collection(LNDCollections.chats.name)
+            .doc(booking.chatId);
+
         final selectedRef = _db
             .collection(LNDCollections.assets.name)
             .doc(booking.asset?.id)
@@ -97,6 +117,22 @@ class BookingService {
             transaction.update(chatRef, {'status': ChatStatus.archived.label});
           }
         }
+
+        transaction.set(
+          chatsRef,
+          Message(
+            id: chatsRef.id,
+            text:
+                'Booking Confirmed!\n\nYou may now view the complete '
+                'information of the owner details by clicking the information '
+                'button above.',
+            senderId: '',
+            createdAt: Timestamp.now(),
+            type: MessageType.system,
+          ).toMap(),
+        );
+        transaction.update(ownerUserChatRef, Chat(hasRead: false).toMap());
+        transaction.update(renterUserChatRef, Chat(hasRead: false).toMap());
       });
 
       // Generate handover and return tokens for QR

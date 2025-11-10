@@ -37,7 +37,6 @@ class ChatPage extends GetView<ChatController> {
             enabled: true,
             text: 'Send',
             onPressed: () => controller.sendMessage(),
-            textColor: LNDColors.white,
           ),
         ],
       ).withSpacing(8.0),
@@ -175,7 +174,7 @@ class ChatPage extends GetView<ChatController> {
                   isOwner;
               return Tooltip(
                 message:
-                    'Owner information is available only for confirmed bookings.',
+                    'Owner\'s complete information is available only for confirmed bookings.',
                 textStyle: LNDText.regularStyle.copyWith(
                   color: LNDColors.white,
                   overflow: TextOverflow.clip,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/booking.model.dart';
+import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
@@ -151,6 +152,34 @@ class OnGoingBookingW extends StatelessWidget {
               ),
             ),
           ],
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 12.0,
+            children: [
+              Expanded(
+                child: LNDButton.primary(
+                  enabled: true,
+                  icon: Icons.camera_alt_rounded,
+                  iconSize: 15.0,
+                  hasPadding: false,
+                  text: 'Handed over?',
+                  borderRadius: 16.0,
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: LNDButton.primary(
+                  enabled: false,
+                  icon: Icons.qr_code_scanner_rounded,
+                  iconSize: 15.0,
+                  hasPadding: false,
+                  text: 'Returned?',
+                  borderRadius: 16.0,
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

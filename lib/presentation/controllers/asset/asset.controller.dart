@@ -371,7 +371,7 @@ class AssetController extends GetxController {
           text: bookingString,
           senderId: asset!.ownerId,
           createdAt: Timestamp.now(),
-          type: MessageType.text.label,
+          type: MessageType.text,
         ).toMap(),
       );
 

@@ -48,20 +48,27 @@ class LNDButton extends StatelessWidget {
     required String text,
     required bool enabled,
     required VoidCallback? onPressed,
-    Color textColor = LNDColors.white,
+    Color color = LNDColors.primary,
     bool isLoading = false,
     bool hasPadding = true,
     EdgeInsets? padding,
+    double? borderRadius,
+    IconData? icon,
+    double iconSize = 50.0,
+    Color textColor = LNDColors.white,
   }) {
     return LNDButton._(
       text: text,
       enabled: enabled,
       onPressed: onPressed,
-      color: LNDColors.primary,
+      color: color,
       textColor: textColor,
       isLoading: isLoading,
       hasPadding: hasPadding,
       padding: padding,
+      borderRadius: borderRadius,
+      icon: icon,
+      iconSize: iconSize,
     );
   }
 
@@ -158,13 +165,14 @@ class LNDButton extends StatelessWidget {
   factory LNDButton.icon({
     required IconData icon,
     required VoidCallback? onPressed,
+    String text = '',
     bool? enabled,
     Color? color,
     bool isLoading = false,
     double size = 50,
   }) {
     return LNDButton._(
-      text: '',
+      text: text,
       enabled: true,
       onPressed: onPressed,
       color: color ?? LNDColors.black,
@@ -250,7 +258,16 @@ class LNDButton extends StatelessWidget {
     Widget childContent =
         isLoading
             ? const LNDSpinner()
-            : LNDText.bold(text: text, color: textColor);
+            : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null) ...[
+                  Icon(icon, size: iconSize, color: textColor),
+                  const SizedBox(width: 4.0),
+                ],
+                LNDText.bold(text: text, color: textColor),
+              ],
+            );
 
     final isFuncEnabled =
         enabled
@@ -271,10 +288,23 @@ class LNDButton extends StatelessWidget {
                 ? const LNDSpinner()
                 : isButtonIcon
                 ? child ??
-                    Icon(
-                      icon,
-                      size: iconSize,
-                      color: enabled ? color : LNDColors.gray,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          icon,
+                          size: iconSize,
+                          color: enabled ? color : LNDColors.gray,
+                        ),
+                        if (text.isNotEmpty) ...[
+                          const SizedBox(width: 4.0),
+                          LNDText.medium(
+                            text: text,
+                            color: enabled ? color : LNDColors.gray,
+                            fontSize: iconSize,
+                          ),
+                        ],
+                      ],
                     )
                 : isBold
                 ? LNDText.bold(

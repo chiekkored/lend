@@ -2,13 +2,14 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lend/utilities/enums/message_type.enum.dart';
 
 class Message {
   String? id;
   String? text;
   String? senderId;
   Timestamp? createdAt;
-  String? type;
+  MessageType? type;
   String? mediaUrl;
   Message({
     this.id,
@@ -24,7 +25,7 @@ class Message {
     String? text,
     String? senderId,
     Timestamp? createdAt,
-    String? type,
+    MessageType? type,
     String? mediaUrl,
   }) {
     return Message(
@@ -46,7 +47,7 @@ class Message {
           createdAt != null
               ? Timestamp(createdAt!.seconds, createdAt!.nanoseconds)
               : null,
-      'type': type,
+      'type': type?.label,
       'mediaUrl': mediaUrl,
     }..removeWhere((key, value) => value == null);
   }
@@ -65,7 +66,7 @@ class Message {
                     map['createdAt']['_nanoseconds'],
                   )
               : null,
-      type: map['type'] != null ? map['type'] as String : null,
+      type: map['type'] != null ? MessageType.fromString(map['type']) : null,
       mediaUrl: map['mediaUrl'] != null ? map['mediaUrl'] as String : null,
     );
   }
