@@ -21,25 +21,74 @@ class ChatPage extends GetView<ChatController> {
 
   // Private method to build the chat input box
   Widget _buildChatBox() {
+    final isCurrentDay = LNDUtils.isTodayInTimestamps(
+      controller.booking?.dates ?? [],
+    );
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
+      padding: const EdgeInsets.all(0.0),
+      child: Column(
+        spacing: 4.0,
         children: [
-          Expanded(
-            child: LNDTextField.form(
-              hintText: 'Type a message',
-              controller: controller.textController,
-              textInputAction: TextInputAction.send,
-              onFieldSubmitted: (_) => controller.sendMessage(),
+          if (isCurrentDay)
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 4.0,
+              ),
+              decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: LNDColors.outline)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 12.0,
+                children: [
+                  Expanded(
+                    child: LNDButton.secondary(
+                      enabled: true,
+                      icon: Icons.camera_alt_rounded,
+                      iconSize: 15.0,
+                      hasPadding: false,
+                      text: 'Handed over?',
+                      borderRadius: 16.0,
+                      onPressed: () {},
+                    ),
+                  ),
+                  Expanded(
+                    child: LNDButton.secondary(
+                      enabled: false,
+                      icon: Icons.qr_code_scanner_rounded,
+                      iconSize: 15.0,
+                      hasPadding: false,
+                      text: 'Returned?',
+                      borderRadius: 16.0,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          LNDButton.primary(
-            enabled: true,
-            text: 'Send',
-            onPressed: () => controller.sendMessage(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: LNDTextField.form(
+                    hintText: 'Type a message',
+                    controller: controller.textController,
+                    textInputAction: TextInputAction.send,
+                    onFieldSubmitted: (_) => controller.sendMessage(),
+                  ),
+                ),
+                LNDButton.primary(
+                  enabled: true,
+                  text: 'Send',
+                  onPressed: () => controller.sendMessage(),
+                ),
+              ],
+            ).withSpacing(8.0),
           ),
         ],
-      ).withSpacing(8.0),
+      ),
     );
   }
 
@@ -200,7 +249,10 @@ class ChatPage extends GetView<ChatController> {
         ),
         body: SafeArea(
           child: Column(
-            children: [Expanded(child: ChatListW(chat: chat)), _buildChatBox()],
+            children: [
+              Expanded(child: ChatListW(chat: chat)),
+              Obx(() => _buildChatBox()),
+            ],
           ),
         ),
       ),

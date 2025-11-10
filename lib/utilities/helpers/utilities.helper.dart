@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/utilities/extensions/string.extension.dart';
@@ -82,5 +83,24 @@ class LNDUtils {
     if (components.length <= 2) return address;
 
     return components.sublist(components.length - 2).join(', ');
+  }
+
+  static bool isTodayInTimestamps(List<Timestamp> timestamps) {
+    // Get today's date with time set to midnight (00:00)
+    // FIXME
+    final now = DateTime.now().add(Duration(days: 1));
+    final today = DateTime(now.year, now.month, now.day);
+
+    // Check if today's date is in the list
+    for (var ts in timestamps) {
+      final date = ts.toDate();
+      final timestampDate = DateTime(date.year, date.month, date.day);
+
+      if (timestampDate == today) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

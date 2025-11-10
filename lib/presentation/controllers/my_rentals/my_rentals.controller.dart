@@ -50,6 +50,7 @@ class MyRentalsController extends GetxController
     try {
       cancelSubscriptions();
 
+      // FIXME
       final now = DateTime.now().add(const Duration(days: 2));
       final todayMidnight = DateTime(now.year, now.month, now.day);
 

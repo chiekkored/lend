@@ -1,0 +1,2 @@
+/Users/chiekkored/Projects/lend/lend-mobile/android/app/.cxx/Debug/6p2b6i5d/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/chiekkored/Projects/lend/lend-mobile/android/app/.cxx/Debug/6p2b6i5d/arm64-v8a/CMakeFiles/rebuild_cache.dir

@@ -74,23 +74,29 @@ class LNDButton extends StatelessWidget {
 
   factory LNDButton.secondary({
     required String text,
-    required VoidCallback? onPressed,
     required bool enabled,
-    Color? color,
-    Color textColor = LNDColors.black,
+    required VoidCallback? onPressed,
+    Color color = LNDColors.gray,
     bool isLoading = false,
     bool hasPadding = true,
     EdgeInsets? padding,
+    double? borderRadius,
+    IconData? icon,
+    double iconSize = 50.0,
+    Color textColor = LNDColors.white,
   }) {
     return LNDButton._(
       text: text,
       enabled: enabled,
       onPressed: onPressed,
-      color: color ?? LNDColors.outline,
+      color: color,
       textColor: textColor,
       isLoading: isLoading,
       hasPadding: hasPadding,
       padding: padding,
+      borderRadius: borderRadius,
+      icon: icon,
+      iconSize: iconSize,
     );
   }
 

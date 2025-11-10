@@ -157,7 +157,7 @@ class OnGoingBookingW extends StatelessWidget {
             spacing: 12.0,
             children: [
               Expanded(
-                child: LNDButton.primary(
+                child: LNDButton.secondary(
                   enabled: true,
                   icon: Icons.camera_alt_rounded,
                   iconSize: 15.0,
@@ -168,7 +168,7 @@ class OnGoingBookingW extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: LNDButton.primary(
+                child: LNDButton.secondary(
                   enabled: false,
                   icon: Icons.qr_code_scanner_rounded,
                   iconSize: 15.0,
