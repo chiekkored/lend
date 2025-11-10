@@ -4,17 +4,15 @@ import 'package:lend/core/mixins/scroll.mixin.dart';
 import 'package:lend/core/models/asset.model.dart';
 import 'package:lend/core/models/location.model.dart';
 import 'package:lend/core/models/rates.model.dart';
-import 'package:lend/core/services/get_storage.service.dart';
 import 'package:lend/presentation/pages/asset/asset.page.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
-import 'package:lend/utilities/constants/get_storage.constant.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
 
 class HomeController extends GetxController with LNDScrollMixin {
   static final instance = Get.find<HomeController>();
-  String get _cacheKey =>
-      '${LNDStorageConstants.assets}_${selectedCategory.name}';
+  // String get _cacheKey =>
+  //     '${LNDStorageConstants.assets}_${selectedCategory.name}';
 
   final assetsCollection = FirebaseFirestore.instance.collection(
     LNDCollections.assets.name,
@@ -47,22 +45,22 @@ class HomeController extends GetxController with LNDScrollMixin {
 
   void init() {}
 
-  void _setInitialValues() {
-    final assetList = _readCache();
+  // void _setInitialValues() {
+  //   final assetList = _readCache();
 
-    if (assetList == null) return;
+  //   if (assetList == null) return;
 
-    final initialAssets = assetList.map((ast) => Asset.fromJson(ast)).toList();
+  //   final initialAssets = assetList.map((ast) => Asset.fromJson(ast)).toList();
 
-    _assets.value = initialAssets;
-    _isLoading.value = false;
-  }
+  //   _assets.value = initialAssets;
+  //   _isLoading.value = false;
+  // }
 
   Future<void> getAssets() async {
     _isLoading.value = true;
 
     try {
-      _setInitialValues();
+      // _setInitialValues();
 
       Query query = assetsCollection;
 
@@ -82,7 +80,7 @@ class HomeController extends GetxController with LNDScrollMixin {
               )
               .toList();
 
-      _writeToCache();
+      // _writeToCache();
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
@@ -90,16 +88,16 @@ class HomeController extends GetxController with LNDScrollMixin {
     _isLoading.value = false;
   }
 
-  void _writeToCache() {
-    LNDStorageService.writeList(
-      _cacheKey,
-      assets.map((a) => a.toJson()).toList(),
-    );
-  }
+  // void _writeToCache() {
+  //   LNDStorageService.writeList(
+  //     _cacheKey,
+  //     assets.map((a) => a.toJson()).toList(),
+  //   );
+  // }
 
-  List<dynamic>? _readCache() {
-    return LNDStorageService.readList(_cacheKey);
-  }
+  // List<dynamic>? _readCache() {
+  //   return LNDStorageService.readList(_cacheKey);
+  // }
 
   void setSelectedCategory(Categories category) {
     _selectedCategory.value = category;

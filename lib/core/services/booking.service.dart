@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
+import 'package:lend/utilities/constants/functions.constant.dart';
 import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/enums/chat_status.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -97,6 +99,13 @@ class BookingService {
         }
       });
 
+      // Generate handover and return tokens for QR
+      await _makeToken(
+        userId: booking.renter?.uid ?? '',
+        assetId: booking.asset?.id ?? '',
+        bookingId: booking.id ?? '',
+      );
+
       return const Left(true);
     } catch (e) {
       LNDLogger.e(e.toString(), error: e, stackTrace: StackTrace.current);
@@ -106,5 +115,30 @@ class BookingService {
       }
       return Right(e.toString());
     }
+  }
+
+  static Future<Map<String, dynamic>?> _makeToken({
+    required String userId,
+    required String assetId,
+    required String bookingId,
+  }) async {
+    try {
+      final callable = FirebaseFunctions.instance.httpsCallable(
+        LNDFunctions.makeToken,
+      );
+
+      final result = await callable.call({
+        'userId': userId,
+        'assetId': assetId,
+        'bookingId': bookingId,
+      });
+
+      return Map<String, dynamic>.from(result.data);
+    } on FirebaseFunctionsException catch (e) {
+      LNDLogger.e(e.message ?? '', stackTrace: StackTrace.current);
+    } catch (e) {
+      LNDLogger.e(e.toString(), stackTrace: StackTrace.current);
+    }
+    return null;
   }
 }

@@ -13,6 +13,7 @@ import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
+import 'package:lend/presentation/controllers/my_rentals/widgets/on_going_booking_view.widget.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/message_type.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -198,5 +199,11 @@ class ChatController extends GetxController {
     if (chat.asset != null) {
       LNDNavigate.toAssetPage(args: Asset.fromMap(chat.asset!.toMap()));
     }
+  }
+
+  void viewBookingInfo() {
+    if (booking == null) return;
+
+    LNDShow.bottomSheet(OnGoingBookingW(booking: booking!));
   }
 }

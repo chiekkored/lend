@@ -165,11 +165,34 @@ class ChatPage extends GetView<ChatController> {
           ),
           actionsPadding: const EdgeInsets.only(right: 24.0),
           actions: [
-            LNDButton.icon(
-              icon: Icons.info_outline_rounded,
-              size: 25.0,
-              onPressed: controller.goToAsset,
-            ).withSpacing(8.0),
+            Obx(() {
+              if (controller.booking == null) return const SizedBox.shrink();
+
+              final isOwner =
+                  chat.asset?.owner?.uid == AuthController.instance.uid;
+              final isConfirmed =
+                  controller.booking?.status == BookingStatus.confirmed ||
+                  isOwner;
+              return Tooltip(
+                message:
+                    'Owner information is available only for confirmed bookings.',
+                textStyle: LNDText.regularStyle.copyWith(
+                  color: LNDColors.white,
+                  overflow: TextOverflow.clip,
+                ),
+                margin: const EdgeInsets.only(left: 24.0, right: 8.0),
+                triggerMode:
+                    isConfirmed
+                        ? TooltipTriggerMode.manual
+                        : TooltipTriggerMode.tap,
+                child: LNDButton.icon(
+                  icon: Icons.info_outline_rounded,
+                  size: 25.0,
+                  color: isConfirmed ? LNDColors.black : LNDColors.outline,
+                  onPressed: isConfirmed ? controller.viewBookingInfo : null,
+                ).withSpacing(8.0),
+              );
+            }),
           ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight + 20),
