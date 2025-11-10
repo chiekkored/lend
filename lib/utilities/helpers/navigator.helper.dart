@@ -14,6 +14,7 @@ import 'package:lend/presentation/pages/chat/chat.page.dart';
 import 'package:lend/presentation/pages/navigation/components/messages/components/archived_messages.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/profile_view/profile_view.page.dart';
+import 'package:lend/presentation/pages/scan_qr/scan_qr.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
 import 'package:lend/presentation/pages/post_listing/post_listing.page.dart';
@@ -54,6 +55,10 @@ class LNDNavigate {
 
   static Future<T?>? toAssetPage<T>({required Asset? args}) async {
     return await Get.toNamed(AssetPage.routeName, arguments: args);
+  }
+
+  static Future<T?>? toScanQRPage<T>() async {
+    return await Get.toNamed(ScanQRPage.routeName);
   }
 
   static Future<T?>? toPhotoViewPage<T>({

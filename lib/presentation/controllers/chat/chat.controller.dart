@@ -165,6 +165,12 @@ class ChatController extends GetxController {
     }
   }
 
+  void goToScanQR() {
+    if (booking != null) {
+      LNDNavigate.toScanQRPage();
+    }
+  }
+
   void goToAsset() {
     if (chat.asset != null) {
       LNDNavigate.toAssetPage(args: Asset.fromMap(chat.asset!.toMap()));

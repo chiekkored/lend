@@ -148,6 +148,7 @@ class OnGoingBookingW extends StatelessWidget {
                   myLocationButtonEnabled: false,
                   zoomGesturesEnabled: false,
                   scrollGesturesEnabled: false,
+                  zoomControlsEnabled: false,
                 ),
               ),
             ),

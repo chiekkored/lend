@@ -48,6 +48,7 @@ dependencies:
   pluralize: ^0.0.8
 
   # UI Components
+  mobile_scanner: 6.0.7
   calendar_date_picker2: ^1.1.9
   sliding_up_panel: ^2.0.0+1
   flutter_carousel_widget: ^3.1.0

@@ -52,4 +52,7 @@
     <!-- Gal https://pub.dev/packages/gal -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
     <!-- End of Gal -->
+    <!-- Camera & mobile_scanner https://pub.dev/packages/mobile_scanner -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- End of Camera -->
 </manifest>

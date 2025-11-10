@@ -13,7 +13,7 @@ class PhotoViewArguments {
 }
 
 class PhotoViewPage extends StatefulWidget {
-  static const routeName = '/photo_view';
+  static const routeName = '/photo-view';
   const PhotoViewPage({super.key});
 
   @override

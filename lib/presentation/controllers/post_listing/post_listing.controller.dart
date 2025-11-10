@@ -222,6 +222,7 @@ class PostListingController extends GetxController with TextFieldsMixin {
   }
 
   Future<bool> _checkPhotosPermission() async {
+    // TODO
     // Check for access premission
     try {
       final hasAccess = await Gal.hasAccess(toAlbum: true);

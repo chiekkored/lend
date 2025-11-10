@@ -127,7 +127,7 @@ class ChatListW extends StatelessWidget {
                                   Icon(
                                     Icons.info_outline_rounded,
                                     size: 50.0,
-                                    color: LNDColors.black.withValues(
+                                    color: Colors.blueAccent.withValues(
                                       alpha: 0.6,
                                     ),
                                   ),

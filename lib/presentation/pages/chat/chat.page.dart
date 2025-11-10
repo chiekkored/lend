@@ -50,7 +50,7 @@ class ChatPage extends GetView<ChatController> {
                       hasPadding: false,
                       text: 'Handed over?',
                       borderRadius: 16.0,
-                      onPressed: () {},
+                      onPressed: controller.goToScanQR,
                     ),
                   ),
                   Expanded(

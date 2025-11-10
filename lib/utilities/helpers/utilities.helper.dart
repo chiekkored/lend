@@ -88,7 +88,7 @@ class LNDUtils {
   static bool isTodayInTimestamps(List<Timestamp> timestamps) {
     // Get today's date with time set to midnight (00:00)
     // FIXME
-    final now = DateTime.now().add(Duration(days: 1));
+    final now = DateTime.now().add(const Duration(days: 1));
     final today = DateTime(now.year, now.month, now.day);
 
     // Check if today's date is in the list

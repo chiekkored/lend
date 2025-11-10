@@ -12,7 +12,7 @@ class ProductShowcaseArguments {
 }
 
 class ProductShowcasePage extends StatelessWidget {
-  static const routeName = '/product_showcase';
+  static const routeName = '/product-showcase';
   ProductShowcasePage({super.key});
 
   final args = Get.arguments as ProductShowcaseArguments;
