@@ -103,7 +103,7 @@ class LNDSnackbar {
                   ? const EdgeInsets.all(8.0)
                   : const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
-          dismissDirection: DismissDirection.horizontal,
+          dismissDirection: DismissDirection.vertical,
           content: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

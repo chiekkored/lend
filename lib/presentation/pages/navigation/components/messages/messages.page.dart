@@ -74,12 +74,17 @@ class _SigninView extends GetView<MessagesController> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            LNDText.bold(text: 'Sign in to view your messages', fontSize: 24.0),
+            LNDText.bold(
+              text: 'Sign in to view your messages',
+              fontSize: 22.0,
+              overflow: TextOverflow.visible,
+            ),
             LNDText.regular(
               text:
                   'Stay connected with renters and respond to inquiries easily.',
               textAlign: TextAlign.center,
               color: LNDColors.hint,
+              overflow: TextOverflow.visible,
             ),
             LNDButton.primary(
               text: 'Sign in',

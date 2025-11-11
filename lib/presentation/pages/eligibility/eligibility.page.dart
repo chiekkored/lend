@@ -37,6 +37,7 @@ class EligibilityPage extends StatelessWidget {
                 child: LNDText.bold(
                   text: 'Verify your account ',
                   textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
                   textParts: [
                     LNDText.regular(
                       text:

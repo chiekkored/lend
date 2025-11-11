@@ -79,6 +79,7 @@ class SetupPage extends GetView<SignUpController> {
                                 'accurate identity verification and prevent delays.',
                             fontSize: 12.0,
                             color: LNDColors.hint,
+                            overflow: TextOverflow.visible,
                           ),
                         ],
                       ).withSpacing(4.0),
@@ -99,6 +100,7 @@ class SetupPage extends GetView<SignUpController> {
                                 'eligibility requirements.',
                             fontSize: 12.0,
                             color: LNDColors.hint,
+                            overflow: TextOverflow.visible,
                           ),
                         ],
                       ).withSpacing(6.0),
@@ -180,6 +182,7 @@ class SetupPage extends GetView<SignUpController> {
                   LNDText.bold(text: 'Privacy Policy', fontSize: 12.0),
                   LNDText.regular(text: '.', fontSize: 12.0),
                 ],
+                overflow: TextOverflow.visible,
               ),
               LNDButton.primary(
                 text: 'Agree and sign up',

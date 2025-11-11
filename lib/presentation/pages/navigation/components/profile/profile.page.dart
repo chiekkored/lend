@@ -162,11 +162,16 @@ class _SigninView extends GetView<ProfileController> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          LNDText.bold(text: 'Sign in to access your profile', fontSize: 24.0),
+          LNDText.bold(
+            text: 'Sign in to access your profile',
+            fontSize: 22.0,
+            overflow: TextOverflow.visible,
+          ),
           LNDText.regular(
             text: 'Manage your information, preferences, and rental listings.',
             textAlign: TextAlign.center,
             color: LNDColors.hint,
+            overflow: TextOverflow.visible,
           ),
           LNDButton.primary(
             text: 'Sign in',

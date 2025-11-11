@@ -76,7 +76,7 @@ class SigninController extends GetxController {
       if (e.code == 'user-not-found') {
         LNDLogger.e(e.message ?? '', error: e, stackTrace: st);
 
-        LNDSnackbar.showError('User Not Found", "No user found for that email');
+        LNDSnackbar.showError('Invalid email and password provided');
       } else if (e.code == 'invalid-email') {
         LNDSnackbar.showError('Invalid email provided');
       } else if (e.code == 'wrong-password') {

@@ -237,6 +237,7 @@ class MyRentalsPage extends GetView<MyRentalsController> {
             child: LNDText.bold(
               text: 'Verify your account ',
               textAlign: TextAlign.center,
+              overflow: TextOverflow.visible,
               textParts: [
                 LNDText.regular(
                   text:
@@ -338,12 +339,17 @@ class _SigninView extends GetView<MyRentalsController> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            LNDText.bold(text: 'Sign in to view your rentals', fontSize: 24.0),
+            LNDText.bold(
+              text: 'Sign in to view your rentals',
+              fontSize: 24.0,
+              overflow: TextOverflow.visible,
+            ),
             LNDText.regular(
               text:
-                  'Keep track of your active, past, and upcoming bookings—all in one place.',
+                  'Keep track of your active, past, and upcoming bookings — all in one place.',
               textAlign: TextAlign.center,
               color: LNDColors.hint,
+              overflow: TextOverflow.visible,
             ),
             LNDButton.primary(
               text: 'Sign in',
