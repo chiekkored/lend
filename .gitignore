@@ -50,5 +50,5 @@ lib/firebase_options.dart
 
 android/app/src/main/AndroidManifest.xml
 ios/Runner/AppDelegate.swift
-.env
+*.env
 .fvm/flutter_sdk

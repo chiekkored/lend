@@ -1,4 +1,3 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/bindings/asset/asset.binding.dart';
@@ -39,6 +38,8 @@ import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 void main() async {
+  String env = const String.fromEnvironment('ENV', defaultValue: 'prod');
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await MainService.initializeFirebase();
@@ -46,10 +47,9 @@ void main() async {
   await Future.wait([
     MainService.intializeGetStorage(),
     MainService.initializeDeviceOrientation(),
-    MainService.loadEnv(),
+    MainService.loadEnv(env),
+    if (env == 'local') MainService.useFirebaseEmulator(),
   ]);
-  // TODO
-  FirebaseFunctions.instance.useFunctionsEmulator('127.0.0.1', 5001);
 
   // GetStorage().erase();
 
