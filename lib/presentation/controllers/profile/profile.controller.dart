@@ -61,7 +61,8 @@ class ProfileController extends GetxController with AuthMixin {
         _isLoading.value = false;
       } else {
         LNDLogger.e('Could not get user data', stackTrace: StackTrace.current);
-        signOut();
+
+        AuthController.instance.signOut();
       }
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);

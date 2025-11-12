@@ -122,6 +122,7 @@ class LNDImage extends StatelessWidget {
         padding: const EdgeInsets.all(4.0),
         color: LNDColors.white,
         child: SvgPicture.asset(
+          fit: BoxFit.scaleDown,
           imageType == ImageType.user ? _fallbackUser : _fallbackAsset,
         ),
       ),

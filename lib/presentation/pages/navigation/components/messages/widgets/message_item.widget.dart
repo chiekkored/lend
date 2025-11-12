@@ -26,6 +26,7 @@ class MessageItemW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoContextMenu.builder(
+      enableHapticFeedback: true,
       actions: <Widget>[
         CupertinoContextMenuAction(
           onPressed: () {
@@ -42,16 +43,22 @@ class MessageItemW extends StatelessWidget {
           // When context menu is more than half opened, show the ChatListW
           return Material(
             borderRadius: BorderRadius.circular(16),
-            child: AbsorbPointer(
-              absorbing: true,
-              child: Container(
-                height: Get.height * 0.5,
-                width: Get.width * 0.9,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+            child: GestureDetector(
+              onTap: () {
+                Get.back();
+                MessagesController.instance.goToChatPage(chat);
+              },
+              child: AbsorbPointer(
+                absorbing: true,
+                child: Container(
+                  height: Get.height * 0.5,
+                  width: Get.width * 0.9,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ChatListW(chat: chat),
                 ),
-                child: ChatListW(chat: chat),
               ),
             ),
           );

@@ -33,7 +33,7 @@ class ChatListController extends GetxController {
   @override
   void onClose() {
     textController.dispose();
-    _messagesSubscription?.cancel();
+    cancelSubscriptions();
     _messages.close();
     _isLoading.close();
     super.onClose();
@@ -54,6 +54,7 @@ class ChatListController extends GetxController {
   }
 
   void cancelSubscriptions() {
+    LNDLogger.dNoStack('🔴 Chat Subscription Cancelled for ${chat.id}');
     _messagesSubscription?.cancel();
   }
 
@@ -64,6 +65,9 @@ class ChatListController extends GetxController {
     try {
       _messagesSubscription?.cancel();
 
+      LNDLogger.dNoStack(
+        '🟢 Chat Messages Subscription Started for ${chat.id}',
+      );
       _messagesSubscription = _firestore
           .collection(LNDCollections.chats.name)
           .doc(chat.chatId)
@@ -86,11 +90,13 @@ class ChatListController extends GetxController {
               updateHasRead();
             },
             onError: (e, st) {
+              cancelSubscriptions();
               LNDLogger.e('Error listening to chats', error: e, stackTrace: st);
               _isLoading.value = false;
             },
           );
     } catch (e, st) {
+      cancelSubscriptions();
       LNDLogger.e('Error setting up chat listener', error: e, stackTrace: st);
       _isLoading.value = false;
     }

@@ -69,7 +69,7 @@
 
 	<!-- Gal & Image Picker https://pub.dev/packages/gal -->
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Lend needs access to save photos and upload to your library.</string>
+	<string>Lend needs permission to save and upload photos to your library.</string>
 	<!-- End of Gal & Image Picker -->
 	<!-- Camera package https://pub.dev/packages/camera -->
 	<key>NSCameraUsageDescription</key>
@@ -77,5 +77,12 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Lend needs access to your microphone to record and capture videos.</string>
 	<!-- End of Camera package -->
+	<!-- Firebase Emulator Suite (to allow non-HTTPS) https://firebase.flutter.dev/docs/manual-installation/ios#enabling-use-of-firebase-emulator-suite -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<!-- End of Firebase Emulator Suite -->
 </dict>
 </plist>

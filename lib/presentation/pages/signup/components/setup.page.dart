@@ -62,6 +62,7 @@ class SetupPage extends GetView<SignUpController> {
                                   value,
                                   label: 'First Name',
                                 ),
+                            textCapitalization: TextCapitalization.words,
                           ),
                           LNDTextField.regular(
                             labelText: 'Last Name',
@@ -71,6 +72,7 @@ class SetupPage extends GetView<SignUpController> {
                                   value,
                                   label: 'Last Name',
                                 ),
+                            textCapitalization: TextCapitalization.words,
                           ),
                           LNDText.regular(
                             text:

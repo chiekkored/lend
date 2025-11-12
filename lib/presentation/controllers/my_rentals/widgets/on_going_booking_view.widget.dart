@@ -5,6 +5,7 @@ import 'package:lend/core/models/booking.model.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/images.common.dart';
 import 'package:lend/presentation/common/texts.common.dart';
+import 'package:lend/presentation/controllers/auth/auth.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/image_type.enum.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
@@ -17,12 +18,20 @@ class OnGoingBookingW extends StatelessWidget {
 
   final Booking booking;
 
-  void _goToScanQR() {
-    LNDNavigate.toScanQRPage();
+  void _onTapHandedover(bool isOwner) {
+    if (isOwner) {
+      LNDNavigate.toQRViewPage(qrToken: booking.tokens?.handoverToken ?? '');
+    } else {
+      LNDNavigate.toScanQRPage();
+    }
   }
 
-  void _goToQRView() {
-    LNDNavigate.toQRViewPage(qrToken: booking.tokens?.returnToken ?? '');
+  void _onTapReturned(bool isOwner) {
+    if (isOwner) {
+      LNDNavigate.toScanQRPage();
+    } else {
+      LNDNavigate.toQRViewPage(qrToken: booking.tokens?.returnToken ?? '');
+    }
   }
 
   @override
@@ -37,6 +46,8 @@ class OnGoingBookingW extends StatelessWidget {
     );
     final useSpecificLocation =
         booking.asset?.location?.useSpecificLocation ?? false;
+    final isOwner = booking.asset?.owner?.uid == AuthController.instance.uid;
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -168,24 +179,30 @@ class OnGoingBookingW extends StatelessWidget {
             children: [
               Expanded(
                 child: LNDButton.secondary(
-                  enabled: true,
-                  icon: Icons.camera_alt_rounded,
+                  enabled: booking.handedOver == null,
+                  icon:
+                      isOwner
+                          ? Icons.qr_code_scanner_rounded
+                          : Icons.camera_alt_rounded,
                   iconSize: 15.0,
                   hasPadding: false,
                   text: 'Handed over?',
                   borderRadius: 16.0,
-                  onPressed: _goToScanQR,
+                  onPressed: () => _onTapHandedover(isOwner),
                 ),
               ),
               Expanded(
                 child: LNDButton.secondary(
-                  enabled: false,
-                  icon: Icons.qr_code_scanner_rounded,
+                  enabled: booking.returned == null,
+                  icon:
+                      isOwner
+                          ? Icons.camera_alt_rounded
+                          : Icons.qr_code_scanner_rounded,
                   iconSize: 15.0,
                   hasPadding: false,
                   text: 'Returned?',
                   borderRadius: 16.0,
-                  onPressed: _goToQRView,
+                  onPressed: () => _onTapReturned(isOwner),
                 ),
               ),
             ],

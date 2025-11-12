@@ -15,7 +15,6 @@ import 'package:lend/core/models/simple_asset.model.dart';
 import 'package:lend/presentation/common/loading.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
 import 'package:lend/presentation/controllers/auth/auth.controller.dart';
-import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
@@ -414,6 +413,26 @@ class PostListingController extends GetxController with TextFieldsMixin {
     if (value == null) return;
 
     availability.value = value;
+  }
+
+  void goBack() {
+    final isFilled =
+        coverPhotos.isNotEmpty ||
+        titleController.text.isNotEmpty ||
+        descriptionController.text.isNotEmpty ||
+        showcasePhotos.isNotEmpty ||
+        dailyPriceController.text.isNotEmpty;
+
+    if (isFilled) {
+      LNDShow.alertDialog(
+        title: 'Discard Listing?',
+        content:
+            'You have unfinished listing. Are you sure you want to go back?',
+        onConfirm: Get.back,
+      );
+    } else {
+      Get.back();
+    }
   }
 
   void next() async {

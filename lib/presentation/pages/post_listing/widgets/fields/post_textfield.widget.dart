@@ -17,6 +17,7 @@ class PostTextFieldW extends GetWidget<PostListingController> {
   final TextInputType? keyboardType;
   final VoidCallback? onTap;
   final int? maxLength;
+  final TextCapitalization? textCapitalization;
 
   const PostTextFieldW({
     super.key,
@@ -31,6 +32,7 @@ class PostTextFieldW extends GetWidget<PostListingController> {
     this.keyboardType,
     this.onTap,
     this.maxLength,
+    this.textCapitalization,
   });
 
   @override
@@ -59,6 +61,8 @@ class PostTextFieldW extends GetWidget<PostListingController> {
             validator: (value) => controller.validateField(value, label: text),
             readOnly: readOnly ?? false,
             onTap: onTap,
+            textCapitalization:
+                textCapitalization ?? TextCapitalization.sentences,
           ),
           if (example?.isNotEmpty ?? false)
             Padding(

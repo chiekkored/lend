@@ -32,7 +32,7 @@ class PostListingPage extends GetView<PostListingController> {
         appBar: AppBar(
           leading: LNDButton.text(
             text: 'Cancel',
-            onPressed: Get.back,
+            onPressed: controller.goBack,
             enabled: true,
             color: LNDColors.primary,
           ),
@@ -40,11 +40,12 @@ class PostListingPage extends GetView<PostListingController> {
           automaticallyImplyLeading: true,
           backgroundColor: LNDColors.white,
           surfaceTintColor: LNDColors.white,
+          centerTitle: true,
           title: LNDText.bold(text: 'Create Listing', fontSize: 24.0),
           actionsPadding: const EdgeInsets.only(right: 12.0),
           actions: [
             LNDButton.text(
-              text: 'Next',
+              text: 'Post',
               onPressed: controller.next,
               enabled: true,
               isBold: true,
@@ -69,6 +70,7 @@ class PostListingPage extends GetView<PostListingController> {
                   example: 'DJI Osmo Pocket 3',
                   required: true,
                   maxLength: 50,
+                  textCapitalization: TextCapitalization.words,
                 ),
                 PostTextBoxW(
                   textController: controller.descriptionController,

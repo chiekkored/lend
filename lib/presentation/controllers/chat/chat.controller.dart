@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:lend/core/models/asset.model.dart';
@@ -39,36 +40,65 @@ class ChatController extends GetxController {
 
   bool get isOwner => booking?.asset?.owner?.uid == AuthController.instance.uid;
 
+  StreamSubscription? _bookingSubscription;
+
   @override
   void onClose() {
     _booking.close();
     textController.dispose();
     _isLoading.close();
+    cancelSubscriptions();
+
     super.onClose();
   }
 
   @override
   void onReady() {
-    _getBooking();
+    _subscribeBooking();
 
     super.onReady();
   }
 
-  Future<void> _getBooking() async {
-    final bookingDoc =
-        await _firestore
-            .collection(LNDCollections.users.name)
-            .doc(chat.renterId)
-            .collection(LNDCollections.bookings.name)
-            .doc(chat.bookingId)
-            .get();
+  void cancelSubscriptions() {
+    LNDLogger.dNoStack('🔴 Booking Subscription Cancelled for ${booking?.id}');
+    _bookingSubscription?.cancel();
+  }
 
-    if (bookingDoc.exists) {
-      final bookingData = bookingDoc.data();
+  Future<void> _subscribeBooking() async {
+    try {
+      _isLoading.value = true;
+      _bookingSubscription?.cancel();
 
-      if (bookingData != null) {
-        _booking.value = Booking.fromMap(bookingData);
-      }
+      LNDLogger.dNoStack('🟢 Booking Subscription Started');
+      _bookingSubscription = _firestore
+          .collection(LNDCollections.users.name)
+          .doc(chat.renterId)
+          .collection(LNDCollections.bookings.name)
+          .doc(chat.bookingId)
+          .snapshots()
+          .listen(
+            (snapshot) {
+              if (snapshot.exists) {
+                final bookingData = snapshot.data();
+
+                if (bookingData != null) {
+                  _booking.value = Booking.fromMap(bookingData);
+                }
+              }
+            },
+            onError: (e, st) {
+              cancelSubscriptions();
+              LNDLogger.e(
+                'Error listening to booking',
+                error: e,
+                stackTrace: st,
+              );
+              _isLoading.value = false;
+            },
+          );
+    } catch (e, st) {
+      cancelSubscriptions();
+      LNDLogger.e('Error listening to booking', error: e, stackTrace: st);
     }
   }
 
@@ -134,6 +164,15 @@ class ChatController extends GetxController {
     }
   }
 
+  void regenerateQr() async {
+    final callable = FirebaseFunctions.instance.httpsCallable('regenerateQr');
+    await callable.call({
+      'userId': booking?.asset?.owner?.uid,
+      'assetId': booking?.asset?.id,
+      'bookingId': booking?.id,
+    });
+  }
+
   void onTapAccept() async {
     if (booking == null) return;
 
@@ -153,7 +192,6 @@ class ChatController extends GetxController {
 
       result.fold(
         ifLeft: (response) async {
-          await _getBooking();
           LNDLoading.hide();
           // Get.back();
         },
@@ -173,11 +211,7 @@ class ChatController extends GetxController {
     if (isOwner) {
       LNDNavigate.toQRViewPage(qrToken: booking?.tokens?.handoverToken ?? '');
     } else {
-      final result = await LNDNavigate.toScanQRPage();
-
-      if (result ?? false) {
-        _getBooking();
-      }
+      await LNDNavigate.toScanQRPage();
     }
   }
 

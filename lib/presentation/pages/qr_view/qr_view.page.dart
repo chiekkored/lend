@@ -7,9 +7,12 @@ import 'package:gal/gal.dart';
 import 'package:get/get.dart';
 import 'package:lend/presentation/common/buttons.common.dart';
 import 'package:lend/presentation/common/loading.common.dart';
+import 'package:lend/presentation/common/show.common.dart';
 import 'package:lend/presentation/common/snackbar.common.dart';
+import 'package:lend/presentation/controllers/chat/chat.controller.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class QRViewPage extends StatelessWidget {
@@ -20,20 +23,47 @@ class QRViewPage extends StatelessWidget {
 
   Future<void> saveQr() async {
     try {
-      LNDLoading.show();
+      final hasAccess = await Gal.hasAccess();
+      if (hasAccess) {
+        LNDLoading.show();
 
-      final boundary =
-          qrKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final image = await boundary.toImage(pixelRatio: 3.0);
-      final byteData = await image.toByteData(format: ImageByteFormat.png);
-      final pngBytes = byteData!.buffer.asUint8List();
+        final boundary =
+            qrKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+        final image = await boundary.toImage(pixelRatio: 3.0);
+        final byteData = await image.toByteData(format: ImageByteFormat.png);
+        final pngBytes = byteData!.buffer.asUint8List();
 
-      await Gal.putImageBytes(
-        pngBytes,
-        album: 'Lend',
-        name: 'Receive_QR_${DateTime.now().toIso8601String()}',
-      );
-      LNDSnackbar.showInfo('QR image downloaded');
+        await Gal.putImageBytes(
+          pngBytes,
+          album: 'Lend',
+          name: 'Receive_QR_${DateTime.now().toIso8601String()}',
+        );
+        LNDSnackbar.showInfo('QR image downloaded');
+      } else {
+        final result = await Gal.requestAccess();
+        if (!result) {
+          LNDShow.alertDialog(
+            title: 'Gallery access denied',
+            content:
+                'You have previously denied camera access. Please go to Settings '
+                'to enable it.',
+            cancelText: 'Close',
+            confirmText: 'Settings',
+            onConfirm: () async {
+              final canOpen = await openAppSettings();
+
+              if (!canOpen) {
+                LNDSnackbar.showWarning(
+                  "Unable to open app settings. Open phone's settings and enable "
+                  'camera access manually.',
+                );
+              }
+            },
+          );
+        } else {
+          saveQr();
+        }
+      }
     } catch (e, st) {
       LNDLogger.e(e.toString(), stackTrace: st);
       LNDSnackbar.showError('Failed to save QR image');
@@ -50,6 +80,12 @@ class QRViewPage extends StatelessWidget {
       appBar: AppBar(
         leading: LNDButton.back(color: Colors.white),
         backgroundColor: Colors.black,
+        actions: [
+          LNDButton.icon(
+            icon: Icons.refresh,
+            onPressed: ChatController.instance.regenerateQr,
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       body: Column(
