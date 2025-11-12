@@ -12,14 +12,10 @@ class LNDSpinner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Platform.isIOS
-        ? CupertinoActivityIndicator(
-            color: color ?? LNDColors.white,
-          )
+        ? CupertinoActivityIndicator(color: color ?? LNDColors.white)
         : SizedBox.square(
-            dimension: size ?? 18.0,
-            child: CircularProgressIndicator(
-              color: color ?? LNDColors.white,
-            ),
-          );
+          dimension: size ?? 18.0,
+          child: CircularProgressIndicator(color: color ?? LNDColors.white),
+        );
   }
 }

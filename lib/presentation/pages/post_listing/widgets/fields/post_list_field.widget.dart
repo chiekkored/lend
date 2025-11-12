@@ -69,6 +69,7 @@ class PostListFieldW extends StatelessWidget {
                   text: subtitle ?? '',
                   fontSize: 12.0,
                   color: LNDColors.hint,
+                  overflow: TextOverflow.visible,
                 )
                 : null,
         onTap: onTap,

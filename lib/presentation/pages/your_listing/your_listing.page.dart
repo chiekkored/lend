@@ -100,7 +100,7 @@ class YourListingPage extends GetView<YourListingController> {
                 Obx(
                   () =>
                       controller.isMyAssetsLoading
-                          ? const LNDSpinner()
+                          ? const LNDSpinner(color: LNDColors.black)
                           : ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),

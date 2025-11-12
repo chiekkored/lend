@@ -19,6 +19,7 @@ import 'package:lend/presentation/controllers/home/home.controller.dart';
 import 'package:lend/presentation/controllers/location_picker/location_picker.controller.dart';
 import 'package:lend/presentation/controllers/my_rentals/my_rentals.controller.dart';
 import 'package:lend/presentation/controllers/profile/profile.controller.dart';
+import 'package:lend/presentation/controllers/your_listing/your_listing.controller.dart';
 import 'package:lend/utilities/constants/collections.constant.dart';
 import 'package:lend/utilities/enums/categories.enum.dart';
 import 'package:lend/utilities/helpers/loggers.helper.dart';
@@ -258,7 +259,6 @@ class PostListingController extends GetxController with TextFieldsMixin {
   }
 
   void addShowcasePhotos() async {
-    debugPrint('showcasePhotos.length: ${10 - showcasePhotos.length}');
     final photos = await _openPhotos(limit: 10 - showcasePhotos.length);
 
     if (photos.isNotEmpty) {
@@ -337,7 +337,7 @@ class PostListingController extends GetxController with TextFieldsMixin {
                   photoFile.value.storagePath = downloadUrl;
                   photoFile.refresh();
                 })
-                .catchError((e) {
+                .catchError((e) async {
                   LNDSnackbar.showWarning(
                     'Something went wrong while uploading',
                   );
@@ -346,7 +346,8 @@ class PostListingController extends GetxController with TextFieldsMixin {
           );
         }
       }
-    } catch (e) {
+    } catch (e, st) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: st);
       LNDSnackbar.showWarning(
         'Something went wrong while uploading the photo/s',
       );
@@ -523,8 +524,8 @@ class PostListingController extends GetxController with TextFieldsMixin {
       await batch.commit();
 
       LNDLoading.hide();
-      HomeController.instance.getAssets();
       MyRentalsController.instance.getMyRentals();
+      YourListingController.instance.getMyAssets();
       Get.back();
     } catch (e, st) {
       LNDLogger.e(e.toString(), error: e, stackTrace: st);

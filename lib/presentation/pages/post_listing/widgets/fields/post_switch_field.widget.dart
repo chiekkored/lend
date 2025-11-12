@@ -32,6 +32,7 @@ class PostSwitchFieldW extends GetWidget<PostListingController> {
                   text: subtitle ?? '',
                   fontSize: 12.0,
                   color: LNDColors.hint,
+                  overflow: TextOverflow.visible,
                 )
                 : null,
         onChanged: (_) => value.toggle(),

@@ -99,6 +99,7 @@ class LNDTextField extends StatelessWidget {
                 text: helperText,
                 fontSize: 12.0,
                 color: LNDColors.hint,
+                overflow: TextOverflow.visible,
               ),
       errorText: errorText,
       errorStyle: LNDText.mediumStyle.copyWith(

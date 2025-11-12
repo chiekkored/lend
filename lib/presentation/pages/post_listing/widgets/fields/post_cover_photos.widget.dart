@@ -160,7 +160,7 @@ class PostCoverPhotosW extends GetWidget<PostListingController> {
                       (photo.value.storagePath?.isNotEmpty ?? false))
                   ? const SizedBox.shrink()
                   : const Positioned.fill(
-                    child: LNDSpinner(color: LNDColors.black),
+                    child: Center(child: LNDSpinner(color: LNDColors.black)),
                   ),
         ),
         Positioned(

@@ -46,7 +46,7 @@ class MainService {
     FirebaseAuth.instance.useAuthEmulator(host, 9099);
     FirebaseFunctions.instance.useFunctionsEmulator(host, 5001);
     FirebaseFirestore.instance.useFirestoreEmulator(host, 8080);
-    FirebaseStorage.instance.useStorageEmulator(host, 5001);
+    FirebaseStorage.instance.useStorageEmulator(host, 9199);
   }
 
   static void _printColoredEnv(String env) {

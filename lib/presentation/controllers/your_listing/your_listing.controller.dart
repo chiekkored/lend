@@ -89,9 +89,10 @@ class YourListingController extends GetxController with AuthMixin {
         }
 
         _myAssets.assignAll(assetsList);
-        _isMyAssetsLoading.value = false;
       }
+      _isMyAssetsLoading.value = false;
     } catch (e, st) {
+      _isMyAssetsLoading.value = false;
       LNDLogger.e(e.toString(), error: e, stackTrace: st);
     }
   }
