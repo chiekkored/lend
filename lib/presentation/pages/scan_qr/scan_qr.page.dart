@@ -18,8 +18,43 @@ class ScanQRPage extends GetView<ScanQRController> {
     final scanAreaSize = Get.width * 0.6;
 
     return Scaffold(
+      backgroundColor: LNDColors.black,
       body: Stack(
         children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: GestureDetector(
+              onTap: controller.uploadQR,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 40.0),
+                child: Column(
+                  spacing: 8.0,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DottedBorder(
+                      color: LNDColors.outline.withValues(alpha: 0.5),
+                      borderType: BorderType.RRect,
+                      radius: const Radius.circular(16),
+                      strokeWidth: 2,
+                      dashPattern: const [10, 10],
+                      child: const SizedBox(
+                        height: 50.0,
+                        width: 50.0,
+                        child: Center(
+                          child: Icon(
+                            Icons.photo_rounded,
+                            color: LNDColors.outline,
+                            size: 40.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    LNDText.regular(text: 'Upload QR', color: LNDColors.white),
+                  ],
+                ),
+              ),
+            ),
+          ),
           Obx(() {
             if (!controller.isPermissionGranted.value) {
               return Center(
@@ -29,6 +64,7 @@ class ScanQRPage extends GetView<ScanQRController> {
                   children: [
                     LNDText.medium(
                       text: 'Camera permission is required to scan QRs',
+                      color: LNDColors.white,
                     ),
                     LNDButton.text(
                       text: 'Grant Permission',
@@ -59,46 +95,43 @@ class ScanQRPage extends GetView<ScanQRController> {
                   borderWidth: 3.0,
                   borderRadius: 12.0,
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: GestureDetector(
-                    onTap: controller.uploadQR,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 40.0),
-                      child: Column(
-                        spacing: 8.0,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          DottedBorder(
-                            color: LNDColors.outline.withValues(alpha: 0.5),
-                            borderType: BorderType.RRect,
-                            radius: const Radius.circular(16),
-                            strokeWidth: 2,
-                            dashPattern: const [10, 10],
-                            child: const SizedBox(
-                              height: 50.0,
-                              width: 50.0,
-                              child: Center(
-                                child: Icon(
-                                  Icons.photo_rounded,
-                                  color: LNDColors.outline,
-                                  size: 40.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                          LNDText.regular(
-                            text: 'Upload QR',
-                            color: LNDColors.white,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
               ],
             );
           }),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: GestureDetector(
+              onTap: controller.uploadQR,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 40.0),
+                child: Column(
+                  spacing: 8.0,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DottedBorder(
+                      color: LNDColors.outline.withValues(alpha: 0.5),
+                      borderType: BorderType.RRect,
+                      radius: const Radius.circular(16),
+                      strokeWidth: 2,
+                      dashPattern: const [10, 10],
+                      child: const SizedBox(
+                        height: 50.0,
+                        width: 50.0,
+                        child: Center(
+                          child: Icon(
+                            Icons.photo_rounded,
+                            color: LNDColors.outline,
+                            size: 40.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    LNDText.regular(text: 'Upload QR', color: LNDColors.white),
+                  ],
+                ),
+              ),
+            ),
+          ),
           Positioned(
             top: 10.0,
             left: 15.0,

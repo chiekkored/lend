@@ -14,10 +14,11 @@ import 'package:lend/presentation/controllers/profile/profile.controller.dart';
 import 'package:lend/presentation/pages/navigation/components/my_rentals/widgets/my_rentals_appbar.widget.dart';
 import 'package:lend/presentation/pages/signin/signin.page.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
-import 'package:lend/utilities/extensions/bookingStatus.extension.dart';
+import 'package:lend/utilities/enums/booking_status.enum.dart';
 import 'package:lend/utilities/extensions/int.extension.dart';
 import 'package:lend/utilities/extensions/widget.extension.dart';
 import 'package:lend/utilities/helpers/utilities.helper.dart';
+import 'package:step_progress/step_progress.dart';
 
 class MyRentalsPage extends GetView<MyRentalsController> {
   const MyRentalsPage({super.key});
@@ -262,6 +263,34 @@ class MyRentalsPage extends GetView<MyRentalsController> {
   }
 
   Container _buildRentalItem(Booking rentals, String dates) {
+    int currentStep = 0;
+    Color labelColor = LNDColors.black;
+    Color nodeColor = LNDColors.primary;
+    String confirmedLabel = 'Confirmed';
+    switch (rentals.status) {
+      case BookingStatus.pending:
+        currentStep = 1;
+        labelColor = LNDColors.primary;
+        break;
+      case BookingStatus.confirmed:
+        currentStep = 2;
+        nodeColor = LNDColors.success;
+        labelColor = LNDColors.success;
+        break;
+      case BookingStatus.cancelled:
+      case BookingStatus.declined:
+        currentStep = 2;
+        nodeColor = LNDColors.danger;
+        labelColor = LNDColors.danger;
+        if (rentals.status == BookingStatus.cancelled) {
+          confirmedLabel = 'Cancelled';
+        } else {
+          confirmedLabel = 'Declined';
+        }
+        break;
+      default:
+        currentStep = 0;
+    }
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       padding: const EdgeInsets.all(12.0),
@@ -273,16 +302,51 @@ class MyRentalsPage extends GetView<MyRentalsController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 4.0,
-            children: [
-              CircleAvatar(radius: 6.0, backgroundColor: rentals.status?.color),
-              LNDText.regular(
-                text: rentals.status?.label.capitalizeFirst ?? '',
-                fontSize: 12.0,
+          StepProgress(
+            totalSteps: 3,
+            currentStep: currentStep,
+            stepSize: 10,
+            highlightOptions:
+                StepProgressHighlightOptions.highlightCurrentNodeAndLine,
+            nodeLabelBuilder: (index, completedStepIndex) {
+              const size = 12.0;
+
+              label(String label) {
+                if (index == completedStepIndex) {
+                  return LNDText.bold(
+                    text: label,
+                    fontSize: size,
+                    color: labelColor,
+                  );
+                }
+                return LNDText.regular(
+                  text: label,
+                  fontSize: size,
+                  color: LNDColors.unselected,
+                );
+              }
+
+              switch (index) {
+                case 2:
+                  return label(confirmedLabel);
+                case 1:
+                  return label('Pending');
+                default:
+                  return label('Select Dates');
+              }
+            },
+            nodeIconBuilder:
+                (index, completedStepIndex) => const SizedBox.shrink(),
+            theme: StepProgressThemeData(
+              stepLineStyle: StepLineStyle(activeColor: nodeColor),
+              stepNodeStyle: StepNodeStyle(activeForegroundColor: nodeColor),
+              defaultForegroundColor: LNDColors.unselected,
+              activeForegroundColor: LNDColors.primary,
+              nodeLabelStyle: StepLabelStyle(
+                maxWidth: 100.0,
+                titleStyle: LNDText.regularStyle.copyWith(fontSize: 12.0),
               ),
-            ],
+            ),
           ),
           IntrinsicHeight(
             child: Row(

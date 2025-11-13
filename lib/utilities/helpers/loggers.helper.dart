@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:logger/logger.dart';
 
 class LNDLogger {
@@ -149,6 +150,16 @@ class LNDLogger {
         final code = error.code;
         final msg = error.message ?? 'No message';
         return 'FirebaseException(code: $code, message: $msg)';
+      }
+    } catch (_) {}
+    try {
+      // Handle Firebase & Firestore exceptions
+      if (error is FirebaseFunctionsException) {
+        // FirebaseException has code, details, & message fields
+        final code = error.code;
+        final details = error.details;
+        final msg = error.message ?? 'No message';
+        return 'FirebaseFunctionsException(code: $code, message: $msg, details: $details)';
       }
     } catch (_) {}
 

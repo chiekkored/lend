@@ -14,6 +14,56 @@ import 'package:lend/utilities/helpers/loggers.helper.dart';
 class BookingService {
   static final _db = FirebaseFirestore.instance;
 
+  static Future<Either<Booking, String>> getUserBooking({
+    required String userId,
+    required String bookingId,
+  }) async {
+    final bookingDoc =
+        await _db
+            .collection(LNDCollections.users.name)
+            .doc(userId)
+            .collection(LNDCollections.bookings.name)
+            .doc(bookingId)
+            .get();
+
+    if (bookingDoc.exists) {
+      final bookingData = bookingDoc.data();
+
+      if (bookingData != null) {
+        return Left(Booking.fromMap(bookingData));
+      } else {
+        return const Right('Booking data is empty');
+      }
+    } else {
+      return const Right('Booking does not exist');
+    }
+  }
+
+  static Future<Either<Booking, String>> getAssetBooking({
+    required String assetId,
+    required String bookingId,
+  }) async {
+    final bookingDoc =
+        await _db
+            .collection(LNDCollections.assets.name)
+            .doc(assetId)
+            .collection(LNDCollections.bookings.name)
+            .doc(bookingId)
+            .get();
+
+    if (bookingDoc.exists) {
+      final bookingData = bookingDoc.data();
+
+      if (bookingData != null) {
+        return Left(Booking.fromMap(bookingData));
+      } else {
+        return const Right('Booking data is empty');
+      }
+    } else {
+      return const Right('Booking does not exist');
+    }
+  }
+
   static Future<Either<bool, String>> acceptBooking(Booking booking) async {
     const e1 = 'Selected booking does not exist';
     const e2 = 'This booking is no longer available for confirmation';
@@ -191,7 +241,26 @@ class BookingService {
 
       return Map<String, dynamic>.from(result.data);
     } on FirebaseFunctionsException catch (e) {
-      LNDLogger.e(e.details, error: e, stackTrace: StackTrace.current);
+      LNDLogger.e(e.message ?? '', error: e, stackTrace: StackTrace.current);
+    } catch (e) {
+      LNDLogger.e(e.toString(), error: e, stackTrace: StackTrace.current);
+    }
+    return null;
+  }
+
+  static Future<Map<String, dynamic>?> verifyToken({
+    required String token,
+  }) async {
+    try {
+      final callable = FirebaseFunctions.instance.httpsCallable(
+        LNDFunctions.verifyToken,
+      );
+
+      final result = await callable.call({'token': token});
+
+      return Map<String, dynamic>.from(result.data);
+    } on FirebaseFunctionsException catch (e) {
+      LNDLogger.e(e.message ?? '', error: e, stackTrace: StackTrace.current);
     } catch (e) {
       LNDLogger.e(e.toString(), error: e, stackTrace: StackTrace.current);
     }

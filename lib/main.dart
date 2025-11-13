@@ -25,6 +25,7 @@ import 'package:lend/presentation/pages/navigation/components/messages/component
 import 'package:lend/presentation/pages/profile_view/profile_view.page.dart';
 import 'package:lend/presentation/pages/qr_view/qr_view.page.dart';
 import 'package:lend/presentation/pages/scan_qr/scan_qr.page.dart';
+import 'package:lend/presentation/pages/token_view/token_view.page.dart';
 import 'package:lend/presentation/pages/your_listing/your_listing.page.dart';
 import 'package:lend/presentation/pages/navigation/navigation.page.dart';
 import 'package:lend/presentation/pages/photo_view/photo_view.page.dart';
@@ -170,6 +171,12 @@ class Root extends StatelessWidget {
           name: QRViewPage.routeName,
           page: () => QRViewPage(),
           middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: TokenViewPage.routeName,
+          page: () => const TokenViewPage(),
+          middlewares: [AuthMiddleware()],
+          fullscreenDialog: true,
         ),
       ],
       initialRoute: NavigationPage.routeName,

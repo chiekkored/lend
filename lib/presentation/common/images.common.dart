@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lend/utilities/constants/colors.constant.dart';
 import 'package:lend/utilities/enums/image_type.enum.dart';
+import 'package:lend/utilities/helpers/loggers.helper.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LNDImage extends StatelessWidget {
@@ -106,7 +107,14 @@ class LNDImage extends StatelessWidget {
         child: Image.file(
           File((imageUrl)),
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _buildFallbackImage(),
+          errorBuilder: (_, obj, st) {
+            LNDLogger.e(
+              obj.toString(),
+              error: obj,
+              stackTrace: st ?? StackTrace.current,
+            );
+            return _buildFallbackImage();
+          },
         ),
       );
     } else {

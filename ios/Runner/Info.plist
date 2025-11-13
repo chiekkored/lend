@@ -70,6 +70,8 @@
 	<!-- Gal & Image Picker https://pub.dev/packages/gal -->
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Lend needs permission to save and upload photos to your library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Lend needs permission to view and upload photos from your library in order to save listing photos and QRs.</string>
 	<!-- End of Gal & Image Picker -->
 	<!-- Camera package https://pub.dev/packages/camera -->
 	<key>NSCameraUsageDescription</key>
